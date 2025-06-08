@@ -12,7 +12,7 @@ const Index = () => {
               Discover Your Motivated Abilities
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Using the SIMA approach, let's identify your natural motivational patterns by reflecting on your meaningful accomplishments from childhood to now.
+              Let's identify your natural motivational patterns by reflecting on your meaningful accomplishments from childhood to now.
             </p>
           </div>
           

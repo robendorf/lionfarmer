@@ -19,7 +19,7 @@ const AccomplishmentsForm = () => {
 
   // Load saved data on component mount
   useEffect(() => {
-    const saved = localStorage.getItem('sima-accomplishments');
+    const saved = localStorage.getItem('motivated-abilities-accomplishments');
     if (saved) {
       try {
         setAccomplishments(JSON.parse(saved));
@@ -33,7 +33,7 @@ const AccomplishmentsForm = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       if (Object.keys(accomplishments).length > 0) {
-        localStorage.setItem('sima-accomplishments', JSON.stringify(accomplishments));
+        localStorage.setItem('motivated-abilities-accomplishments', JSON.stringify(accomplishments));
         setLastSaved(new Date());
       }
     }, 2000);
@@ -49,7 +49,7 @@ const AccomplishmentsForm = () => {
   };
 
   const handleManualSave = () => {
-    localStorage.setItem('sima-accomplishments', JSON.stringify(accomplishments));
+    localStorage.setItem('motivated-abilities-accomplishments', JSON.stringify(accomplishments));
     setLastSaved(new Date());
     toast({
       title: "Progress Saved",
@@ -169,7 +169,7 @@ const AccomplishmentsForm = () => {
                 Excellent Progress!
               </h3>
               <p className="text-green-700">
-                You're ready for the next phase of SIMA analysis. Soon you'll be able to 
+                You're ready for the next phase of analysis. Soon you'll be able to 
                 identify the common themes and motivational patterns across your accomplishments.
               </p>
             </div>
