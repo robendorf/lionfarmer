@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -16,6 +15,30 @@ const AccomplishmentsForm = () => {
   const [accomplishments, setAccomplishments] = useState<AccomplishmentData>({});
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const { toast } = useToast();
+
+  // Example accomplishments for placeholders
+  const exampleAccomplishments = [
+    "Speaking in front of my 1st grade class about my pet hamster",
+    "Building a treehouse with my dad when I was 10",
+    "Learning to ride a bike without training wheels",
+    "Organizing my room and keeping it clean for a whole month",
+    "Winning the school spelling bee in 3rd grade",
+    "Teaching my little sister how to tie her shoes",
+    "Building a rocket ship model that actually flew",
+    "Starting a lemonade stand that made $50 in one summer",
+    "Learning to play my favorite song on the piano",
+    "Helping an injured bird and nursing it back to health",
+    "Creating a comic book series with my friends",
+    "Solving a really hard puzzle that took me weeks",
+    "Organizing a surprise party for my mom's birthday",
+    "Learning to cook my grandmother's secret recipe",
+    "Building a robot from scratch that could move around",
+    "Starting a club at school that 20 kids joined",
+    "Fixing my broken bicycle all by myself",
+    "Writing a short story that my teacher loved",
+    "Creating a garden that grew amazing vegetables",
+    "Learning a magic trick that amazed everyone at the talent show"
+  ];
 
   // Load saved data on component mount
   useEffect(() => {
@@ -118,6 +141,7 @@ const AccomplishmentsForm = () => {
               <li>• Include accomplishments from different life stages</li>
               <li>• Focus on what YOU specifically contributed</li>
               <li>• Include both big and small wins that mattered to you</li>
+              <li>• These are your personal bragging rights - moments you felt proud</li>
             </ul>
           </div>
         </CardContent>
@@ -146,7 +170,7 @@ const AccomplishmentsForm = () => {
                   </Label>
                   <Textarea
                     id={fieldId}
-                    placeholder={`Describe a meaningful accomplishment from any period of your life...`}
+                    placeholder={exampleAccomplishments[index]}
                     value={accomplishments[fieldId] || ''}
                     onChange={(e) => handleInputChange(fieldId, e.target.value)}
                     className="min-h-[60px] resize-none"
