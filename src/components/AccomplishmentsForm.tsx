@@ -5,15 +5,21 @@ import { Progress } from '@/components/ui/progress';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Save, CheckCircle } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Save, CheckCircle, Star } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface AccomplishmentData {
   [key: string]: string;
 }
 
+interface SelectedWins {
+  [key: string]: boolean;
+}
+
 const AccomplishmentsForm = () => {
   const [accomplishments, setAccomplishments] = useState<AccomplishmentData>({});
+  const [selectedWins, setSelectedWins] = useState<SelectedWins>({});
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const { toast } = useToast();
 
@@ -44,11 +50,21 @@ const AccomplishmentsForm = () => {
   // Load saved data on component mount
   useEffect(() => {
     const saved = localStorage.getItem('motivated-abilities-accomplishments');
+    const savedSelections = localStorage.getItem('motivated-abilities-selected-wins');
+    
     if (saved) {
       try {
         setAccomplishments(JSON.parse(saved));
       } catch (error) {
         console.error('Error loading saved accomplishments:', error);
+      }
+    }
+    
+    if (savedSelections) {
+      try {
+        setSelectedWins(JSON.parse(savedSelections));
+      } catch (error) {
+        console.error('Error loading saved selections:', error);
       }
     }
   }, []);
@@ -58,12 +74,13 @@ const AccomplishmentsForm = () => {
     const timer = setTimeout(() => {
       if (Object.keys(accomplishments).length > 0) {
         localStorage.setItem('motivated-abilities-accomplishments', JSON.stringify(accomplishments));
+        localStorage.setItem('motivated-abilities-selected-wins', JSON.stringify(selectedWins));
         setLastSaved(new Date());
       }
     }, 2000);
 
     return () => clearTimeout(timer);
-  }, [accomplishments]);
+  }, [accomplishments, selectedWins]);
 
   const handleInputChange = (fieldId: string, value: string) => {
     setAccomplishments(prev => ({
@@ -72,18 +89,30 @@ const AccomplishmentsForm = () => {
     }));
   };
 
+  const handleCheckboxChange = (fieldId: string, checked: boolean) => {
+    setSelectedWins(prev => ({
+      ...prev,
+      [fieldId]: checked
+    }));
+  };
+
   const handleManualSave = () => {
     localStorage.setItem('motivated-abilities-accomplishments', JSON.stringify(accomplishments));
+    localStorage.setItem('motivated-abilities-selected-wins', JSON.stringify(selectedWins));
     setLastSaved(new Date());
     toast({
       title: "Progress Saved",
-      description: "Your accomplishments have been saved successfully.",
+      description: "Your accomplishments and selections have been saved successfully.",
     });
   };
 
   const calculateProgress = () => {
     const filledFields = Object.values(accomplishments).filter(value => value.trim().length > 0).length;
     return (filledFields / 20) * 100;
+  };
+
+  const getSelectedCount = () => {
+    return Object.values(selectedWins).filter(Boolean).length;
   };
 
   const getProgressMessage = () => {
@@ -113,6 +142,12 @@ const AccomplishmentsForm = () => {
               <span>{Object.values(accomplishments).filter(v => v.trim().length > 0).length} of 20 completed</span>
               <span>{Math.round(calculateProgress())}% complete</span>
             </div>
+            <div className="flex items-center justify-center gap-2 text-sm">
+              <Star className="h-4 w-4 text-amber-500" />
+              <span className="text-foreground font-medium">
+                {getSelectedCount()} favorites selected (aim for 6-8)
+              </span>
+            </div>
             <p className="text-center text-foreground font-medium">
               {getProgressMessage()}
             </p>
@@ -137,12 +172,17 @@ const AccomplishmentsForm = () => {
               These can be from any period of your life - childhood, school, work, personal projects, 
               relationships, or hobbies. Focus on moments when you felt energized and fulfilled by what you accomplished.
             </p>
+            <p className="text-muted-foreground mt-3">
+              <strong>After writing your accomplishments, check the boxes next to your 6-8 favorites.</strong> 
+              These will be used for deeper analysis in the "How I Did It" section.
+            </p>
             <ul className="text-muted-foreground text-sm mt-4 space-y-1">
               <li>• Keep each entry to 1-2 lines</li>
               <li>• Include accomplishments from different life stages</li>
               <li>• Focus on what YOU specifically contributed</li>
               <li>• Include both big and small wins that mattered to you</li>
               <li>• These are your personal bragging rights - moments you felt proud</li>
+              <li>• Select 6-8 favorites that you're most excited to explore further</li>
             </ul>
           </div>
         </CardContent>
@@ -163,18 +203,30 @@ const AccomplishmentsForm = () => {
           <div className="grid gap-6">
             {Array.from({ length: 20 }, (_, index) => {
               const fieldId = `win_${index + 1}`;
+              const selectedFieldId = `selected_${fieldId}`;
               const fieldNumber = index + 1;
               return (
                 <div key={fieldId} className="space-y-2">
-                  <Label htmlFor={fieldId} className="text-sm font-medium">
-                    Win {fieldNumber}
-                  </Label>
+                  <div className="flex items-center gap-3">
+                    <Checkbox
+                      id={selectedFieldId}
+                      checked={selectedWins[selectedFieldId] || false}
+                      onCheckedChange={(checked) => handleCheckboxChange(selectedFieldId, checked as boolean)}
+                      className="mt-1"
+                    />
+                    <Label htmlFor={fieldId} className="text-sm font-medium flex-1">
+                      Win {fieldNumber}
+                      {selectedWins[selectedFieldId] && (
+                        <Star className="inline h-4 w-4 ml-1 text-amber-500 fill-amber-500" />
+                      )}
+                    </Label>
+                  </div>
                   <Textarea
                     id={fieldId}
                     placeholder={exampleAccomplishments[index]}
                     value={accomplishments[fieldId] || ''}
                     onChange={(e) => handleInputChange(fieldId, e.target.value)}
-                    className="min-h-[60px] resize-none"
+                    className="min-h-[60px] resize-none ml-7"
                     rows={2}
                   />
                 </div>
@@ -184,18 +236,33 @@ const AccomplishmentsForm = () => {
         </CardContent>
       </Card>
 
+      {/* Selection Guidance */}
+      {getSelectedCount() > 8 && (
+        <Card className="border-amber-200 bg-amber-50">
+          <CardContent className="pt-6">
+            <div className="text-center">
+              <Star className="h-8 w-8 text-amber-600 mx-auto mb-2" />
+              <p className="text-amber-800 text-sm">
+                You've selected {getSelectedCount()} favorites. Consider narrowing it down to 6-8 
+                accomplishments for the most focused analysis.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Next Steps Preview */}
-      {calculateProgress() >= 80 && (
+      {calculateProgress() >= 80 && getSelectedCount() >= 6 && (
         <Card className="border-green-200 bg-green-50">
           <CardContent className="pt-6">
             <div className="text-center">
               <CheckCircle className="h-12 w-12 text-green-600 mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-green-800 mb-2">
-                Excellent Progress!
+                Ready for Deep Dive!
               </h3>
               <p className="text-green-700">
-                You're ready for the next phase of analysis. Soon you'll be able to 
-                identify the common themes and motivational patterns across your accomplishments.
+                You've completed your accomplishments and selected {getSelectedCount()} favorites. 
+                You're ready for the "How I Did It" analysis phase to uncover your motivational patterns.
               </p>
             </div>
           </CardContent>
