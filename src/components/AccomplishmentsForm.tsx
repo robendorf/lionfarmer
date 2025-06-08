@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -16,28 +17,28 @@ const AccomplishmentsForm = () => {
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const { toast } = useToast();
 
-  // Example accomplishments for placeholders
+  // Example accomplishments for placeholders - spanning ages 3 to 93
   const exampleAccomplishments = [
+    "Potty training myself at age 3 without any accidents",
     "Speaking in front of my 1st grade class about my pet hamster",
-    "Building a treehouse with my dad when I was 10",
-    "Learning to ride a bike without training wheels",
-    "Organizing my room and keeping it clean for a whole month",
+    "Learning to ride a bike without training wheels at age 7",
     "Winning the school spelling bee in 3rd grade",
-    "Teaching my little sister how to tie her shoes",
-    "Building a rocket ship model that actually flew",
+    "Building a treehouse with my dad when I was 10",
     "Starting a lemonade stand that made $50 in one summer",
-    "Learning to play my favorite song on the piano",
-    "Helping an injured bird and nursing it back to health",
-    "Creating a comic book series with my friends",
-    "Solving a really hard puzzle that took me weeks",
-    "Organizing a surprise party for my mom's birthday",
-    "Learning to cook my grandmother's secret recipe",
-    "Building a robot from scratch that could move around",
-    "Starting a club at school that 20 kids joined",
-    "Fixing my broken bicycle all by myself",
-    "Writing a short story that my teacher loved",
-    "Creating a garden that grew amazing vegetables",
-    "Learning a magic trick that amazed everyone at the talent show"
+    "Learning to play my favorite song on the piano in middle school",
+    "Making varsity soccer team as a freshman in high school",
+    "Getting my driver's license on the first try at 16",
+    "Graduating as valedictorian of my high school class",
+    "Getting accepted into my dream college with a scholarship",
+    "Completing my first marathon at age 22",
+    "Landing my first job after college interviews",
+    "Buying my first house at 25 and renovating it myself",
+    "Getting promoted to manager within 3 years at work",
+    "Starting my own business and making it profitable",
+    "Raising two children who became successful adults",
+    "Completing my master's degree while working full-time",
+    "Mentoring 50+ young professionals throughout my career",
+    "Learning to speak fluent Spanish at age 93"
   ];
 
   // Load saved data on component mount
