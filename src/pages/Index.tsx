@@ -9,7 +9,7 @@ const Index = () => {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-foreground mb-4">
-              Discover Your Motivated Abilities
+              Discover the Design You Were Born With
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Let's identify your natural motivational patterns by reflecting on your meaningful accomplishments from childhood to now.
