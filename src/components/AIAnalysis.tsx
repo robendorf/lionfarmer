@@ -48,7 +48,7 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
 
     const allProcesses = processData.map(d => d.process).join(' ').toLowerCase();
     
-    // Simple keyword analysis for SEED categories
+    // Enhanced analysis with 3-4 items per category
     const analysis = {
       energizers: [],
       avoid: [],
@@ -56,7 +56,7 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
       growth: []
     };
 
-    // Energizers - what gives energy (2-line format)
+    // Energizers - what gives energy (3-4 items, 2-line format each)
     if (allProcesses.includes('lead') || allProcesses.includes('manage') || allProcesses.includes('direct')) {
       analysis.energizers.push('You find deep satisfaction in leading teams and taking charge of complex situations.\nYour energy increases when you can guide others toward meaningful outcomes.');
     }
@@ -70,34 +70,34 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
       analysis.energizers.push('Problem-solving and continuous improvement fuel your motivation.\nYou gain energy from tackling challenges and finding better ways forward.');
     }
 
-    // What to avoid (2-line format)
-    if (allProcesses.includes('routine') || allProcesses.includes('repetitive')) {
-      analysis.avoid.push('Repetitive, routine tasks that lack variety drain your natural enthusiasm.\nYou should avoid environments that don\'t allow for creative expression.');
-    } else {
-      analysis.avoid.push('Overly chaotic environments without clear structure or direction.\nYou need some organizational framework to channel your talents effectively.');
+    // Add more energizers if we don't have enough
+    if (analysis.energizers.length < 3) {
+      analysis.energizers.push('Making meaningful connections and building relationships energizes you deeply.\nYou find fulfillment in work that creates lasting positive impact on others.');
+      analysis.energizers.push('Learning new skills and expanding your knowledge base brings you joy.\nYou are motivated by opportunities to grow and develop your capabilities.');
     }
+
+    // What to avoid (3-4 items, 2-line format)
+    analysis.avoid.push('Repetitive, routine tasks that lack variety drain your natural enthusiasm.\nYou should avoid environments that don\'t allow for creative expression or growth.');
+    analysis.avoid.push('Overly chaotic environments without clear structure or direction sap your energy.\nYou need some organizational framework to channel your talents effectively.');
+    analysis.avoid.push('Micromanaged situations that limit your autonomy and decision-making authority.\nYou work best when given space to contribute in your own authentic style.');
+    analysis.avoid.push('Isolated work environments that disconnect you from meaningful relationships.\nYou need some level of human interaction to maintain your motivation and engagement.');
+
+    // Environments (3-4 items, 2-line format)
+    analysis.environments.push('Collaborative team environments where diverse perspectives are valued and heard.\nYou excel in settings that encourage open communication and shared goals.');
+    analysis.environments.push('Dynamic, growth-oriented workplaces that embrace change and innovation.\nYou thrive in environments that challenge you to expand your capabilities.');
+    analysis.environments.push('Purpose-driven organizations aligned with your values and mission.\nYou perform best when your work contributes to something meaningful and impactful.');
     
-    if (allProcesses.includes('alone') || allProcesses.includes('independent')) {
-      analysis.avoid.push('Forced collaboration that limits your autonomy and decision-making.\nYou work best when given space to contribute in your own style.');
-    } else {
-      analysis.avoid.push('Isolated work environments that disconnect you from meaningful relationships.\nYou need some level of human interaction to maintain your motivation.');
-    }
-
-    // Environments (2-line format)
-    if (allProcesses.includes('team') || allProcesses.includes('group') || allProcesses.includes('collaborate')) {
-      analysis.environments.push('Collaborative team environments where diverse perspectives are valued.\nYou excel in settings that encourage open communication and shared goals.');
-    }
     if (allProcesses.includes('fast') || allProcesses.includes('quick') || allProcesses.includes('urgent')) {
-      analysis.environments.push('Fast-paced, dynamic workplaces that match your energy and drive.\nYou thrive in environments that embrace change and quick decision-making.');
-    }
-    if (allProcesses.includes('plan') || allProcesses.includes('organize') || allProcesses.includes('structure')) {
-      analysis.environments.push('Well-organized, structured settings with clear expectations and processes.\nYou perform best when there are established frameworks to guide your work.');
+      analysis.environments.push('Fast-paced, results-oriented settings that match your energy and drive.\nYou flourish in environments that embrace quick decision-making and action.');
+    } else {
+      analysis.environments.push('Well-structured, organized settings with clear expectations and processes.\nYou work effectively when there are established frameworks to guide your efforts.');
     }
 
-    // Growth areas (2-line format)
+    // Growth areas (3-4 items, 2-line format)
     analysis.growth.push('Developing advanced leadership skills to amplify your natural influence.\nFocus on building emotional intelligence and strategic thinking capabilities.');
-    analysis.growth.push('Expanding your technical expertise to stay ahead of industry trends.\nInvest in continuous learning to maintain your competitive edge.');
-    analysis.growth.push('Building stronger communication abilities for greater impact.\nEnhance your ability to inspire and motivate others through clear messaging.');
+    analysis.growth.push('Expanding your technical expertise to stay ahead of industry trends.\nInvest in continuous learning to maintain your competitive edge and relevance.');
+    analysis.growth.push('Building stronger communication abilities for greater impact and connection.\nEnhance your ability to inspire and motivate others through clear messaging.');
+    analysis.growth.push('Cultivating resilience and adaptability for navigating complex challenges.\nDevelop skills to thrive in uncertainty while maintaining your core strengths.');
 
     return { analysis, processData };
   };
