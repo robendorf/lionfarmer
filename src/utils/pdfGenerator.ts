@@ -1,4 +1,3 @@
-
 import jsPDF from 'jspdf';
 
 interface AnalysisResult {
@@ -22,7 +21,8 @@ export const generateSEEDProfilePDF = (
   let yPosition = 20;
   const pageHeight = pdf.internal.pageSize.height;
   const margin = 20;
-  const maxWidth = pdf.internal.pageSize.width - 2 * margin;
+  const pageWidth = pdf.internal.pageSize.width;
+  const maxWidth = pageWidth - 2 * margin;
 
   // Color palette matching the website
   const colors = {
@@ -33,12 +33,10 @@ export const generateSEEDProfilePDF = (
     cream: [245, 245, 240]
   };
 
-  // Helper function to add colored rectangle backgrounds
-  const addColoredBackground = (x: number, y: number, width: number, height: number, color: number[], opacity: number = 0.1) => {
+  // Helper function to add colored rectangle backgrounds (without transparency)
+  const addColoredBackground = (x: number, y: number, width: number, height: number, color: number[]) => {
     pdf.setFillColor(color[0], color[1], color[2]);
-    pdf.setGlobalAlpha(opacity);
     pdf.rect(x, y, width, height, 'F');
-    pdf.setGlobalAlpha(1);
   };
 
   // Helper function to add text with styling
@@ -54,15 +52,15 @@ export const generateSEEDProfilePDF = (
       isBold = false,
       color = colors.forestDark,
       align = 'left',
-      maxWidth = maxWidth
+      maxWidth: textMaxWidth = maxWidth
     } = options;
 
     pdf.setFontSize(fontSize);
     pdf.setFont(undefined, isBold ? 'bold' : 'normal');
     pdf.setTextColor(color[0], color[1], color[2]);
     
-    if (maxWidth && maxWidth < pdf.internal.pageSize.width - 2 * margin) {
-      const lines = pdf.splitTextToSize(text, maxWidth);
+    if (textMaxWidth && textMaxWidth < pageWidth - 2 * margin) {
+      const lines = pdf.splitTextToSize(text, textMaxWidth);
       pdf.text(lines, x, y, { align });
       return lines.length * fontSize * 0.35;
     } else {
@@ -78,9 +76,8 @@ export const generateSEEDProfilePDF = (
       yPosition = 20;
     }
 
-    // Add gradient-like background
-    addColoredBackground(margin, yPosition - 5, maxWidth, 25, colors.warmGold, 0.15);
-    addColoredBackground(margin, yPosition - 5, maxWidth, 25, colors.sageGreen, 0.1);
+    // Add background
+    addColoredBackground(margin, yPosition - 5, maxWidth, 25, colors.cream);
     
     // Add border
     pdf.setDrawColor(colors.warmGold[0], colors.warmGold[1], colors.warmGold[2]);
@@ -110,7 +107,7 @@ export const generateSEEDProfilePDF = (
     
     // Add background for bullet points
     if (level === 0) {
-      addColoredBackground(margin, yPosition - 3, maxWidth, 15, colors.cream, 0.3);
+      addColoredBackground(margin, yPosition - 3, maxWidth, 15, colors.cream);
     }
     
     // Add bullet
@@ -134,23 +131,22 @@ export const generateSEEDProfilePDF = (
   };
 
   // Title Page with styling
-  addColoredBackground(0, 0, pdf.internal.pageSize.width, 80, colors.sageGreen, 0.1);
-  addColoredBackground(0, 0, pdf.internal.pageSize.width, 80, colors.warmGold, 0.05);
+  addColoredBackground(0, 0, pageWidth, 80, colors.sageGreen);
   
-  addStyledText('🎯 SEED PROFILE ANALYSIS', pdf.internal.pageSize.width / 2, 35, {
+  addStyledText('🎯 SEED PROFILE ANALYSIS', pageWidth / 2, 35, {
     fontSize: 24,
     isBold: true,
     color: colors.forestDark,
     align: 'center'
   });
   
-  addStyledText(isPremium ? '👑 Premium Report' : 'Free Report', pdf.internal.pageSize.width / 2, 55, {
+  addStyledText(isPremium ? '👑 Premium Report' : 'Free Report', pageWidth / 2, 55, {
     fontSize: 16,
     color: colors.warmGold,
     align: 'center'
   });
   
-  addStyledText(`Generated on: ${new Date().toLocaleDateString()}`, pdf.internal.pageSize.width / 2, 70, {
+  addStyledText(`Generated on: ${new Date().toLocaleDateString()}`, pageWidth / 2, 70, {
     fontSize: 12,
     color: colors.earthBrown,
     align: 'center'
@@ -159,7 +155,7 @@ export const generateSEEDProfilePDF = (
   yPosition = 100;
 
   if (isPremium) {
-    addStyledText('Comprehensive Motivational Pattern Analysis', pdf.internal.pageSize.width / 2, yPosition, {
+    addStyledText('Comprehensive Motivational Pattern Analysis', pageWidth / 2, yPosition, {
       fontSize: 14,
       isBold: true,
       color: colors.sageGreen,
@@ -462,11 +458,10 @@ export const generateSEEDProfilePDF = (
     addSpacing(20);
     
     // Final message with background
-    addColoredBackground(margin, yPosition - 5, maxWidth, 30, colors.warmGold, 0.1);
-    addColoredBackground(margin, yPosition - 5, maxWidth, 30, colors.sageGreen, 0.05);
+    addColoredBackground(margin, yPosition - 5, maxWidth, 30, colors.cream);
     
     addStyledText('⭐ Remember: Your SEED Profile is a living document. Revisit and refine it as you grow and gain new experiences. ⭐', 
-      pdf.internal.pageSize.width / 2, yPosition + 15, { 
+      pageWidth / 2, yPosition + 15, { 
       fontSize: 12, 
       isBold: true, 
       color: colors.forestDark,
