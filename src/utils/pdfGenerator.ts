@@ -24,35 +24,81 @@ export const generateSEEDProfilePDF = (
   const pageWidth = pdf.internal.pageSize.width;
   const maxWidth = pageWidth - 2 * margin;
 
-  // Color palette matching the website
+  // Enhanced color palette matching the website exactly
   const colors = {
     forestDark: [42, 63, 45],
     sageGreen: [106, 140, 115],
     warmGold: [218, 165, 32],
     earthBrown: [101, 67, 33],
-    cream: [245, 245, 240]
+    cream: [250, 248, 245],
+    lightSage: [200, 220, 205],
+    lightGold: [255, 245, 200],
+    white: [255, 255, 255],
+    lightGray: [245, 245, 245]
   };
 
-  // Helper function to add colored rectangle backgrounds (without transparency)
-  const addColoredBackground = (x: number, y: number, width: number, height: number, color: number[]) => {
-    pdf.setFillColor(color[0], color[1], color[2]);
+  // Helper function to create gradient-like effect with overlapping rectangles
+  const addGradientBackground = (x: number, y: number, width: number, height: number, startColor: number[], endColor: number[], steps: number = 5) => {
+    for (let i = 0; i < steps; i++) {
+      const ratio = i / (steps - 1);
+      const r = Math.round(startColor[0] * (1 - ratio) + endColor[0] * ratio);
+      const g = Math.round(startColor[1] * (1 - ratio) + endColor[1] * ratio);
+      const b = Math.round(startColor[2] * (1 - ratio) + endColor[2] * ratio);
+      
+      pdf.setFillColor(r, g, b);
+      pdf.rect(x, y + (i * height / steps), width, height / steps, 'F');
+    }
+  };
+
+  // Helper function to add rounded rectangle effect
+  const addRoundedCard = (x: number, y: number, width: number, height: number, backgroundColor: number[], borderColor?: number[]) => {
+    // Main background
+    pdf.setFillColor(backgroundColor[0], backgroundColor[1], backgroundColor[2]);
     pdf.rect(x, y, width, height, 'F');
+    
+    // Add border if specified
+    if (borderColor) {
+      pdf.setDrawColor(borderColor[0], borderColor[1], borderColor[2]);
+      pdf.setLineWidth(0.5);
+      pdf.rect(x, y, width, height);
+    }
+    
+    // Simulate rounded corners with small rectangles
+    pdf.setFillColor(255, 255, 255);
+    const cornerSize = 2;
+    // Top-left
+    pdf.rect(x, y, cornerSize, cornerSize, 'F');
+    // Top-right
+    pdf.rect(x + width - cornerSize, y, cornerSize, cornerSize, 'F');
+    // Bottom-left
+    pdf.rect(x, y + height - cornerSize, cornerSize, cornerSize, 'F');
+    // Bottom-right
+    pdf.rect(x + width - cornerSize, y + height - cornerSize, cornerSize, cornerSize, 'F');
   };
 
-  // Helper function to add text with styling
+  // Helper function to add decorative elements
+  const addDecorativeIcon = (x: number, y: number, icon: string, color: number[]) => {
+    pdf.setFontSize(16);
+    pdf.setTextColor(color[0], color[1], color[2]);
+    pdf.text(icon, x, y);
+  };
+
+  // Helper function to add text with enhanced styling
   const addStyledText = (text: string, x: number, y: number, options: {
     fontSize?: number;
     isBold?: boolean;
     color?: number[];
     align?: 'left' | 'center' | 'right';
     maxWidth?: number;
+    isTitle?: boolean;
   } = {}) => {
     const {
       fontSize = 12,
       isBold = false,
       color = colors.forestDark,
       align = 'left',
-      maxWidth: textMaxWidth = maxWidth
+      maxWidth: textMaxWidth = maxWidth,
+      isTitle = false
     } = options;
 
     pdf.setFontSize(fontSize);
@@ -69,123 +115,143 @@ export const generateSEEDProfilePDF = (
     }
   };
 
-  // Helper function to add section header with background
-  const addSectionHeader = (title: string, icon: string = '') => {
-    if (yPosition > pageHeight - 60) {
+  // Enhanced section header with premium styling
+  const addPremiumSectionHeader = (title: string, icon: string = '', bgColor: number[] = colors.lightSage) => {
+    if (yPosition > pageHeight - 80) {
       pdf.addPage();
       yPosition = 20;
     }
 
-    // Add background
-    addColoredBackground(margin, yPosition - 5, maxWidth, 25, colors.cream);
+    // Add gradient-like background
+    addGradientBackground(margin, yPosition - 8, maxWidth, 35, bgColor, colors.white, 8);
     
-    // Add border
+    // Add decorative border
     pdf.setDrawColor(colors.warmGold[0], colors.warmGold[1], colors.warmGold[2]);
-    pdf.setLineWidth(1);
-    pdf.rect(margin, yPosition - 5, maxWidth, 25);
+    pdf.setLineWidth(2);
+    pdf.rect(margin, yPosition - 8, maxWidth, 35);
     
-    const textHeight = addStyledText(`${icon} ${title}`, margin + 10, yPosition + 10, {
-      fontSize: 16,
+    // Add icon if provided
+    if (icon) {
+      addDecorativeIcon(margin + 15, yPosition + 15, icon, colors.warmGold);
+    }
+    
+    // Add title text
+    addStyledText(title, margin + (icon ? 45 : 15), yPosition + 15, {
+      fontSize: 18,
       isBold: true,
-      color: colors.forestDark
+      color: colors.forestDark,
+      isTitle: true
     });
     
-    yPosition += 35;
-    return textHeight;
+    yPosition += 50;
   };
 
-  // Helper function to add bullet points with styling
-  const addBulletPoint = (text: string, level: number = 0) => {
-    if (yPosition > pageHeight - 30) {
+  // Enhanced bullet point with card-like styling
+  const addPremiumBulletPoint = (text: string, level: number = 0, bulletColor: number[] = colors.warmGold) => {
+    if (yPosition > pageHeight - 35) {
       pdf.addPage();
       yPosition = 20;
     }
 
-    const indent = margin + (level * 15);
-    const bulletX = indent;
-    const textX = indent + 15;
+    const indent = margin + (level * 20);
+    const cardWidth = maxWidth - (level * 20);
+    const cardHeight = 25;
     
-    // Add background for bullet points
-    if (level === 0) {
-      addColoredBackground(margin, yPosition - 3, maxWidth, 15, colors.cream);
-    }
+    // Add card background
+    addRoundedCard(indent, yPosition - 5, cardWidth, cardHeight, colors.white, colors.lightSage);
     
-    // Add bullet
-    pdf.setFillColor(colors.warmGold[0], colors.warmGold[1], colors.warmGold[2]);
-    pdf.circle(bulletX + 3, yPosition + 2, 2, 'F');
+    // Add bullet icon
+    const bulletX = indent + 12;
+    const textX = indent + 35;
     
-    // Add text
-    const lines = pdf.splitTextToSize(text, maxWidth - (textX - margin));
-    addStyledText(lines.join('\n'), textX, yPosition + 5, {
+    pdf.setFillColor(bulletColor[0], bulletColor[1], bulletColor[2]);
+    pdf.circle(bulletX, yPosition + 7, 4, 'F');
+    
+    // Add number for premium bullets
+    pdf.setFontSize(8);
+    pdf.setTextColor(255, 255, 255);
+    pdf.text('•', bulletX - 1, yPosition + 9);
+    
+    // Add text with proper spacing
+    const lines = pdf.splitTextToSize(text, cardWidth - 50);
+    addStyledText(lines.join('\n'), textX, yPosition + 8, {
       fontSize: 11,
       color: colors.forestDark,
-      maxWidth: maxWidth - (textX - margin)
+      maxWidth: cardWidth - 50
     });
     
-    yPosition += Math.max(lines.length * 12, 18);
+    yPosition += Math.max(lines.length * 14, 30);
   };
 
-  // Add spacing
-  const addSpacing = (space: number = 15) => {
+  // Add premium spacing with decorative elements
+  const addPremiumSpacing = (space: number = 20) => {
     yPosition += space;
   };
 
-  // Title Page with styling
-  addColoredBackground(0, 0, pageWidth, 80, colors.sageGreen);
+  // Enhanced Title Page with premium styling
+  addGradientBackground(0, 0, pageWidth, 100, colors.sageGreen, colors.warmGold, 10);
   
-  addStyledText('🎯 SEED PROFILE ANALYSIS', pageWidth / 2, 35, {
-    fontSize: 24,
+  // Add decorative crown for premium
+  if (isPremium) {
+    addDecorativeIcon(pageWidth / 2 - 20, 25, '👑', colors.warmGold);
+  }
+  
+  addStyledText('🎯 SEED PROFILE ANALYSIS', pageWidth / 2, 45, {
+    fontSize: 28,
     isBold: true,
     color: colors.forestDark,
-    align: 'center'
+    align: 'center',
+    isTitle: true
   });
   
-  addStyledText(isPremium ? '👑 Premium Report' : 'Free Report', pageWidth / 2, 55, {
-    fontSize: 16,
-    color: colors.warmGold,
-    align: 'center'
-  });
-  
-  addStyledText(`Generated on: ${new Date().toLocaleDateString()}`, pageWidth / 2, 70, {
-    fontSize: 12,
+  addStyledText(isPremium ? '👑 Premium Report' : 'Free Report', pageWidth / 2, 65, {
+    fontSize: 18,
+    isBold: true,
     color: colors.earthBrown,
     align: 'center'
   });
+  
+  addStyledText(`Generated on: ${new Date().toLocaleDateString()}`, pageWidth / 2, 80, {
+    fontSize: 12,
+    color: colors.forestDark,
+    align: 'center'
+  });
 
-  yPosition = 100;
+  yPosition = 120;
 
   if (isPremium) {
-    addStyledText('Comprehensive Motivational Pattern Analysis', pageWidth / 2, yPosition, {
-      fontSize: 14,
+    addRoundedCard(margin, yPosition - 10, maxWidth, 30, colors.lightGold, colors.warmGold);
+    addStyledText('Comprehensive Motivational Pattern Analysis', pageWidth / 2, yPosition + 10, {
+      fontSize: 16,
       isBold: true,
-      color: colors.sageGreen,
+      color: colors.forestDark,
       align: 'center'
     });
-    yPosition += 30;
+    yPosition += 50;
   }
 
-  // Core SEED sections with enhanced styling
-  addSectionHeader('⚡ WHAT ENERGIZES YOU');
-  analysis.energizers.forEach((item, index) => {
-    addBulletPoint(`${item}`);
+  // Enhanced SEED sections with premium styling
+  addPremiumSectionHeader('⚡ WHAT ENERGIZES YOU', '⚡', colors.lightGold);
+  analysis.energizers.forEach((item) => {
+    addPremiumBulletPoint(item, 0, colors.warmGold);
   });
-  addSpacing();
+  addPremiumSpacing();
 
-  addSectionHeader('🚫 WHAT TO AVOID');
-  analysis.avoid.forEach((item, index) => {
-    addBulletPoint(`${item}`);
+  addPremiumSectionHeader('🚫 WHAT TO AVOID', '🚫', [255, 230, 230]);
+  analysis.avoid.forEach((item) => {
+    addPremiumBulletPoint(item, 0, [220, 38, 38]);
   });
-  addSpacing();
+  addPremiumSpacing();
 
-  addSectionHeader('🏢 IDEAL WORK & CONTRIBUTION ENVIRONMENTS');
-  analysis.environments.forEach((item, index) => {
-    addBulletPoint(`${item}`);
+  addPremiumSectionHeader('🏢 IDEAL WORK & CONTRIBUTION ENVIRONMENTS', '🏢', colors.lightSage);
+  analysis.environments.forEach((item) => {
+    addPremiumBulletPoint(item, 0, colors.sageGreen);
   });
-  addSpacing();
+  addPremiumSpacing();
 
-  addSectionHeader('📈 GROWTH OPPORTUNITIES');
-  analysis.growth.forEach((item, index) => {
-    addBulletPoint(`${item}`);
+  addPremiumSectionHeader('📈 GROWTH OPPORTUNITIES', '📈', [230, 230, 255]);
+  analysis.growth.forEach((item) => {
+    addPremiumBulletPoint(item, 0, [99, 102, 241]);
   });
 
   if (isPremium) {
@@ -279,18 +345,24 @@ export const generateSEEDProfilePDF = (
       }
     };
     
-    // Add new page for premium content
+    // Add new page for premium content with enhanced styling
     pdf.addPage();
     yPosition = 20;
     
-    addSectionHeader('🧠 CORE MOTIVATIONAL DNA');
+    addPremiumSectionHeader('🧠 CORE MOTIVATIONAL DNA', '🧠', [240, 248, 255]);
     
-    addStyledText('Primary Drivers:', margin, yPosition, { fontSize: 14, isBold: true, color: colors.sageGreen });
-    yPosition += 20;
-    expandedAnalysis.coreMotivationalDNA.primaryDrivers.forEach((driver) => {
-      addBulletPoint(driver);
+    addRoundedCard(margin, yPosition - 5, maxWidth, 25, colors.lightSage, colors.sageGreen);
+    addStyledText('Primary Drivers:', margin + 15, yPosition + 10, { 
+      fontSize: 16, 
+      isBold: true, 
+      color: colors.forestDark 
     });
-    addSpacing();
+    yPosition += 35;
+    
+    expandedAnalysis.coreMotivationalDNA.primaryDrivers.forEach((driver) => {
+      addPremiumBulletPoint(driver, 0, colors.sageGreen);
+    });
+    addPremiumSpacing();
     
     addStyledText('Energy Patterns:', margin, yPosition, { fontSize: 14, isBold: true, color: colors.sageGreen });
     yPosition += 20;
@@ -469,11 +541,12 @@ export const generateSEEDProfilePDF = (
     });
   }
 
-  // Footer on last page
+  // Enhanced footer
+  addGradientBackground(0, pageHeight - 25, pageWidth, 25, colors.lightSage, colors.white, 5);
   pdf.setFontSize(10);
   pdf.setFont(undefined, 'italic');
   pdf.setTextColor(colors.earthBrown[0], colors.earthBrown[1], colors.earthBrown[2]);
-  pdf.text('Generated by SEED Profile Analysis Tool • lionfarmer.com', margin, pageHeight - 15);
+  pdf.text('Generated by SEED Profile Analysis Tool • lionfarmer.com', margin, pageHeight - 10);
 
   return pdf;
 };
