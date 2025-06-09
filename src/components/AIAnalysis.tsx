@@ -35,31 +35,28 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({ accomplishments, selectedWins, 
     try {
       console.log('Starting AI analysis...');
       
-      // Get the selected wins and their data
+      // Get the selected wins and ONLY use "How I Did It" data
       const selectedWinNumbers = getSelectedWinNumbers();
       console.log('Selected win numbers:', selectedWinNumbers);
       
       const analysisData = selectedWinNumbers.map(winNumber => {
-        const accomplishmentKey = `win_${winNumber}`;
         const howKey = `how_${winNumber}`;
-        const accomplishment = accomplishments[accomplishmentKey] || '';
         const process = howIDidIt[howKey] || '';
         
-        console.log(`Win ${winNumber}:`, { accomplishment: accomplishment.slice(0, 50), process: process.slice(0, 50) });
+        console.log(`Win ${winNumber} - How I Did It:`, process.slice(0, 100));
         
         return {
           winNumber,
-          accomplishment,
           process
         };
-      }).filter(item => item.accomplishment.trim().length > 0 || item.process.trim().length > 0);
+      }).filter(item => item.process.trim().length > 0);
 
-      console.log('Analysis data after filtering:', analysisData.length, 'items');
+      console.log('Analysis data after filtering (How I Did It only):', analysisData.length, 'items');
 
       if (analysisData.length < 3) {
         toast({
-          title: "Insufficient Data",
-          description: `Please provide at least 3 wins with content. Currently have ${analysisData.length} valid entries.`,
+          title: "Insufficient Deep Dive Data",
+          description: `Please provide at least 3 detailed "How I Did It" responses. Currently have ${analysisData.length} valid entries.`,
           variant: "destructive"
         });
         return;
@@ -68,13 +65,13 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({ accomplishments, selectedWins, 
       // Simulate AI analysis
       await new Promise(resolve => setTimeout(resolve, 3000));
 
-      // Generate SIMA-inspired analysis
+      // Generate SIMA-inspired analysis using ONLY "How I Did It" data
       const simaAnalysis = generateSIMAAnalysis(analysisData);
       setAnalysis(simaAnalysis);
 
       toast({
         title: "SEED Profile Generated",
-        description: "Your motivational pattern has been analyzed using SIMA methodology!",
+        description: "Your motivational pattern has been analyzed using SIMA methodology from your detailed processes!",
       });
 
     } catch (error) {
@@ -89,71 +86,81 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({ accomplishments, selectedWins, 
     }
   };
 
-  const generateSIMAAnalysis = (data: Array<{winNumber: number, accomplishment: string, process: string}>): AnalysisResult => {
-    console.log('Generating SIMA analysis for', data.length, 'accomplishments');
+  const generateSIMAAnalysis = (data: Array<{winNumber: number, process: string}>): AnalysisResult => {
+    console.log('Generating SIMA analysis for', data.length, 'How I Did It responses');
     
-    // Combine all text for pattern analysis
-    const allAccomplishments = data.map(d => d.accomplishment).join(' ').toLowerCase();
+    // Combine ONLY the "How I Did It" text for pattern analysis
     const allProcesses = data.map(d => d.process).join(' ').toLowerCase();
-    const allText = (allAccomplishments + ' ' + allProcesses).toLowerCase();
     
-    console.log('Analysis text length:', allText.length);
+    console.log('Analysis text length (How I Did It only):', allProcesses.length);
 
     const energizers = [];
     const avoid = [];
     const environments = [];
     const growth = [];
 
-    // SIMA-inspired pattern detection based on your actual data
+    // SIMA-inspired pattern detection based ONLY on your "How I Did It" processes
     
     // Building and creation patterns
-    if (allText.includes('built') || allText.includes('build') || allText.includes('create') || allText.includes('develop')) {
+    if (allProcesses.includes('built') || allProcesses.includes('build') || allProcesses.includes('create') || allProcesses.includes('develop')) {
       energizers.push("Building complex projects from the ground up with strategic vision and execution");
       environments.push("Entrepreneurial environments where you can build systems and structures from scratch");
       growth.push("Scale your building expertise to larger, more complex ventures that impact communities");
     }
 
     // Business and entrepreneurship patterns
-    if (allText.includes('business') || allText.includes('company') || allText.includes('truck') || allText.includes('wash')) {
+    if (allProcesses.includes('business') || allProcesses.includes('company') || allProcesses.includes('truck') || allProcesses.includes('wash')) {
       energizers.push("Creating and growing businesses that solve real problems and generate value");
       environments.push("Business ownership or senior leadership roles with P&L responsibility");
       growth.push("Expand into multiple business ventures or larger-scale operations");
     }
 
-    // Family and relationship patterns
-    if (allText.includes('family') || allText.includes('children') || allText.includes('wife') || allText.includes('home')) {
-      energizers.push("Creating stability and security for family while building something meaningful");
-      environments.push("Family-oriented work that allows for work-life integration and long-term thinking");
+    // Problem-solving and systematic approach patterns
+    if (allProcesses.includes('research') || allProcesses.includes('plan') || allProcesses.includes('analyze') || allProcesses.includes('step')) {
+      energizers.push("Solving complex problems through systematic research and methodical planning");
+      environments.push("Strategic roles where thorough analysis and planning are valued and rewarded");
     }
 
-    // Problem-solving and innovation patterns
-    if (allText.includes('invent') || allText.includes('parameters') || allText.includes('specific') || allText.includes('dig')) {
-      energizers.push("Solving complex problems through innovative approaches and persistent effort");
-      environments.push("Innovation-focused roles where creative problem-solving is valued and rewarded");
+    // Innovation and creative solutions patterns
+    if (allProcesses.includes('invent') || allProcesses.includes('design') || allProcesses.includes('creative') || allProcesses.includes('unique')) {
+      energizers.push("Developing innovative solutions and creative approaches to challenges");
+      environments.push("Innovation-focused roles where creative problem-solving drives results");
     }
 
-    // Self-reliance and determination patterns
-    if (allText.includes('scratch') || allText.includes('myself') || allText.includes('found') || allText.includes('purchase')) {
+    // Self-reliance and ownership patterns
+    if (allProcesses.includes('myself') || allProcesses.includes('own') || allProcesses.includes('independent') || allProcesses.includes('control')) {
       energizers.push("Taking complete ownership and achieving goals through self-directed action");
       environments.push("Autonomous work settings where you have control over methods and decisions");
     }
 
-    // Add core insights based on your specific data
+    // Learning and mastery patterns
+    if (allProcesses.includes('learn') || allProcesses.includes('study') || allProcesses.includes('practice') || allProcesses.includes('master')) {
+      energizers.push("Continuous learning and skill development to achieve mastery");
+      environments.push("Growth-oriented environments that support learning and skill development");
+    }
+
+    // Persistence and determination patterns
+    if (allProcesses.includes('persisted') || allProcesses.includes('continued') || allProcesses.includes('despite') || allProcesses.includes('overcome')) {
+      energizers.push("Persisting through challenges with determination and resilience");
+      environments.push("Challenging environments where persistence and resilience are essential");
+    }
+
+    // Add core insights if not enough patterns detected
     if (energizers.length < 3) {
-      energizers.push("Transforming vision into reality through systematic planning and execution");
+      energizers.push("Transforming vision into reality through systematic execution and follow-through");
     }
 
     if (avoid.length < 2) {
-      avoid.push("Highly structured environments that limit your ability to innovate and build");
-      avoid.push("Roles where you can't see the direct impact of your work on outcomes");
+      avoid.push("Highly structured environments that limit your ability to innovate and execute your approach");
+      avoid.push("Roles where you can't see the direct impact of your methodology on outcomes");
     }
 
     if (environments.length < 3) {
-      environments.push("Leadership positions where strategic thinking and long-term vision are essential");
+      environments.push("Leadership positions where strategic thinking and execution methodology are essential");
     }
 
     if (growth.length < 2) {
-      growth.push("Mentor others in entrepreneurship and business building based on your experience");
+      growth.push("Mentor others in systematic approaches and execution methodologies based on your experience");
     }
 
     const result = {
@@ -163,17 +170,15 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({ accomplishments, selectedWins, 
       growth: growth.slice(0, 2)
     };
 
-    console.log('Generated SIMA analysis:', result);
+    console.log('Generated SIMA analysis from How I Did It data:', result);
     return result;
   };
 
   const selectedCount = getSelectedWinNumbers().length;
-  const dataCount = getSelectedWinNumbers().filter(winNumber => {
-    const accomplishmentKey = `win_${winNumber}`;
+  const deepDiveCount = getSelectedWinNumbers().filter(winNumber => {
     const howKey = `how_${winNumber}`;
-    const hasAccomplishment = accomplishments[accomplishmentKey]?.trim().length > 0;
-    const hasProcess = howIDidIt[howKey]?.trim().length > 0;
-    return hasAccomplishment || hasProcess;
+    const hasDeepDive = howIDidIt[howKey]?.trim().length > 0;
+    return hasDeepDive;
   }).length;
 
   const isReadyForAnalysis = selectedCount >= 6;
@@ -195,7 +200,7 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({ accomplishments, selectedWins, 
           <div className="space-y-4">
             <p className="text-purple-700">
               Ready to discover your unique motivational pattern! Using SIMA (System for Identifying Motivated Abilities) methodology, 
-              our analysis will examine your accomplishments and processes to identify your core motivational themes.
+              our analysis will examine your detailed "How I Did It" processes to identify your core motivational themes.
             </p>
             <div className="text-sm text-purple-600">
               <p>Your SEED Profile will include:</p>
@@ -209,14 +214,14 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({ accomplishments, selectedWins, 
             <div className="text-xs text-purple-600 bg-purple-100 p-3 rounded">
               <p><strong>Analysis Status:</strong></p>
               <p>• Selected wins: {selectedCount}/8</p>
-              <p>• Available data entries: {dataCount}</p>
+              <p>• Deep dive responses completed: {deepDiveCount}</p>
               <p className="mt-2 italic">
-                ✅ Ready for analysis with your available data!
+                {deepDiveCount >= 3 ? '✅ Ready for analysis with your detailed process data!' : `⏳ Need ${3 - deepDiveCount} more detailed "How I Did It" responses for analysis`}
               </p>
             </div>
             <Button 
               onClick={analyzePatterns} 
-              disabled={isAnalyzing}
+              disabled={isAnalyzing || deepDiveCount < 3}
               className="w-full"
             >
               {isAnalyzing ? 'Analyzing Your Pattern...' : 'Generate My SEED Profile'}
@@ -298,8 +303,8 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({ accomplishments, selectedWins, 
 
               <div className="mt-6 p-4 bg-purple-100 rounded-lg">
                 <p className="text-sm text-purple-700 italic text-center">
-                  These insights were generated based on your unique stories of impact. 
-                  Your SEED Profile reflects where you do your best work and what sustains your energy over time.
+                  These insights were generated based on your detailed "How I Did It" processes. 
+                  Your SEED Profile reflects your natural approach to achieving results and what sustains your energy over time.
                 </p>
               </div>
             </div>
