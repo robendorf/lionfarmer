@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -32,7 +33,7 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showPremium, setShowPremium] = useState(false);
-  const [isPremiumUser, setIsPremiumUser] = useState(false); // This would come from auth/subscription
+  const [isPremiumUser, setIsPremiumUser] = useState(true); // Changed to true for testing
   const { toast } = useToast();
 
   const getSelectedWinNumbers = () => {
