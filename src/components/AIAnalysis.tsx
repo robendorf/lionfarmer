@@ -29,6 +29,7 @@ interface AIAnalysisProps {
 const AIAnalysis: React.FC<AIAnalysisProps> = ({ accomplishments, onBack, selectedWins, howIDidIt }) => {
   const [showPremium, setShowPremium] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<'basic' | 'premium'>('basic');
+  const [showBasicAnalysis, setShowBasicAnalysis] = useState(false);
 
   // Generate mock analysis data from accomplishments
   const generateAnalysis = () => {
@@ -97,7 +98,7 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({ accomplishments, onBack, select
           </h2>
         </div>
         <p className="text-earth-brown text-lg">
-          Your foundational motivational pattern insights based on SIMA methodology
+          Your foundational motivational pattern insights inspired by Scripture
         </p>
       </div>
 
@@ -319,6 +320,8 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({ accomplishments, onBack, select
           onClick={() => {
             if (selectedPlan === 'premium') {
               setShowPremium(true);
+            } else {
+              setShowBasicAnalysis(true);
             }
           }}
           size="lg"
@@ -331,7 +334,7 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({ accomplishments, onBack, select
           {selectedPlan === 'basic' ? (
             <>
               <Brain className="h-5 w-5 mr-2" />
-              View Basic Analysis
+              Discover my Basic SEED Profile
             </>
           ) : (
             <>
@@ -348,7 +351,7 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({ accomplishments, onBack, select
   return (
     <Card className="border-2 border-sage-green/30 bg-gradient-to-br from-cream via-white to-sage-green/10 shadow-2xl">
       <CardContent className="p-8">
-        {selectedPlan === 'basic' && !showPremium ? renderBasicAnalysis() : renderPlanSelection()}
+        {showBasicAnalysis ? renderBasicAnalysis() : renderPlanSelection()}
       </CardContent>
     </Card>
   );
