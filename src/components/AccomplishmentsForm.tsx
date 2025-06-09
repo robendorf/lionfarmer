@@ -279,14 +279,14 @@ const AccomplishmentsForm = () => {
               <div className="prose prose-sm max-w-none">
                 <p className="text-blue-700 mb-4">
                   For each of your selected favorite accomplishments, describe in detail HOW you made it happen. 
-                  Focus on your specific actions, thought processes, and what energized you most during the experience.
+                  Focus on your specific actions and thought processes.
                 </p>
                 <ul className="text-blue-600 text-sm space-y-1">
                   <li>• What specific steps did you take?</li>
-                  <li>• What part of the process excited you most?</li>
+                  <li>• What was your process or approach?</li>
                   <li>• How did you overcome obstacles?</li>
-                  <li>• What skills or strengths did you use?</li>
-                  <li>• What was your unique contribution?</li>
+                  <li>• What actions led to the successful outcome?</li>
+                  <li>• What was your methodology or strategy?</li>
                 </ul>
               </div>
 
@@ -310,7 +310,7 @@ const AccomplishmentsForm = () => {
                         </Label>
                         <Textarea
                           id={howKey}
-                          placeholder={`Describe in detail how you accomplished this win. What specific actions did you take? What energized you most? What was your unique contribution?`}
+                          placeholder={`Describe in detail how you accomplished this win. What specific steps did you take? What was your process or approach? How did you overcome obstacles?`}
                           value={howIDidIt[howKey] || ''}
                           onChange={(e) => handleHowIDidItChange(howKey, e.target.value)}
                           className="min-h-[120px] resize-none"
