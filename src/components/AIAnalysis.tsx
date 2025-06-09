@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -8,9 +7,19 @@ import { Input } from "@/components/ui/input"
 import { Progress } from "@/components/ui/progress"
 import { Checkbox } from "@/components/ui/checkbox"
 
+interface SelectedWins {
+  [key: string]: boolean;
+}
+
+interface HowIDidItData {
+  [key: string]: string;
+}
+
 interface AIAnalysisProps {
   accomplishments: string[];
   onBack: () => void;
+  selectedWins?: SelectedWins;
+  howIDidIt?: HowIDidItData;
 }
 
 interface AnalysisResult {
@@ -25,7 +34,7 @@ interface DeepDiveData {
   process: string;
 }
 
-const AIAnalysis = ({ accomplishments, onBack }: AIAnalysisProps) => {
+const AIAnalysis = ({ accomplishments, onBack, selectedWins, howIDidIt }: AIAnalysisProps) => {
   const [analysis, setAnalysis] = useState<AnalysisResult>({
     energizers: [],
     avoid: [],
