@@ -104,6 +104,26 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
 
   const { analysis, processData } = generateAnalysis();
 
+  // Sample verbiage for Basic SEED Profile preview
+  const sampleContent = {
+    energizers: [
+      "Leading teams and driving meaningful change in your organization.",
+      "Creating innovative solutions that make a lasting impact."
+    ],
+    environments: [
+      "Collaborative team settings where your voice is valued and heard.",
+      "Dynamic workplaces that encourage growth and personal development."
+    ],
+    avoid: [
+      "Micromanaged environments that stifle your natural creativity.",
+      "Routine tasks without opportunity for strategic thinking."
+    ],
+    growth: [
+      "Developing advanced leadership skills to amplify your natural influence.",
+      "Expanding your expertise to become a recognized thought leader."
+    ]
+  };
+
   const handlePromoCodeSubmit = () => {
     if (promoCode.toUpperCase() === 'FREE') {
       setShowPremiumProfile(true);
@@ -169,42 +189,45 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
               </div>
             </div>
 
-            <Button 
-              onClick={() => setShowBasicProfile(true)}
-              className="bg-sage-green hover:bg-forest-dark text-white px-8 py-3 text-lg rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200"
-            >
-              <Unlock className="h-5 w-5 mr-2" />
-              Discover My Basic SEED Profile
-            </Button>
+            {!showBasicProfile && (
+              <Button 
+                onClick={() => setShowBasicProfile(true)}
+                className="bg-sage-green hover:bg-forest-dark text-white px-8 py-3 text-lg rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200"
+              >
+                <Unlock className="h-5 w-5 mr-2" />
+                Discover My Basic SEED Profile
+              </Button>
+            )}
           </div>
         </CardContent>
       </Card>
 
-      {/* Basic SEED Profile */}
-      {showBasicProfile && (
-        <Card className="border-2 border-warm-gold/30 bg-gradient-to-br from-cream via-white to-warm-gold/10 shadow-xl">
-          <CardHeader className="bg-gradient-to-r from-warm-gold/10 to-sage-green/10 border-b border-warm-gold/20">
-            <CardTitle className="text-2xl font-bold text-center text-forest-dark flex items-center justify-center gap-3">
-              <Star className="h-8 w-8 text-warm-gold" />
-              Basic SEED Profile Analysis
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-8">
-            <div className="grid gap-8">
-              {/* S - Satisfying Activities */}
-              <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-xl border border-green-200 shadow-lg">
-                <h3 className="text-xl font-bold text-forest-dark mb-4 flex items-center gap-3">
-                  <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
-                    <Heart className="h-6 w-6 text-white" />
-                  </div>
-                  Satisfying Activities (What Energizes You)
-                </h3>
-                <div className="space-y-3">
-                  {analysis.energizers.length > 0 ? analysis.energizers.map((item, index) => (
+      {/* Basic SEED Profile Preview (always visible) */}
+      <Card className="border-2 border-warm-gold/30 bg-gradient-to-br from-cream via-white to-warm-gold/10 shadow-xl">
+        <CardHeader className="bg-gradient-to-r from-warm-gold/10 to-sage-green/10 border-b border-warm-gold/20">
+          <CardTitle className="text-2xl font-bold text-center text-forest-dark flex items-center justify-center gap-3">
+            <Star className="h-8 w-8 text-warm-gold" />
+            Basic SEED Profile Analysis
+            {!showBasicProfile && <span className="text-sm font-normal text-earth-brown ml-2">(Preview)</span>}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-8">
+          <div className="grid gap-8">
+            {/* S - Satisfying Activities */}
+            <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-xl border border-green-200 shadow-lg">
+              <h3 className="text-xl font-bold text-forest-dark mb-4 flex items-center gap-3">
+                <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
+                  <Heart className="h-6 w-6 text-white" />
+                </div>
+                Satisfying Activities (What Energizes You)
+              </h3>
+              <div className="space-y-3">
+                {(showBasicProfile ? analysis.energizers : sampleContent.energizers).length > 0 ? 
+                  (showBasicProfile ? analysis.energizers : sampleContent.energizers).map((item, index) => (
                     <div key={index} className="flex items-start gap-3 p-4 bg-white/80 rounded-lg shadow-sm">
                       <Zap className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
                       <span className="text-forest-dark leading-relaxed font-medium">
-                        {item}. This natural drive shows your deep motivation for meaningful impact and purposeful work.
+                        {item}
                       </span>
                     </div>
                   )) : (
@@ -213,23 +236,24 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
                       Your satisfaction comes from work that aligns with your values and creates positive change.
                     </p>
                   )}
-                </div>
               </div>
+            </div>
 
-              {/* E - Effective Environments */}
-              <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-6 rounded-xl border border-blue-200 shadow-lg">
-                <h3 className="text-xl font-bold text-forest-dark mb-4 flex items-center gap-3">
-                  <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
-                    <Compass className="h-6 w-6 text-white" />
-                  </div>
-                  Effective Environments (Where You Thrive)
-                </h3>
-                <div className="space-y-3">
-                  {analysis.environments.length > 0 ? analysis.environments.map((item, index) => (
+            {/* E - Effective Environments */}
+            <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-6 rounded-xl border border-blue-200 shadow-lg">
+              <h3 className="text-xl font-bold text-forest-dark mb-4 flex items-center gap-3">
+                <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+                  <Compass className="h-6 w-6 text-white" />
+                </div>
+                Effective Environments (Where You Thrive)
+              </h3>
+              <div className="space-y-3">
+                {(showBasicProfile ? analysis.environments : sampleContent.environments).length > 0 ? 
+                  (showBasicProfile ? analysis.environments : sampleContent.environments).map((item, index) => (
                     <div key={index} className="flex items-start gap-3 p-4 bg-white/80 rounded-lg shadow-sm">
                       <Target className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
                       <span className="text-forest-dark leading-relaxed font-medium">
-                        {item}. These environments naturally support your strengths and allow your authentic self to flourish.
+                        {item}
                       </span>
                     </div>
                   )) : (
@@ -238,23 +262,24 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
                       Settings that encourage innovation while providing clear direction bring out your best work.
                     </p>
                   )}
-                </div>
               </div>
+            </div>
 
-              {/* E - Environments to Avoid */}
-              <div className="bg-gradient-to-r from-red-50 to-pink-50 p-6 rounded-xl border border-red-200 shadow-lg">
-                <h3 className="text-xl font-bold text-forest-dark mb-4 flex items-center gap-3">
-                  <div className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center">
-                    <Shield className="h-6 w-6 text-white" />
-                  </div>
-                  Environments to Avoid (What Drains Your Energy)
-                </h3>
-                <div className="space-y-3">
-                  {analysis.avoid.length > 0 ? analysis.avoid.map((item, index) => (
+            {/* E - Environments to Avoid */}
+            <div className="bg-gradient-to-r from-red-50 to-pink-50 p-6 rounded-xl border border-red-200 shadow-lg">
+              <h3 className="text-xl font-bold text-forest-dark mb-4 flex items-center gap-3">
+                <div className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center">
+                  <Shield className="h-6 w-6 text-white" />
+                </div>
+                Environments to Avoid (What Drains Your Energy)
+              </h3>
+              <div className="space-y-3">
+                {(showBasicProfile ? analysis.avoid : sampleContent.avoid).length > 0 ? 
+                  (showBasicProfile ? analysis.avoid : sampleContent.avoid).map((item, index) => (
                     <div key={index} className="flex items-start gap-3 p-4 bg-white/80 rounded-lg shadow-sm">
                       <Shield className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
                       <span className="text-forest-dark leading-relaxed font-medium">
-                        {item}. Avoiding these situations helps you maintain energy and focus on your natural strengths.
+                        {item}
                       </span>
                     </div>
                   )) : (
@@ -263,31 +288,32 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
                       Settings with excessive micromanagement or unclear expectations can drain your motivation and effectiveness.
                     </p>
                   )}
-                </div>
-              </div>
-
-              {/* D - Development Areas */}
-              <div className="bg-gradient-to-r from-purple-50 to-violet-50 p-6 rounded-xl border border-purple-200 shadow-lg">
-                <h3 className="text-xl font-bold text-forest-dark mb-4 flex items-center gap-3">
-                  <div className="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center">
-                    <TrendingUp className="h-6 w-6 text-white" />
-                  </div>
-                  Development Areas (Growth Opportunities)
-                </h3>
-                <div className="space-y-3">
-                  {analysis.growth.map((item, index) => (
-                    <div key={index} className="flex items-start gap-3 p-4 bg-white/80 rounded-lg shadow-sm">
-                      <Lightbulb className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
-                      <span className="text-forest-dark leading-relaxed font-medium">
-                        {item}. These growth areas will amplify your natural strengths and expand your positive impact.
-                      </span>
-                    </div>
-                  ))}
-                </div>
               </div>
             </div>
 
-            {/* Premium Upgrade Section */}
+            {/* D - Development Areas */}
+            <div className="bg-gradient-to-r from-purple-50 to-violet-50 p-6 rounded-xl border border-purple-200 shadow-lg">
+              <h3 className="text-xl font-bold text-forest-dark mb-4 flex items-center gap-3">
+                <div className="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center">
+                  <TrendingUp className="h-6 w-6 text-white" />
+                </div>
+                Development Areas (Growth Opportunities)
+              </h3>
+              <div className="space-y-3">
+                {(showBasicProfile ? analysis.growth : sampleContent.growth).map((item, index) => (
+                  <div key={index} className="flex items-start gap-3 p-4 bg-white/80 rounded-lg shadow-sm">
+                    <Lightbulb className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
+                    <span className="text-forest-dark leading-relaxed font-medium">
+                      {item}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Premium Upgrade Section */}
+          {showBasicProfile && (
             <div className="mt-12 pt-8 border-t border-warm-gold/20">
               <div className="bg-gradient-to-br from-warm-gold/20 via-sage-green/20 to-warm-gold/20 p-8 rounded-2xl border border-warm-gold/30 shadow-xl">
                 <div className="text-center space-y-6">
@@ -325,7 +351,7 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
                     className="bg-gradient-to-r from-warm-gold to-amber-500 hover:from-amber-500 hover:to-warm-gold text-white px-8 py-4 text-lg rounded-xl shadow-lg transform hover:scale-105 transition-all duration-200"
                   >
                     <Crown className="h-6 w-6 mr-2" />
-                    Upgrade to Premium - $47
+                    Upgrade to Premium - TBD
                   </Button>
 
                   <p className="text-sm text-earth-brown">
@@ -334,9 +360,9 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
                 </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
-      )}
+          )}
+        </CardContent>
+      </Card>
 
       {/* Premium Upgrade Modal */}
       {showPremiumUpgrade && (
@@ -397,7 +423,7 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
                     alert('Payment integration would go here');
                   }}
                 >
-                  Purchase Premium - $47
+                  Purchase Premium - TBD
                 </Button>
               </div>
             </div>
