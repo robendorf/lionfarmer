@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,7 +62,13 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				// Lion Farmer compatible colors
+				'earth-brown': 'hsl(var(--earth-brown))',
+				'sage-green': 'hsl(var(--sage-green))',
+				'warm-gold': 'hsl(var(--warm-gold))',
+				'cream': 'hsl(var(--cream))',
+				'forest-dark': 'hsl(var(--forest-dark))'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

@@ -1,10 +1,11 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Lightbulb, Zap, Target, Leaf, Crown, Star, TrendingUp } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import PremiumSEEDProfile from './PremiumSEEDProfile';
+import { Download } from 'lucide-react';
+import { generateSEEDProfilePDF } from '../utils/pdfGenerator';
 
 interface AIAnalysisProps {
   accomplishments: {
@@ -175,6 +176,23 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
     }
   };
 
+  const handleDownloadPDF = () => {
+    if (!analysis) return;
+    
+    const deepDiveData = getSelectedWinNumbers().map(winNumber => ({
+      winNumber,
+      process: howIDidIt[`how_${winNumber}`] || ''
+    })).filter(item => item.process.trim().length > 0);
+
+    const pdf = generateSEEDProfilePDF(analysis, deepDiveData, isPremiumUser);
+    pdf.save(`SEED-Profile-${isPremiumUser ? 'Premium' : 'Free'}-${new Date().toISOString().split('T')[0]}.pdf`);
+    
+    toast({
+      title: "PDF Downloaded",
+      description: `Your ${isPremiumUser ? 'Premium' : 'Free'} SEED Profile has been downloaded successfully!`
+    });
+  };
+
   const selectedCount = getSelectedWinNumbers().length;
   const deepDiveCount = getSelectedWinNumbers().filter(winNumber => {
     const howKey = `how_${winNumber}`;
@@ -199,31 +217,47 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
     />;
   }
 
-  return <Card className="border-2 border-purple-200 bg-purple-50/50">
+  return <Card className="border-2 border-sage-green bg-gradient-to-br from-cream to-secondary shadow-xl">
     <CardHeader>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Star className="h-5 w-5 text-purple-600" />
-          <CardTitle className="text-purple-800">Free SEED Profile</CardTitle>
+          <Star className="h-5 w-5 text-warm-gold" />
+          <CardTitle className="text-forest-dark">
+            {isPremiumUser ? 'Premium SEED Profile' : 'Free SEED Profile'}
+          </CardTitle>
         </div>
-        <Button 
-          onClick={handlePremiumUpgrade}
-          variant="outline"
-          className="border-amber-300 text-amber-700 hover:bg-amber-50"
-        >
-          <Crown className="h-4 w-4 mr-2" />
-          Upgrade to Premium
-        </Button>
+        <div className="flex gap-2">
+          {analysis && (
+            <Button 
+              onClick={handleDownloadPDF}
+              variant="outline"
+              className="border-sage-green text-forest-dark hover:bg-sage-green hover:text-white"
+            >
+              <Download className="h-4 w-4 mr-2" />
+              Download PDF
+            </Button>
+          )}
+          {!isPremiumUser && (
+            <Button 
+              onClick={handlePremiumUpgrade}
+              variant="outline"
+              className="border-warm-gold text-earth-brown hover:bg-warm-gold hover:text-white"
+            >
+              <Crown className="h-4 w-4 mr-2" />
+              Upgrade to Premium
+            </Button>
+          )}
+        </div>
       </div>
     </CardHeader>
     <CardContent>
       {!analysis ? (
         <div className="space-y-4">
-          <p className="text-purple-700">
+          <p className="text-forest-dark">
             Ready to discover your unique motivational pattern! Using SIMA (System for Identifying Motivated Abilities) methodology, 
             our analysis will examine your detailed "How I Did It" processes to identify your core motivational themes.
           </p>
-          <div className="text-sm text-purple-600">
+          <div className="text-sm text-earth-brown">
             <p>Your SEED Profile will include:</p>
             <ul className="list-disc list-inside mt-2 space-y-1">
               <li>What energizes and motivates you most deeply</li>
@@ -232,7 +266,7 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
               <li>Growth opportunities aligned with your natural motivational patterns</li>
             </ul>
           </div>
-          <div className="text-xs text-purple-600 bg-purple-100 p-3 rounded">
+          <div className="text-xs text-earth-brown bg-cream p-3 rounded border border-sage-green">
             <p><strong>Analysis Status:</strong></p>
             <p>• Selected wins: {selectedCount}/8</p>
             <p>• Deep dive responses completed: {deepDiveCount}</p>
@@ -240,104 +274,110 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
               {deepDiveCount >= 3 ? '✅ Ready for analysis with your detailed process data!' : `⏳ Need ${3 - deepDiveCount} more detailed "How I Did It" responses for analysis`}
             </p>
           </div>
-          <Button onClick={analyzePatterns} disabled={isAnalyzing || deepDiveCount < 3} className="w-full">
+          <Button 
+            onClick={analyzePatterns} 
+            disabled={isAnalyzing || deepDiveCount < 3} 
+            className="w-full bg-sage-green hover:bg-forest-dark"
+          >
             {isAnalyzing ? 'Analyzing Your Pattern...' : 'Generate My SEED Profile'}
           </Button>
         </div>
       ) : (
         <div className="space-y-6">
           <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-purple-800 mb-2">
-              🎯 Your SEED Profile (Free Version)
+            <h2 className="text-2xl font-bold text-forest-dark mb-2">
+              🎯 Your SEED Profile {isPremiumUser ? '(Premium Version)' : '(Free Version)'}
             </h2>
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mt-4">
-              <div className="flex items-center gap-2 text-amber-800 mb-2">
-                <Crown className="h-4 w-4" />
-                <span className="font-semibold">Premium Available!</span>
+            {!isPremiumUser && (
+              <div className="bg-warm-gold/10 border border-warm-gold rounded-lg p-3 mt-4">
+                <div className="flex items-center gap-2 text-earth-brown mb-2">
+                  <Crown className="h-4 w-4" />
+                  <span className="font-semibold">Premium Available!</span>
+                </div>
+                <p className="text-sm text-earth-brown">
+                  Upgrade to get a comprehensive 5+ page analysis with expanded insights, career recommendations, 
+                  relationship patterns, decision-making styles, and personalized action plans.
+                </p>
+                <Button 
+                  onClick={handlePremiumUpgrade} 
+                  className="mt-2 bg-warm-gold hover:bg-earth-brown text-white"
+                  size="sm"
+                >
+                  <Crown className="h-4 w-4 mr-1" />
+                  Unlock Premium Analysis
+                </Button>
               </div>
-              <p className="text-sm text-amber-700">
-                Upgrade to get a comprehensive 5+ page analysis with expanded insights, career recommendations, 
-                relationship patterns, decision-making styles, and personalized action plans.
-              </p>
-              <Button 
-                onClick={handlePremiumUpgrade} 
-                className="mt-2 bg-amber-600 hover:bg-amber-700"
-                size="sm"
-              >
-                <Crown className="h-4 w-4 mr-1" />
-                Unlock Premium Analysis
-              </Button>
-            </div>
+            )}
           </div>
 
           <div className="space-y-6">
             <div>
-              <h3 className="flex items-center gap-2 text-lg font-semibold text-purple-800 mb-3">
-                <Zap className="h-5 w-5" />
+              <h3 className="flex items-center gap-2 text-lg font-semibold text-forest-dark mb-3">
+                <Zap className="h-5 w-5 text-warm-gold" />
                 🧠 What Energizes You
               </h3>
               <ul className="space-y-2">
                 {analysis.energizers.map((item, index) => (
                   <li key={index} className="flex items-start gap-2">
-                    <span className="text-purple-600 mt-1">•</span>
-                    <span className="text-purple-700">{item}</span>
+                    <span className="text-sage-green mt-1">•</span>
+                    <span className="text-earth-brown">{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <hr className="border-purple-200" />
+            <hr className="border-sage-green" />
 
             <div>
-              <h3 className="text-lg font-semibold text-purple-800 mb-3">
+              <h3 className="text-lg font-semibold text-forest-dark mb-3">
                 🚫 What to Avoid
               </h3>
               <ul className="space-y-2">
                 {analysis.avoid.map((item, index) => (
                   <li key={index} className="flex items-start gap-2">
-                    <span className="text-purple-600 mt-1">•</span>
-                    <span className="text-purple-700">{item}</span>
+                    <span className="text-sage-green mt-1">•</span>
+                    <span className="text-earth-brown">{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <hr className="border-purple-200" />
+            <hr className="border-sage-green" />
 
             <div>
-              <h3 className="flex items-center gap-2 text-lg font-semibold text-purple-800 mb-3">
-                <Leaf className="h-5 w-5" />
+              <h3 className="flex items-center gap-2 text-lg font-semibold text-forest-dark mb-3">
+                <Leaf className="h-5 w-5 text-sage-green" />
                 🏞️ Ideal Work & Contribution Environments
               </h3>
               <ul className="space-y-2">
                 {analysis.environments.map((item, index) => (
                   <li key={index} className="flex items-start gap-2">
-                    <span className="text-purple-600 mt-1">•</span>
-                    <span className="text-purple-700">{item}</span>
+                    <span className="text-sage-green mt-1">•</span>
+                    <span className="text-earth-brown">{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <hr className="border-purple-200" />
+            <hr className="border-sage-green" />
 
             <div>
-              <h3 className="flex items-center gap-2 text-lg font-semibold text-purple-800 mb-3">
-                <Lightbulb className="h-5 w-5" />
+              <h3 className="flex items-center gap-2 text-lg font-semibold text-forest-dark mb-3">
+                <Lightbulb className="h-5 w-5 text-warm-gold" />
                 🌱 Growth Opportunities
               </h3>
               <ul className="space-y-2">
                 {analysis.growth.map((item, index) => (
                   <li key={index} className="flex items-start gap-2">
-                    <span className="text-purple-600 mt-1">•</span>
-                    <span className="text-purple-700">{item}</span>
+                    <span className="text-sage-green mt-1">•</span>
+                    <span className="text-earth-brown">{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div className="mt-6 p-4 bg-purple-100 rounded-lg">
-              <p className="text-sm text-purple-700 italic text-center">
+            <div className="mt-6 p-4 bg-sage-green/10 rounded-lg border border-sage-green">
+              <p className="text-sm text-earth-brown italic text-center">
                 These insights were generated based on your detailed "How I Did It" processes. 
                 Your SEED Profile reflects your natural approach to achieving results and what sustains your energy over time.
               </p>
