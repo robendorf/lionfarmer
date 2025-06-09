@@ -171,6 +171,9 @@ const AccomplishmentsForm = () => {
       .sort((a, b) => a - b);
   };
 
+  // Convert accomplishments object to array for AIAnalysis
+  const accomplishmentsArray = Object.values(accomplishments).filter(value => value.trim().length > 0);
+
   return (
     <div className="space-y-8">
       {/* Progress Section */}
@@ -430,7 +433,7 @@ const AccomplishmentsForm = () => {
 
       {/* AI Analysis Section */}
       <AIAnalysis 
-        accomplishments={accomplishments}
+        accomplishments={accomplishmentsArray}
         selectedWins={selectedWins}
         howIDidIt={howIDidIt}
       />
