@@ -56,48 +56,48 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
       growth: []
     };
 
-    // Energizers - what gives energy
+    // Energizers - what gives energy (2-line format)
     if (allProcesses.includes('lead') || allProcesses.includes('manage') || allProcesses.includes('direct')) {
-      analysis.energizers.push('Leadership and taking charge of situations');
+      analysis.energizers.push('You find deep satisfaction in leading teams and taking charge of complex situations.\nYour energy increases when you can guide others toward meaningful outcomes.');
     }
     if (allProcesses.includes('create') || allProcesses.includes('design') || allProcesses.includes('build')) {
-      analysis.energizers.push('Creating and building new things');
+      analysis.energizers.push('Creating and building innovative solutions energizes your core being.\nYou thrive when bringing new ideas to life through your unique vision.');
     }
     if (allProcesses.includes('help') || allProcesses.includes('support') || allProcesses.includes('assist')) {
-      analysis.energizers.push('Helping and supporting others');
+      analysis.energizers.push('Supporting others and seeing them succeed brings you genuine fulfillment.\nYour energy flows when you can make a positive difference in people\'s lives.');
     }
     if (allProcesses.includes('solve') || allProcesses.includes('fix') || allProcesses.includes('improve')) {
-      analysis.energizers.push('Problem-solving and improvement');
+      analysis.energizers.push('Problem-solving and continuous improvement fuel your motivation.\nYou gain energy from tackling challenges and finding better ways forward.');
     }
 
-    // What to avoid
+    // What to avoid (2-line format)
     if (allProcesses.includes('routine') || allProcesses.includes('repetitive')) {
-      analysis.avoid.push('Repetitive, routine tasks without variety');
+      analysis.avoid.push('Repetitive, routine tasks that lack variety drain your natural enthusiasm.\nYou should avoid environments that don\'t allow for creative expression.');
     } else {
-      analysis.avoid.push('Overly chaotic environments without structure');
+      analysis.avoid.push('Overly chaotic environments without clear structure or direction.\nYou need some organizational framework to channel your talents effectively.');
     }
     
     if (allProcesses.includes('alone') || allProcesses.includes('independent')) {
-      analysis.avoid.push('Forced collaboration without autonomy');
+      analysis.avoid.push('Forced collaboration that limits your autonomy and decision-making.\nYou work best when given space to contribute in your own style.');
     } else {
-      analysis.avoid.push('Isolated work without team interaction');
+      analysis.avoid.push('Isolated work environments that disconnect you from meaningful relationships.\nYou need some level of human interaction to maintain your motivation.');
     }
 
-    // Environments
+    // Environments (2-line format)
     if (allProcesses.includes('team') || allProcesses.includes('group') || allProcesses.includes('collaborate')) {
-      analysis.environments.push('Collaborative team environments');
+      analysis.environments.push('Collaborative team environments where diverse perspectives are valued.\nYou excel in settings that encourage open communication and shared goals.');
     }
     if (allProcesses.includes('fast') || allProcesses.includes('quick') || allProcesses.includes('urgent')) {
-      analysis.environments.push('Fast-paced, dynamic workplaces');
+      analysis.environments.push('Fast-paced, dynamic workplaces that match your energy and drive.\nYou thrive in environments that embrace change and quick decision-making.');
     }
     if (allProcesses.includes('plan') || allProcesses.includes('organize') || allProcesses.includes('structure')) {
-      analysis.environments.push('Well-organized, structured settings');
+      analysis.environments.push('Well-organized, structured settings with clear expectations and processes.\nYou perform best when there are established frameworks to guide your work.');
     }
 
-    // Growth areas
-    analysis.growth.push('Developing advanced leadership skills');
-    analysis.growth.push('Expanding technical expertise');
-    analysis.growth.push('Building stronger communication abilities');
+    // Growth areas (2-line format)
+    analysis.growth.push('Developing advanced leadership skills to amplify your natural influence.\nFocus on building emotional intelligence and strategic thinking capabilities.');
+    analysis.growth.push('Expanding your technical expertise to stay ahead of industry trends.\nInvest in continuous learning to maintain your competitive edge.');
+    analysis.growth.push('Building stronger communication abilities for greater impact.\nEnhance your ability to inspire and motivate others through clear messaging.');
 
     return { analysis, processData };
   };
@@ -107,20 +107,16 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
   // Sample verbiage for Basic SEED Profile preview
   const sampleContent = {
     energizers: [
-      "Leading teams and driving meaningful change in your organization.",
-      "Creating innovative solutions that make a lasting impact."
+      "Leading teams and driving meaningful change in your organization.\nCreating innovative solutions that make a lasting impact."
     ],
     environments: [
-      "Collaborative team settings where your voice is valued and heard.",
-      "Dynamic workplaces that encourage growth and personal development."
+      "Collaborative team settings where your voice is valued and heard.\nDynamic workplaces that encourage growth and personal development."
     ],
     avoid: [
-      "Micromanaged environments that stifle your natural creativity.",
-      "Routine tasks without opportunity for strategic thinking."
+      "Micromanaged environments that stifle your natural creativity.\nRoutine tasks without opportunity for strategic thinking."
     ],
     growth: [
-      "Developing advanced leadership skills to amplify your natural influence.",
-      "Expanding your expertise to become a recognized thought leader."
+      "Developing advanced leadership skills to amplify your natural influence.\nExpanding your expertise to become a recognized thought leader."
     ]
   };
 
@@ -224,7 +220,7 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
                   (showBasicProfile ? analysis.energizers : sampleContent.energizers).map((item, index) => (
                     <div key={index} className="flex items-start gap-3 p-4 bg-white/80 rounded-lg shadow-sm">
                       <Zap className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                      <span className="text-forest-dark leading-relaxed font-medium">
+                      <span className="text-forest-dark leading-relaxed font-medium whitespace-pre-line">
                         {item}
                       </span>
                     </div>
@@ -250,7 +246,7 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
                   (showBasicProfile ? analysis.environments : sampleContent.environments).map((item, index) => (
                     <div key={index} className="flex items-start gap-3 p-4 bg-white/80 rounded-lg shadow-sm">
                       <Target className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                      <span className="text-forest-dark leading-relaxed font-medium">
+                      <span className="text-forest-dark leading-relaxed font-medium whitespace-pre-line">
                         {item}
                       </span>
                     </div>
@@ -276,7 +272,7 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
                   (showBasicProfile ? analysis.avoid : sampleContent.avoid).map((item, index) => (
                     <div key={index} className="flex items-start gap-3 p-4 bg-white/80 rounded-lg shadow-sm">
                       <Shield className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
-                      <span className="text-forest-dark leading-relaxed font-medium">
+                      <span className="text-forest-dark leading-relaxed font-medium whitespace-pre-line">
                         {item}
                       </span>
                     </div>
@@ -301,7 +297,7 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
                 {(showBasicProfile ? analysis.growth : sampleContent.growth).map((item, index) => (
                   <div key={index} className="flex items-start gap-3 p-4 bg-white/80 rounded-lg shadow-sm">
                     <Lightbulb className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
-                    <span className="text-forest-dark leading-relaxed font-medium">
+                    <span className="text-forest-dark leading-relaxed font-medium whitespace-pre-line">
                       {item}
                     </span>
                   </div>
