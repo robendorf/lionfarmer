@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -104,6 +105,21 @@ const AccomplishmentsForm = () => {
   };
 
   const handleCheckboxChange = (fieldId: string, checked: boolean) => {
+    if (checked) {
+      // Count current selections
+      const currentCount = Object.values(selectedWins).filter(Boolean).length;
+      if (currentCount >= 8) {
+        // Show toast and prevent selection
+        toast({
+          title: "Selection Limit Reached",
+          description: "You can select a maximum of 8 favorite accomplishments.",
+          variant: "destructive"
+        });
+        return;
+      }
+    }
+    
+    // Allow the change if under limit or unchecking
     setSelectedWins(prev => ({
       ...prev,
       [fieldId]: checked
