@@ -34,21 +34,46 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({ accomplishments, selectedWins, 
     setIsAnalyzing(true);
     
     try {
+      console.log('Starting AI analysis...');
+      
       // Get the selected wins and their "how I did it" descriptions
       const selectedWinNumbers = getSelectedWinNumbers();
+      console.log('Selected win numbers:', selectedWinNumbers);
+      
       const analysisData = selectedWinNumbers.map(winNumber => {
         const accomplishmentKey = `win_${winNumber}`;
         const howKey = `how_${winNumber}`;
+        const accomplishment = accomplishments[accomplishmentKey] || '';
+        const process = howIDidIt[howKey] || '';
+        
+        console.log(`Win ${winNumber}:`, { accomplishment: accomplishment.slice(0, 50), process: process.slice(0, 50) });
+        
         return {
-          accomplishment: accomplishments[accomplishmentKey] || '',
-          process: howIDidIt[howKey] || ''
+          winNumber,
+          accomplishment,
+          process
         };
-      }).filter(item => item.accomplishment && item.process);
+      }).filter(item => item.accomplishment.trim().length > 0);
 
-      if (analysisData.length < 3) {
+      console.log('Analysis data after filtering:', analysisData.length, 'items');
+
+      if (analysisData.length < 6) {
         toast({
           title: "Insufficient Data",
-          description: "Please complete at least 3 'How I Did It' sections for meaningful analysis.",
+          description: `Please select at least 6 accomplishments with content. Currently have ${analysisData.length} valid accomplishments.`,
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Count how many have detailed "How I Did It" sections
+      const detailedAnalysis = analysisData.filter(item => item.process.trim().length > 20);
+      console.log('Items with detailed How I Did It:', detailedAnalysis.length);
+
+      if (detailedAnalysis.length < 3) {
+        toast({
+          title: "Need More Detail",
+          description: `Please complete the "How I Did It" sections for at least 3 of your selected wins. Currently have ${detailedAnalysis.length} detailed descriptions.`,
           variant: "destructive"
         });
         return;
@@ -57,13 +82,13 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({ accomplishments, selectedWins, 
       // Simulate AI analysis (in a real implementation, this would call an AI service)
       await new Promise(resolve => setTimeout(resolve, 3000));
 
-      // Generate analysis based on patterns (this is a simplified version)
-      const mockAnalysis = generateMockAnalysis(analysisData);
-      setAnalysis(mockAnalysis);
+      // Generate SIMA-inspired analysis
+      const simaAnalysis = generateSIMAAnalysis(analysisData);
+      setAnalysis(simaAnalysis);
 
       toast({
-        title: "Analysis Complete",
-        description: "Your motivational pattern blueprint has been generated!",
+        title: "SEED Profile Generated",
+        description: "Your motivational pattern has been analyzed using SIMA methodology!",
       });
 
     } catch (error) {
@@ -78,71 +103,113 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({ accomplishments, selectedWins, 
     }
   };
 
-  const generateMockAnalysis = (data: Array<{accomplishment: string, process: string}>): AnalysisResult => {
-    // This is a simplified pattern recognition - in reality, this would use AI
-    const allText = data.map(d => d.process).join(' ').toLowerCase();
+  const generateSIMAAnalysis = (data: Array<{winNumber: number, accomplishment: string, process: string}>): AnalysisResult => {
+    console.log('Generating SIMA analysis for', data.length, 'accomplishments');
     
+    // Combine all text for pattern analysis
+    const allAccomplishments = data.map(d => d.accomplishment).join(' ').toLowerCase();
+    const allProcesses = data.map(d => d.process).join(' ').toLowerCase();
+    const allText = (allAccomplishments + ' ' + allProcesses).toLowerCase();
+    
+    console.log('Analysis text length:', allText.length);
+
     const energizers = [];
     const avoid = [];
     const environments = [];
     const growth = [];
 
-    // Pattern detection logic (simplified)
-    if (allText.includes('team') || allText.includes('collaborate') || allText.includes('others')) {
-      energizers.push("Collaborative work where you can leverage team dynamics and collective problem-solving");
-      environments.push("Team-oriented environments with regular collaboration and shared goals");
+    // SIMA-inspired pattern detection - analyzing HOW they achieved success
+    
+    // Leadership and influence patterns
+    if (allText.includes('lead') || allText.includes('manage') || allText.includes('direct') || allText.includes('organize')) {
+      energizers.push("Taking leadership roles and guiding others toward shared goals");
+      environments.push("Leadership positions where you can influence direction and outcomes");
+      growth.push("Seek opportunities to lead larger teams or more complex initiatives");
     }
 
-    if (allText.includes('problem') || allText.includes('solve') || allText.includes('challenge')) {
-      energizers.push("Tackling complex problems that require analytical thinking and creative solutions");
-      growth.push("Seek increasingly complex challenges that stretch your problem-solving abilities");
+    // Collaboration and teamwork patterns
+    if (allText.includes('team') || allText.includes('collaborate') || allText.includes('together') || allText.includes('group')) {
+      energizers.push("Collaborative work where you leverage collective intelligence and team synergy");
+      environments.push("Team-oriented environments with strong collaboration and shared accountability");
     }
 
-    if (allText.includes('learn') || allText.includes('research') || allText.includes('study')) {
-      energizers.push("Continuous learning and knowledge acquisition in areas that fascinate you");
-      environments.push("Learning-rich environments with access to new information and skill development");
+    // Problem-solving and analytical patterns
+    if (allText.includes('problem') || allText.includes('solve') || allText.includes('analyze') || allText.includes('figure') || allText.includes('challenge')) {
+      energizers.push("Tackling complex problems that require deep analysis and creative solutions");
+      environments.push("Intellectually stimulating environments with challenging problems to solve");
+      growth.push("Take on increasingly complex analytical challenges that stretch your capabilities");
     }
 
-    if (allText.includes('create') || allText.includes('build') || allText.includes('design')) {
-      energizers.push("Creating something new from concept to completion");
+    // Learning and development patterns
+    if (allText.includes('learn') || allText.includes('study') || allText.includes('research') || allText.includes('understand')) {
+      energizers.push("Continuous learning and mastering new knowledge or skills");
+      environments.push("Learning-rich environments with access to new information and development opportunities");
+    }
+
+    // Creation and innovation patterns
+    if (allText.includes('create') || allText.includes('build') || allText.includes('design') || allText.includes('develop') || allText.includes('make')) {
+      energizers.push("Creating something meaningful from concept to completion");
       environments.push("Innovation-friendly spaces where creativity and experimentation are valued");
+      growth.push("Expand your creative influence by building solutions that impact more people");
     }
 
-    if (allText.includes('help') || allText.includes('support') || allText.includes('mentor')) {
-      energizers.push("Making a positive impact on others and seeing them succeed");
-      growth.push("Develop deeper mentoring and coaching skills to amplify your impact");
+    // Helping and mentoring patterns
+    if (allText.includes('help') || allText.includes('support') || allText.includes('teach') || allText.includes('mentor') || allText.includes('guide')) {
+      energizers.push("Making a positive impact by helping others succeed and grow");
+      environments.push("Mentoring or coaching roles where you can develop others");
     }
 
-    // Add default insights if not enough were generated
+    // Communication and presentation patterns
+    if (allText.includes('present') || allText.includes('speak') || allText.includes('communicate') || allText.includes('explain')) {
+      energizers.push("Communicating ideas effectively and influencing through clear expression");
+      environments.push("Roles requiring strong communication and presentation skills");
+    }
+
+    // Achievement and goal-oriented patterns
+    if (allText.includes('achieve') || allText.includes('goal') || allText.includes('complete') || allText.includes('finish') || allText.includes('accomplish')) {
+      energizers.push("Setting and achieving meaningful goals with measurable outcomes");
+      environments.push("Results-oriented environments with clear objectives and accountability");
+    }
+
+    // Add universal insights based on SIMA methodology
     if (energizers.length < 3) {
-      energizers.push("Taking ownership of projects and seeing them through to completion");
-    }
-    if (avoid.length < 2) {
-      avoid.push("Highly repetitive tasks without room for improvement or creativity");
-      avoid.push("Environments where your input and ideas are not valued or heard");
-    }
-    if (environments.length < 3) {
-      environments.push("Autonomous work settings where you can control your approach and methods");
-    }
-    if (growth.length < 2) {
-      growth.push("Expand your influence by taking on leadership roles in areas you're passionate about");
+      energizers.push("Taking ownership of important projects and seeing them through to successful completion");
+      energizers.push("Working in areas where your unique strengths can make a significant impact");
     }
 
-    return {
+    if (avoid.length < 2) {
+      avoid.push("Highly repetitive tasks that don't utilize your core strengths and motivational patterns");
+      avoid.push("Environments where your ideas and contributions are not valued or recognized");
+    }
+
+    if (environments.length < 3) {
+      environments.push("Autonomous work settings where you can apply your strengths in your preferred way");
+      environments.push("Purpose-driven organizations aligned with your values and interests");
+    }
+
+    if (growth.length < 2) {
+      growth.push("Expand your influence by taking on roles that amplify your natural motivational themes");
+      growth.push("Develop expertise in areas that energize you most and create opportunities to use them");
+    }
+
+    const result = {
       energizers: energizers.slice(0, 3),
       avoid: avoid.slice(0, 2),
       environments: environments.slice(0, 3),
       growth: growth.slice(0, 2)
     };
+
+    console.log('Generated SIMA analysis:', result);
+    return result;
   };
 
   const selectedCount = getSelectedWinNumbers().length;
   const completedHowCount = getSelectedWinNumbers().filter(winNumber => {
     const howKey = `how_${winNumber}`;
-    return howIDidIt[howKey]?.trim().length > 50; // At least 50 characters
+    return howIDidIt[howKey]?.trim().length > 20;
   }).length;
 
-  const isReadyForAnalysis = selectedCount >= 6 && completedHowCount >= 3;
+  const isReadyForAnalysis = selectedCount >= 6;
 
   if (!isReadyForAnalysis) {
     return null;
@@ -153,24 +220,35 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({ accomplishments, selectedWins, 
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Target className="h-5 w-5 text-purple-600" />
-          AI Pattern Analysis
+          SIMA-Inspired Pattern Analysis
         </CardTitle>
       </CardHeader>
       <CardContent>
         {!analysis ? (
           <div className="space-y-4">
             <p className="text-purple-700">
-              Ready to discover your unique motivational pattern! Our AI will analyze your accomplishments 
-              and the detailed "How I Did It" descriptions to identify what energizes you most.
+              Ready to discover your unique motivational pattern! Using SIMA (System for Identifying Motivated Abilities) methodology, 
+              our analysis will examine your accomplishments and detailed processes to identify your core motivational themes.
             </p>
             <div className="text-sm text-purple-600">
-              <p>Analysis will include:</p>
+              <p>Your SEED Profile will include:</p>
               <ul className="list-disc list-inside mt-2 space-y-1">
-                <li>What energizes and motivates you</li>
-                <li>Environments where you thrive</li>
-                <li>What to avoid for optimal performance</li>
-                <li>Growth opportunities aligned with your strengths</li>
+                <li>What energizes and motivates you most deeply</li>
+                <li>Ideal environments where you thrive and excel</li>
+                <li>What to avoid for optimal performance and satisfaction</li>
+                <li>Growth opportunities aligned with your natural motivational patterns</li>
               </ul>
+            </div>
+            <div className="text-xs text-purple-600 bg-purple-100 p-3 rounded">
+              <p><strong>Analysis Status:</strong></p>
+              <p>• Selected wins: {selectedCount}/8</p>
+              <p>• Detailed "How I Did It" sections: {completedHowCount}</p>
+              <p className="mt-2 italic">
+                {completedHowCount >= 3 
+                  ? "✅ Ready for analysis!" 
+                  : `⏳ Complete ${3 - completedHowCount} more "How I Did It" sections for optimal analysis`
+                }
+              </p>
             </div>
             <Button 
               onClick={analyzePatterns} 
