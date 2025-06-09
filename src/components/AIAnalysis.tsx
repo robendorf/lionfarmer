@@ -1,23 +1,16 @@
-
-import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Lightbulb, Zap, Target, Leaf, Crown, Star, TrendingUp } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import PremiumSEEDProfile from './PremiumSEEDProfile';
-import { Download } from 'lucide-react';
-import { generateSEEDProfilePDF } from '../utils/pdfGenerator';
+import React, { useState, useEffect } from 'react';
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { toast } from "@/components/ui/use-toast"
+import { Input } from "@/components/ui/input"
+import { Progress } from "@/components/ui/progress"
+import { Checkbox } from "@/components/ui/checkbox"
+import { useCompletion } from 'ai/react';
 
 interface AIAnalysisProps {
-  accomplishments: {
-    [key: string]: string;
-  };
-  selectedWins: {
-    [key: string]: boolean;
-  };
-  howIDidIt: {
-    [key: string]: string;
-  };
+  accomplishments: string[];
+  onBack: () => void;
 }
 
 interface AnalysisResult {
@@ -27,356 +20,256 @@ interface AnalysisResult {
   growth: string[];
 }
 
-const AIAnalysis: React.FC<AIAnalysisProps> = ({
-  accomplishments,
-  selectedWins,
-  howIDidIt
-}) => {
-  const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
+interface DeepDiveData {
+  winNumber: number;
+  process: string;
+}
+
+const AIAnalysis = ({ accomplishments, onBack }: AIAnalysisProps) => {
+  const [analysis, setAnalysis] = useState<AnalysisResult>({
+    energizers: [],
+    avoid: [],
+    environments: [],
+    growth: [],
+  });
+  const [deepDiveData, setDeepDiveData] = useState<DeepDiveData[]>([]);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [showPremium, setShowPremium] = useState(false);
-  const [isPremiumUser, setIsPremiumUser] = useState(false); // Set to false for free profile default
-  const { toast } = useToast();
+  const [deepDiveIndex, setDeepDiveIndex] = useState<number | null>(null);
+  const [deepDiveText, setDeepDiveText] = useState('');
+  const [progress, setProgress] = useState(0);
+  const [showProgressBar, setShowProgressBar] = useState(false);
 
-  const getSelectedWinNumbers = () => {
-    return Object.keys(selectedWins).filter(key => selectedWins[key]).map(key => parseInt(key.replace('selected_win_', ''))).sort((a, b) => a - b);
-  };
+  const { complete, completion } = useCompletion({
+    api: "/api/completion",
+  });
 
-  const analyzePatterns = async () => {
-    setIsAnalyzing(true);
+  useEffect(() => {
+    if (completion) {
+      try {
+        const parsedCompletion = JSON.parse(completion);
+        if (parsedCompletion && typeof parsedCompletion === 'object') {
+          if (parsedCompletion.analysis) {
+            setAnalysis(parsedCompletion.analysis);
+          }
+          if (parsedCompletion.deepDiveData) {
+            setDeepDiveData(parsedCompletion.deepDiveData);
+          }
+        } else {
+          console.error('Parsed completion is not an object:', parsedCompletion);
+        }
+      } catch (error) {
+        console.error('Failed to parse completion:', error);
+      }
+    }
+  }, [completion]);
+
+  const generateAnalysis = async () => {
+    setIsGenerating(true);
+    setShowProgressBar(true);
+    setProgress(0);
+
+    const prompt = `Given the following accomplishments, provide an analysis of what energizes the person, what they should avoid, ideal environments for them, and growth opportunities. Also, provide a list of "deep dive" data for each accomplishment.
+Accomplishments: ${accomplishments.join(", ")}
+Analysis should be in JSON format:
+{
+  "analysis": {
+    "energizers": [],
+    "avoid": [],
+    "environments": [],
+    "growth": []
+  },
+ "deepDiveData": [
+    {
+      "winNumber": 1,
+      "process": "Detailed explanation of the accomplishment"
+    }
+  ]
+}
+`;
+
     try {
-      console.log('Starting SEED analysis...');
+      let accumulatedCompletion = '';
+      const stream = await complete(prompt);
 
-      const selectedWinNumbers = getSelectedWinNumbers();
-      console.log('Selected win numbers:', selectedWinNumbers);
-      
-      const analysisData = selectedWinNumbers.map(winNumber => {
-        const howKey = `how_${winNumber}`;
-        const process = howIDidIt[howKey] || '';
-        console.log(`Win ${winNumber} - How actions taken:`, process.slice(0, 100));
-        return {
-          winNumber,
-          process
-        };
-      }).filter(item => item.process.trim().length > 0);
+      if (stream && stream.body) {
+        const reader = stream.body.getReader();
+        const decoder = new TextDecoder();
+        let chunksReceived = 0;
 
-      console.log('Analysis data after filtering (How actions only):', analysisData.length, 'items');
-      
-      if (analysisData.length < 3) {
-        toast({
-          title: "Insufficient Action Data",
-          description: `Please provide at least 3 detailed "How I Did It" responses. Currently have ${analysisData.length} valid entries.`,
-          variant: "destructive"
-        });
-        return;
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) {
+            break;
+          }
+          chunksReceived++;
+          const chunk = decoder.decode(value);
+          accumulatedCompletion += chunk;
+
+          try {
+            const parsedChunk = JSON.parse(accumulatedCompletion);
+            if (parsedChunk && typeof parsedChunk === 'object') {
+              if (parsedChunk.analysis) {
+                setAnalysis(parsedChunk.analysis);
+              }
+              if (parsedChunk.deepDiveData) {
+                setDeepDiveData(parsedChunk.deepDiveData);
+              }
+            }
+          } catch (error) {
+            console.error('Error parsing JSON:', error);
+          }
+
+          const currentProgress = Math.min((chunksReceived / 50) * 100, 100);
+          setProgress(currentProgress);
+        }
       }
 
-      await new Promise(resolve => setTimeout(resolve, 3000));
-
-      const seedAnalysis = generateSEEDAnalysis(analysisData);
-      setAnalysis(seedAnalysis);
-      
       toast({
-        title: "SEED Profile Generated",
-        description: "Your motivational pattern has been analyzed using SEED methodology from your action patterns!"
+        title: "Analysis Generated",
+        description: "The AI has generated your analysis.",
       });
     } catch (error) {
-      console.error('Analysis error:', error);
+      console.error("Completion failed:", error);
       toast({
         title: "Analysis Failed",
-        description: "There was an error analyzing your patterns. Please try again.",
-        variant: "destructive"
+        description: "There was an error generating the analysis. Please try again.",
+        variant: "destructive",
       });
     } finally {
-      setIsAnalyzing(false);
+      setIsGenerating(false);
+      setShowProgressBar(false);
     }
   };
 
-  const generateSEEDAnalysis = (data: Array<{ winNumber: number; process: string; }>): AnalysisResult => {
-    console.log('Generating SEED analysis for', data.length, 'How action responses');
-
-    const allProcesses = data.map(d => d.process).join(' ').toLowerCase();
-    console.log('Analysis text length (How actions only):', allProcesses.length);
-    
-    const energizers = [];
-    const avoid = [];
-    const environments = [];
-    const growth = [];
-
-    if (allProcesses.includes('built') || allProcesses.includes('build') || allProcesses.includes('create') || allProcesses.includes('develop')) {
-      energizers.push("Building complex projects from the ground up with strategic vision and execution");
-      environments.push("Entrepreneurial environments where you can build systems and structures from scratch");
-      growth.push("Scale your building expertise to larger, more complex ventures that impact communities");
-    }
-
-    if (allProcesses.includes('business') || allProcesses.includes('company') || allProcesses.includes('truck') || allProcesses.includes('wash')) {
-      energizers.push("Creating and growing businesses that solve real problems and generate value");
-      environments.push("Business ownership or senior leadership roles with P&L responsibility");
-      growth.push("Expand into multiple business ventures or larger-scale operations");
-    }
-
-    if (allProcesses.includes('research') || allProcesses.includes('plan') || allProcesses.includes('analyze') || allProcesses.includes('step')) {
-      energizers.push("Solving complex problems through systematic research and methodical planning");
-      environments.push("Strategic roles where thorough analysis and planning are valued and rewarded");
-    }
-
-    if (allProcesses.includes('invent') || allProcesses.includes('design') || allProcesses.includes('creative') || allProcesses.includes('unique')) {
-      energizers.push("Developing innovative solutions and creative approaches to challenges");
-      environments.push("Innovation-focused roles where creative problem-solving drives results");
-    }
-
-    if (allProcesses.includes('myself') || allProcesses.includes('own') || allProcesses.includes('independent') || allProcesses.includes('control')) {
-      energizers.push("Taking complete ownership and achieving goals through self-directed action");
-      environments.push("Autonomous work settings where you have control over methods and decisions");
-    }
-
-    if (allProcesses.includes('learn') || allProcesses.includes('study') || allProcesses.includes('practice') || allProcesses.includes('master')) {
-      energizers.push("Continuous learning and skill development to achieve mastery");
-      environments.push("Growth-oriented environments that support learning and skill development");
-    }
-
-    if (allProcesses.includes('persisted') || allProcesses.includes('continued') || allProcesses.includes('despite') || allProcesses.includes('overcome')) {
-      energizers.push("Persisting through challenges with determination and resilience");
-      environments.push("Challenging environments where persistence and resilience are essential");
-    }
-
-    if (energizers.length < 3) {
-      energizers.push("Transforming vision into reality through systematic execution and follow-through");
-    }
-    if (avoid.length < 2) {
-      avoid.push("Highly structured environments that limit your ability to innovate and execute your approach");
-      avoid.push("Roles where you can't see the direct impact of your methodology on outcomes");
-    }
-    if (environments.length < 3) {
-      environments.push("Leadership positions where strategic thinking and execution methodology are essential");
-    }
-    if (growth.length < 2) {
-      growth.push("Mentor others in systematic approaches and execution methodologies based on your experience");
-    }
-
-    const result = {
-      energizers: energizers.slice(0, 3),
-      avoid: avoid.slice(0, 2),
-      environments: environments.slice(0, 3),
-      growth: growth.slice(0, 2)
-    };
-    
-    console.log('Generated SEED analysis from action data:', result);
-    return result;
-  };
-
-  const handlePremiumUpgrade = () => {
-    if (analysis) {
-      setShowPremium(true);
-    } else {
+  const downloadPDF = async () => {
+    setIsGeneratingPDF(true);
+    try {
+      // Use the new screenshot-based PDF generator
+      const { generateScreenshotPDF } = await import('../utils/screenshotPdfGenerator');
+      const pdf = await generateScreenshotPDF(analysis, deepDiveData, showPremium);
+      
+      const fileName = showPremium ? 'premium-seed-profile.pdf' : 'seed-profile.pdf';
+      pdf.save(fileName);
+      
       toast({
-        title: "Premium Feature",
-        description: "Upgrade to Premium to access the comprehensive 5+ page SEED Profile with detailed insights!",
-        variant: "default"
+        title: "PDF Generated Successfully",
+        description: `Your ${showPremium ? 'Premium ' : ''}SEED Profile has been downloaded.`,
       });
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      toast({
+        title: "PDF Generation Failed",
+        description: "There was an error generating your PDF. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGeneratingPDF(false);
     }
   };
 
-  const handleDownloadPDF = () => {
-    if (!analysis) return;
-    
-    const deepDiveData = getSelectedWinNumbers().map(winNumber => ({
-      winNumber,
-      process: howIDidIt[`how_${winNumber}`] || ''
-    })).filter(item => item.process.trim().length > 0);
-
-    const pdf = generateSEEDProfilePDF(analysis, deepDiveData, isPremiumUser);
-    pdf.save(`SEED-Profile-${isPremiumUser ? 'Premium' : 'Free'}-${new Date().toISOString().split('T')[0]}.pdf`);
-    
-    toast({
-      title: "PDF Downloaded",
-      description: `Your ${isPremiumUser ? 'Premium' : 'Free'} SEED Profile has been downloaded successfully!`
-    });
+  const handleDeepDive = (index: number) => {
+    setDeepDiveIndex(index);
+    setDeepDiveText(deepDiveData[index]?.process || '');
   };
 
-  const selectedCount = getSelectedWinNumbers().length;
-  const deepDiveCount = getSelectedWinNumbers().filter(winNumber => {
-    const howKey = `how_${winNumber}`;
-    const hasDeepDive = howIDidIt[howKey]?.trim().length > 0;
-    return hasDeepDive;
-  }).length;
-
-  const isReadyForAnalysis = selectedCount >= 6;
-
-  if (!isReadyForAnalysis) {
-    return null;
-  }
-
-  if (showPremium && analysis) {
-    return <PremiumSEEDProfile 
-      analysis={analysis}
-      deepDiveData={getSelectedWinNumbers().map(winNumber => ({
-        winNumber,
-        process: howIDidIt[`how_${winNumber}`] || ''
-      })).filter(item => item.process.trim().length > 0)}
-      onBack={() => setShowPremium(false)}
-    />;
-  }
-
-  return <Card className="border-2 border-sage-green bg-gradient-to-br from-cream to-secondary shadow-xl">
-    <CardHeader>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Star className="h-5 w-5 text-warm-gold" />
-          <CardTitle className="text-forest-dark">
-            Free SEED Profile
-          </CardTitle>
-        </div>
-        <div className="flex gap-2">
-          {analysis && (
-            <Button 
-              onClick={handleDownloadPDF}
-              variant="outline"
-              className="border-sage-green text-forest-dark hover:bg-sage-green hover:text-white"
-            >
-              <Download className="h-4 w-4 mr-2" />
-              Download PDF
-            </Button>
-          )}
-          {analysis && (
-            <Button 
-              onClick={handlePremiumUpgrade}
-              className="bg-warm-gold hover:bg-earth-brown text-white"
-            >
-              <Crown className="h-4 w-4 mr-2" />
-              View Premium Analysis
-            </Button>
-          )}
-        </div>
-      </div>
-    </CardHeader>
-    <CardContent>
-      {!analysis ? (
-        <div className="space-y-4">
-          <p className="text-forest-dark">
-            Ready to discover your unique motivational pattern! Using SEED methodology, 
-            our analysis will examine your detailed "How I Did It" actions to identify your core motivational themes.
-          </p>
-          <div className="text-sm text-earth-brown">
-            <p>Your SEED Profile will include:</p>
-            <ul className="list-disc list-inside mt-2 space-y-1">
-              <li>What energizes and motivates you most deeply</li>
-              <li>Ideal environments where you thrive and excel</li>
-              <li>What to avoid for optimal performance and satisfaction</li>
-              <li>Growth opportunities aligned with your natural motivational patterns</li>
-            </ul>
-          </div>
-          <div className="text-xs text-earth-brown bg-cream p-3 rounded border border-sage-green">
-            <p><strong>Analysis Status:</strong></p>
-            <p>• Selected wins: {selectedCount}/8</p>
-            <p>• Action responses completed: {deepDiveCount}</p>
-            <p className="mt-2 italic">
-              {deepDiveCount >= 3 ? '✅ Ready for analysis with your detailed action data!' : `⏳ Need ${3 - deepDiveCount} more detailed "How I Did It" responses for analysis`}
-            </p>
-          </div>
-          <Button 
-            onClick={analyzePatterns} 
-            disabled={isAnalyzing || deepDiveCount < 3} 
-            className="w-full bg-sage-green hover:bg-forest-dark"
-          >
-            {isAnalyzing ? 'Analyzing Your Pattern...' : 'Generate My SEED Profile'}
-          </Button>
-        </div>
+  return (
+    <div className="container mx-auto mt-8 p-4">
+      <h1 className="text-2xl font-bold mb-4">AI Analysis</h1>
+      {isGenerating ? (
+        <>
+          {showProgressBar && <Progress value={progress} />}
+          <p>Generating analysis... please wait.</p>
+        </>
       ) : (
-        <div className="space-y-6">
-          <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-forest-dark mb-2">
-              🎯 Your SEED Profile (Free Version)
-            </h2>
-            <div className="bg-warm-gold/10 border border-warm-gold rounded-lg p-3 mt-4">
-              <div className="flex items-center gap-2 text-earth-brown mb-2">
-                <Crown className="h-4 w-4" />
-                <span className="font-semibold">Premium Analysis Available!</span>
-              </div>
-              <p className="text-sm text-earth-brown">
-                Click "View Premium Analysis" above to access your comprehensive 6-page analysis with expanded insights, 
-                career recommendations, relationship patterns, decision-making styles, and personalized action plans.
-              </p>
-            </div>
+        <>
+          <div className="mb-4">
+            <Button onClick={onBack} variant="secondary">Back to Accomplishments</Button>
+            <Button onClick={generateAnalysis} className="ml-2">Generate Analysis</Button>
           </div>
 
-          <div className="space-y-6">
-            <div>
-              <h3 className="flex items-center gap-2 text-lg font-semibold text-forest-dark mb-3">
-                <Zap className="h-5 w-5 text-warm-gold" />
-                🧠 What Energizes You
-              </h3>
-              <ul className="space-y-2">
+          {analysis.energizers.length > 0 && (
+            <div className="mb-4">
+              <h2 className="text-xl font-semibold">What Energizes You</h2>
+              <ul>
                 {analysis.energizers.map((item, index) => (
-                  <li key={index} className="flex items-start gap-2">
-                    <span className="text-sage-green mt-1">•</span>
-                    <span className="text-earth-brown">{item}</span>
-                  </li>
+                  <li key={index}>{item}</li>
                 ))}
               </ul>
             </div>
+          )}
 
-            <hr className="border-sage-green" />
-
-            <div>
-              <h3 className="text-lg font-semibold text-forest-dark mb-3">
-                🚫 What to Avoid
-              </h3>
-              <ul className="space-y-2">
+          {analysis.avoid.length > 0 && (
+            <div className="mb-4">
+              <h2 className="text-xl font-semibold">What to Avoid</h2>
+              <ul>
                 {analysis.avoid.map((item, index) => (
-                  <li key={index} className="flex items-start gap-2">
-                    <span className="text-sage-green mt-1">•</span>
-                    <span className="text-earth-brown">{item}</span>
-                  </li>
+                  <li key={index}>{item}</li>
                 ))}
               </ul>
             </div>
+          )}
 
-            <hr className="border-sage-green" />
-
-            <div>
-              <h3 className="flex items-center gap-2 text-lg font-semibold text-forest-dark mb-3">
-                <Leaf className="h-5 w-5 text-sage-green" />
-                🏞️ Ideal Work & Contribution Environments
-              </h3>
-              <ul className="space-y-2">
+          {analysis.environments.length > 0 && (
+            <div className="mb-4">
+              <h2 className="text-xl font-semibold">Ideal Environments</h2>
+              <ul>
                 {analysis.environments.map((item, index) => (
-                  <li key={index} className="flex items-start gap-2">
-                    <span className="text-sage-green mt-1">•</span>
-                    <span className="text-earth-brown">{item}</span>
-                  </li>
+                  <li key={index}>{item}</li>
                 ))}
               </ul>
             </div>
+          )}
 
-            <hr className="border-sage-green" />
-
-            <div>
-              <h3 className="flex items-center gap-2 text-lg font-semibold text-forest-dark mb-3">
-                <Lightbulb className="h-5 w-5 text-warm-gold" />
-                🌱 Growth Opportunities
-              </h3>
-              <ul className="space-y-2">
+          {analysis.growth.length > 0 && (
+            <div className="mb-4">
+              <h2 className="text-xl font-semibold">Growth Opportunities</h2>
+              <ul>
                 {analysis.growth.map((item, index) => (
-                  <li key={index} className="flex items-start gap-2">
-                    <span className="text-sage-green mt-1">•</span>
-                    <span className="text-earth-brown">{item}</span>
+                  <li key={index}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {deepDiveData.length > 0 && (
+            <div className="mb-4">
+              <h2 className="text-xl font-semibold">Deep Dive Data</h2>
+              <ul>
+                {deepDiveData.map((item, index) => (
+                  <li key={index}>
+                    <Button onClick={() => handleDeepDive(index)}>Win #{item.winNumber}</Button>
                   </li>
                 ))}
               </ul>
             </div>
+          )}
 
-            <div className="mt-6 p-4 bg-sage-green/10 rounded-lg border border-sage-green">
-              <p className="text-sm text-earth-brown italic text-center">
-                These insights were generated based on your detailed "How I Did It" actions. 
-                Your SEED Profile reflects your natural approach to achieving results and what sustains your energy over time.
-              </p>
+          {deepDiveIndex !== null && (
+            <div className="mb-4">
+              <h2 className="text-xl font-semibold">Deep Dive - Win #{deepDiveIndex + 1}</h2>
+              <Textarea
+                value={deepDiveText}
+                onChange={(e) => setDeepDiveText(e.target.value)}
+                placeholder="Enter your deep dive analysis here."
+                className="w-full"
+              />
             </div>
+          )}
+
+          <div className="flex items-center space-x-2">
+            <Checkbox id="premium" onCheckedChange={(checked) => setShowPremium(checked || false)} />
+            <Label htmlFor="premium">Show Premium Analysis</Label>
           </div>
-        </div>
+
+          <Button onClick={downloadPDF} disabled={isGeneratingPDF}>
+            {isGeneratingPDF ? "Generating PDF..." : "Download PDF"}
+          </Button>
+        </>
       )}
-    </CardContent>
-  </Card>;
+    </div>
+  );
 };
 
 export default AIAnalysis;
