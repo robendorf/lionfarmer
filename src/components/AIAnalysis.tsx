@@ -177,14 +177,14 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({ accomplishments, selectedWins, 
               disabled={isAnalyzing}
               className="w-full"
             >
-              {isAnalyzing ? 'Analyzing Your Pattern...' : 'Generate My Motivational Blueprint'}
+              {isAnalyzing ? 'Analyzing Your Pattern...' : 'Generate My SEED Profile'}
             </Button>
           </div>
         ) : (
           <div className="space-y-6">
             <div className="text-center mb-6">
               <h2 className="text-2xl font-bold text-purple-800 mb-2">
-                🎯 Your Motivational Pattern Blueprint
+                🎯 Your SEED Profile
               </h2>
             </div>
 
@@ -257,7 +257,7 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({ accomplishments, selectedWins, 
               <div className="mt-6 p-4 bg-purple-100 rounded-lg">
                 <p className="text-sm text-purple-700 italic text-center">
                   These insights were generated based on your unique stories of impact. 
-                  Your pattern reflects where you do your best work and what sustains your energy over time.
+                  Your SEED Profile reflects where you do your best work and what sustains your energy over time.
                 </p>
               </div>
             </div>
