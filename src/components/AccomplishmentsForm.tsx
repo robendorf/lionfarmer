@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -8,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Save, CheckCircle, Star, Lightbulb } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import AIAnalysis from './AIAnalysis';
 
 interface AccomplishmentData {
   [key: string]: string;
@@ -341,6 +341,13 @@ const AccomplishmentsForm = () => {
           </CardContent>
         </Card>
       )}
+
+      {/* AI Analysis Section */}
+      <AIAnalysis 
+        accomplishments={accomplishments}
+        selectedWins={selectedWins}
+        howIDidIt={howIDidIt}
+      />
 
       {/* Selection Guidance */}
       {getSelectedCount() > 8 && (
