@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -6,7 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Save, CheckCircle, Star } from 'lucide-react';
+import { Save, CheckCircle, Star, Lightbulb } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface AccomplishmentData {
@@ -17,9 +16,14 @@ interface SelectedWins {
   [key: string]: boolean;
 }
 
+interface HowIDidItData {
+  [key: string]: string;
+}
+
 const AccomplishmentsForm = () => {
   const [accomplishments, setAccomplishments] = useState<AccomplishmentData>({});
   const [selectedWins, setSelectedWins] = useState<SelectedWins>({});
+  const [howIDidIt, setHowIDidIt] = useState<HowIDidItData>({});
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const { toast } = useToast();
 
@@ -51,6 +55,7 @@ const AccomplishmentsForm = () => {
   useEffect(() => {
     const saved = localStorage.getItem('motivated-abilities-accomplishments');
     const savedSelections = localStorage.getItem('motivated-abilities-selected-wins');
+    const savedHowIDidIt = localStorage.getItem('motivated-abilities-how-i-did-it');
     
     if (saved) {
       try {
@@ -67,6 +72,14 @@ const AccomplishmentsForm = () => {
         console.error('Error loading saved selections:', error);
       }
     }
+
+    if (savedHowIDidIt) {
+      try {
+        setHowIDidIt(JSON.parse(savedHowIDidIt));
+      } catch (error) {
+        console.error('Error loading saved how I did it:', error);
+      }
+    }
   }, []);
 
   // Auto-save every 2 seconds when data changes
@@ -75,12 +88,13 @@ const AccomplishmentsForm = () => {
       if (Object.keys(accomplishments).length > 0) {
         localStorage.setItem('motivated-abilities-accomplishments', JSON.stringify(accomplishments));
         localStorage.setItem('motivated-abilities-selected-wins', JSON.stringify(selectedWins));
+        localStorage.setItem('motivated-abilities-how-i-did-it', JSON.stringify(howIDidIt));
         setLastSaved(new Date());
       }
     }, 2000);
 
     return () => clearTimeout(timer);
-  }, [accomplishments, selectedWins]);
+  }, [accomplishments, selectedWins, howIDidIt]);
 
   const handleInputChange = (fieldId: string, value: string) => {
     setAccomplishments(prev => ({
@@ -96,13 +110,21 @@ const AccomplishmentsForm = () => {
     }));
   };
 
+  const handleHowIDidItChange = (fieldId: string, value: string) => {
+    setHowIDidIt(prev => ({
+      ...prev,
+      [fieldId]: value
+    }));
+  };
+
   const handleManualSave = () => {
     localStorage.setItem('motivated-abilities-accomplishments', JSON.stringify(accomplishments));
     localStorage.setItem('motivated-abilities-selected-wins', JSON.stringify(selectedWins));
+    localStorage.setItem('motivated-abilities-how-i-did-it', JSON.stringify(howIDidIt));
     setLastSaved(new Date());
     toast({
       title: "Progress Saved",
-      description: "Your accomplishments and selections have been saved successfully.",
+      description: "Your accomplishments, selections, and analysis have been saved successfully.",
     });
   };
 
@@ -123,6 +145,13 @@ const AccomplishmentsForm = () => {
     if (filled < 15) return "Excellent progress! Your pattern is starting to emerge.";
     if (filled < 20) return "Almost there! Just a few more accomplishments to capture.";
     return "Amazing! You've captured all 20 accomplishments. Your motivational pattern awaits analysis.";
+  };
+
+  const getSelectedWinNumbers = () => {
+    return Object.keys(selectedWins)
+      .filter(key => selectedWins[key])
+      .map(key => parseInt(key.replace('selected_win_', '')))
+      .sort((a, b) => a - b);
   };
 
   return (
@@ -235,6 +264,67 @@ const AccomplishmentsForm = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* How I Did It Section */}
+      {getSelectedCount() > 0 && (
+        <Card className="border-2 border-blue-200 bg-blue-50/50">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Lightbulb className="h-5 w-5 text-blue-600" />
+              How I Did It - Deep Dive Analysis
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="prose prose-sm max-w-none">
+                <p className="text-blue-700 mb-4">
+                  For each of your selected favorite accomplishments, describe in detail HOW you made it happen. 
+                  Focus on your specific actions, thought processes, and what energized you most during the experience.
+                </p>
+                <ul className="text-blue-600 text-sm space-y-1">
+                  <li>• What specific steps did you take?</li>
+                  <li>• What part of the process excited you most?</li>
+                  <li>• How did you overcome obstacles?</li>
+                  <li>• What skills or strengths did you use?</li>
+                  <li>• What was your unique contribution?</li>
+                </ul>
+              </div>
+
+              <div className="grid gap-6">
+                {getSelectedWinNumbers().slice(0, 8).map((winNumber) => {
+                  const accomplishmentKey = `win_${winNumber}`;
+                  const howKey = `how_${winNumber}`;
+                  const accomplishmentText = accomplishments[accomplishmentKey] || '';
+                  
+                  return (
+                    <div key={howKey} className="space-y-3">
+                      <div className="bg-white p-3 rounded-lg border border-blue-200">
+                        <Label className="text-sm font-medium text-blue-800 flex items-center gap-2">
+                          <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
+                          Win {winNumber}: {accomplishmentText.slice(0, 100)}{accomplishmentText.length > 100 ? '...' : ''}
+                        </Label>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor={howKey} className="text-sm font-medium text-blue-700">
+                          How I Did It (for Win {winNumber})
+                        </Label>
+                        <Textarea
+                          id={howKey}
+                          placeholder={`Describe in detail how you accomplished this win. What specific actions did you take? What energized you most? What was your unique contribution?`}
+                          value={howIDidIt[howKey] || ''}
+                          onChange={(e) => handleHowIDidItChange(howKey, e.target.value)}
+                          className="min-h-[120px] resize-none"
+                          rows={5}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Selection Guidance */}
       {getSelectedCount() > 8 && (
