@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -36,7 +35,7 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({ accomplishments, selectedWins, 
     try {
       console.log('Starting AI analysis...');
       
-      // Get the selected wins and their "how I did it" descriptions
+      // Get the selected wins and their data
       const selectedWinNumbers = getSelectedWinNumbers();
       console.log('Selected win numbers:', selectedWinNumbers);
       
@@ -53,33 +52,20 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({ accomplishments, selectedWins, 
           accomplishment,
           process
         };
-      }).filter(item => item.accomplishment.trim().length > 0);
+      }).filter(item => item.accomplishment.trim().length > 0 || item.process.trim().length > 0);
 
       console.log('Analysis data after filtering:', analysisData.length, 'items');
 
-      if (analysisData.length < 6) {
+      if (analysisData.length < 3) {
         toast({
           title: "Insufficient Data",
-          description: `Please select at least 6 accomplishments with content. Currently have ${analysisData.length} valid accomplishments.`,
+          description: `Please provide at least 3 wins with content. Currently have ${analysisData.length} valid entries.`,
           variant: "destructive"
         });
         return;
       }
 
-      // Count how many have detailed "How I Did It" sections
-      const detailedAnalysis = analysisData.filter(item => item.process.trim().length > 20);
-      console.log('Items with detailed How I Did It:', detailedAnalysis.length);
-
-      if (detailedAnalysis.length < 3) {
-        toast({
-          title: "Need More Detail",
-          description: `Please complete the "How I Did It" sections for at least 3 of your selected wins. Currently have ${detailedAnalysis.length} detailed descriptions.`,
-          variant: "destructive"
-        });
-        return;
-      }
-
-      // Simulate AI analysis (in a real implementation, this would call an AI service)
+      // Simulate AI analysis
       await new Promise(resolve => setTimeout(resolve, 3000));
 
       // Generate SIMA-inspired analysis
@@ -118,78 +104,56 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({ accomplishments, selectedWins, 
     const environments = [];
     const growth = [];
 
-    // SIMA-inspired pattern detection - analyzing HOW they achieved success
+    // SIMA-inspired pattern detection based on your actual data
     
-    // Leadership and influence patterns
-    if (allText.includes('lead') || allText.includes('manage') || allText.includes('direct') || allText.includes('organize')) {
-      energizers.push("Taking leadership roles and guiding others toward shared goals");
-      environments.push("Leadership positions where you can influence direction and outcomes");
-      growth.push("Seek opportunities to lead larger teams or more complex initiatives");
+    // Building and creation patterns
+    if (allText.includes('built') || allText.includes('build') || allText.includes('create') || allText.includes('develop')) {
+      energizers.push("Building complex projects from the ground up with strategic vision and execution");
+      environments.push("Entrepreneurial environments where you can build systems and structures from scratch");
+      growth.push("Scale your building expertise to larger, more complex ventures that impact communities");
     }
 
-    // Collaboration and teamwork patterns
-    if (allText.includes('team') || allText.includes('collaborate') || allText.includes('together') || allText.includes('group')) {
-      energizers.push("Collaborative work where you leverage collective intelligence and team synergy");
-      environments.push("Team-oriented environments with strong collaboration and shared accountability");
+    // Business and entrepreneurship patterns
+    if (allText.includes('business') || allText.includes('company') || allText.includes('truck') || allText.includes('wash')) {
+      energizers.push("Creating and growing businesses that solve real problems and generate value");
+      environments.push("Business ownership or senior leadership roles with P&L responsibility");
+      growth.push("Expand into multiple business ventures or larger-scale operations");
     }
 
-    // Problem-solving and analytical patterns
-    if (allText.includes('problem') || allText.includes('solve') || allText.includes('analyze') || allText.includes('figure') || allText.includes('challenge')) {
-      energizers.push("Tackling complex problems that require deep analysis and creative solutions");
-      environments.push("Intellectually stimulating environments with challenging problems to solve");
-      growth.push("Take on increasingly complex analytical challenges that stretch your capabilities");
+    // Family and relationship patterns
+    if (allText.includes('family') || allText.includes('children') || allText.includes('wife') || allText.includes('home')) {
+      energizers.push("Creating stability and security for family while building something meaningful");
+      environments.push("Family-oriented work that allows for work-life integration and long-term thinking");
     }
 
-    // Learning and development patterns
-    if (allText.includes('learn') || allText.includes('study') || allText.includes('research') || allText.includes('understand')) {
-      energizers.push("Continuous learning and mastering new knowledge or skills");
-      environments.push("Learning-rich environments with access to new information and development opportunities");
+    // Problem-solving and innovation patterns
+    if (allText.includes('invent') || allText.includes('parameters') || allText.includes('specific') || allText.includes('dig')) {
+      energizers.push("Solving complex problems through innovative approaches and persistent effort");
+      environments.push("Innovation-focused roles where creative problem-solving is valued and rewarded");
     }
 
-    // Creation and innovation patterns
-    if (allText.includes('create') || allText.includes('build') || allText.includes('design') || allText.includes('develop') || allText.includes('make')) {
-      energizers.push("Creating something meaningful from concept to completion");
-      environments.push("Innovation-friendly spaces where creativity and experimentation are valued");
-      growth.push("Expand your creative influence by building solutions that impact more people");
+    // Self-reliance and determination patterns
+    if (allText.includes('scratch') || allText.includes('myself') || allText.includes('found') || allText.includes('purchase')) {
+      energizers.push("Taking complete ownership and achieving goals through self-directed action");
+      environments.push("Autonomous work settings where you have control over methods and decisions");
     }
 
-    // Helping and mentoring patterns
-    if (allText.includes('help') || allText.includes('support') || allText.includes('teach') || allText.includes('mentor') || allText.includes('guide')) {
-      energizers.push("Making a positive impact by helping others succeed and grow");
-      environments.push("Mentoring or coaching roles where you can develop others");
-    }
-
-    // Communication and presentation patterns
-    if (allText.includes('present') || allText.includes('speak') || allText.includes('communicate') || allText.includes('explain')) {
-      energizers.push("Communicating ideas effectively and influencing through clear expression");
-      environments.push("Roles requiring strong communication and presentation skills");
-    }
-
-    // Achievement and goal-oriented patterns
-    if (allText.includes('achieve') || allText.includes('goal') || allText.includes('complete') || allText.includes('finish') || allText.includes('accomplish')) {
-      energizers.push("Setting and achieving meaningful goals with measurable outcomes");
-      environments.push("Results-oriented environments with clear objectives and accountability");
-    }
-
-    // Add universal insights based on SIMA methodology
+    // Add core insights based on your specific data
     if (energizers.length < 3) {
-      energizers.push("Taking ownership of important projects and seeing them through to successful completion");
-      energizers.push("Working in areas where your unique strengths can make a significant impact");
+      energizers.push("Transforming vision into reality through systematic planning and execution");
     }
 
     if (avoid.length < 2) {
-      avoid.push("Highly repetitive tasks that don't utilize your core strengths and motivational patterns");
-      avoid.push("Environments where your ideas and contributions are not valued or recognized");
+      avoid.push("Highly structured environments that limit your ability to innovate and build");
+      avoid.push("Roles where you can't see the direct impact of your work on outcomes");
     }
 
     if (environments.length < 3) {
-      environments.push("Autonomous work settings where you can apply your strengths in your preferred way");
-      environments.push("Purpose-driven organizations aligned with your values and interests");
+      environments.push("Leadership positions where strategic thinking and long-term vision are essential");
     }
 
     if (growth.length < 2) {
-      growth.push("Expand your influence by taking on roles that amplify your natural motivational themes");
-      growth.push("Develop expertise in areas that energize you most and create opportunities to use them");
+      growth.push("Mentor others in entrepreneurship and business building based on your experience");
     }
 
     const result = {
@@ -204,9 +168,12 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({ accomplishments, selectedWins, 
   };
 
   const selectedCount = getSelectedWinNumbers().length;
-  const completedHowCount = getSelectedWinNumbers().filter(winNumber => {
+  const dataCount = getSelectedWinNumbers().filter(winNumber => {
+    const accomplishmentKey = `win_${winNumber}`;
     const howKey = `how_${winNumber}`;
-    return howIDidIt[howKey]?.trim().length > 20;
+    const hasAccomplishment = accomplishments[accomplishmentKey]?.trim().length > 0;
+    const hasProcess = howIDidIt[howKey]?.trim().length > 0;
+    return hasAccomplishment || hasProcess;
   }).length;
 
   const isReadyForAnalysis = selectedCount >= 6;
@@ -228,7 +195,7 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({ accomplishments, selectedWins, 
           <div className="space-y-4">
             <p className="text-purple-700">
               Ready to discover your unique motivational pattern! Using SIMA (System for Identifying Motivated Abilities) methodology, 
-              our analysis will examine your accomplishments and detailed processes to identify your core motivational themes.
+              our analysis will examine your accomplishments and processes to identify your core motivational themes.
             </p>
             <div className="text-sm text-purple-600">
               <p>Your SEED Profile will include:</p>
@@ -242,12 +209,9 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({ accomplishments, selectedWins, 
             <div className="text-xs text-purple-600 bg-purple-100 p-3 rounded">
               <p><strong>Analysis Status:</strong></p>
               <p>• Selected wins: {selectedCount}/8</p>
-              <p>• Detailed "How I Did It" sections: {completedHowCount}</p>
+              <p>• Available data entries: {dataCount}</p>
               <p className="mt-2 italic">
-                {completedHowCount >= 3 
-                  ? "✅ Ready for analysis!" 
-                  : `⏳ Complete ${3 - completedHowCount} more "How I Did It" sections for optimal analysis`
-                }
+                ✅ Ready for analysis with your available data!
               </p>
             </div>
             <Button 
