@@ -11,22 +11,68 @@ import {
 } from 'lucide-react';
 import PremiumSEEDProfile from './PremiumSEEDProfile';
 
-interface AIAnalysisProps {
-  analysis: {
-    energizers: string[];
-    avoid: string[];
-    environments: string[];
-    growth: string[];
-  };
-  deepDiveData: Array<{
-    winNumber: number;
-    process: string;
-  }>;
+interface SelectedWins {
+  [key: string]: boolean;
 }
 
-const AIAnalysis: React.FC<AIAnalysisProps> = ({ analysis, deepDiveData }) => {
+interface HowIDidItData {
+  [key: string]: string;
+}
+
+interface AIAnalysisProps {
+  accomplishments: string[];
+  onBack: () => void;
+  selectedWins: SelectedWins;
+  howIDidIt: HowIDidItData;
+}
+
+const AIAnalysis: React.FC<AIAnalysisProps> = ({ accomplishments, onBack, selectedWins, howIDidIt }) => {
   const [showPremium, setShowPremium] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<'basic' | 'premium'>('basic');
+
+  // Generate mock analysis data from accomplishments
+  const generateAnalysis = () => {
+    return {
+      energizers: [
+        "Taking initiative and starting new projects",
+        "Problem-solving and overcoming challenges", 
+        "Learning new skills and developing expertise",
+        "Helping others achieve their goals"
+      ],
+      avoid: [
+        "Repetitive tasks without learning opportunities",
+        "Environments with micromanagement",
+        "Situations lacking clear goals or purpose"
+      ],
+      environments: [
+        "Collaborative teams with shared vision",
+        "Dynamic environments with growth opportunities",
+        "Places where innovation is valued"
+      ],
+      growth: [
+        "Develop leadership communication skills",
+        "Expand strategic thinking capabilities",
+        "Build expertise in emerging technologies"
+      ]
+    };
+  };
+
+  // Generate deep dive data from selected wins
+  const generateDeepDiveData = () => {
+    return Object.keys(selectedWins)
+      .filter(key => selectedWins[key])
+      .map(key => {
+        const winNumber = parseInt(key.replace('selected_win_', ''));
+        const processKey = `how_${winNumber}`;
+        return {
+          winNumber,
+          process: howIDidIt[processKey] || "Process details to be analyzed"
+        };
+      });
+  };
+
+  const analysis = generateAnalysis();
+  const deepDiveData = generateDeepDiveData();
 
   if (showPremium) {
     return (
