@@ -189,15 +189,13 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
               </div>
             </div>
 
-            {!showBasicProfile && (
-              <Button 
-                onClick={() => setShowBasicProfile(true)}
-                className="bg-sage-green hover:bg-forest-dark text-white px-8 py-3 text-lg rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200"
-              >
-                <Unlock className="h-5 w-5 mr-2" />
-                Discover My Basic SEED Profile
-              </Button>
-            )}
+            <Button 
+              onClick={() => setShowBasicProfile(true)}
+              className="bg-sage-green hover:bg-forest-dark text-white px-8 py-3 text-lg rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200"
+            >
+              <Unlock className="h-5 w-5 mr-2" />
+              Discover My Basic SEED Profile
+            </Button>
           </div>
         </CardContent>
       </Card>
