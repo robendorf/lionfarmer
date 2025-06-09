@@ -699,10 +699,18 @@ const PremiumSEEDProfile: React.FC<PremiumSEEDProfileProps> = ({
             Previous
           </Button>
           
-          <div className="text-center">
+          <div className="text-center flex items-center gap-4">
             <p className="text-sm text-earth-brown">
               Premium Analysis • {totalPages} Pages • Personalized Insights
             </p>
+            <Button 
+              onClick={handleDownloadPDF}
+              size="sm"
+              className="bg-warm-gold hover:bg-earth-brown text-white shadow-lg transition-all duration-200"
+            >
+              <Download className="h-4 w-4 mr-2" />
+              Download PDF
+            </Button>
           </div>
           
           <Button

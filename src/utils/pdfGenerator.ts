@@ -24,35 +24,176 @@ export const generateSEEDProfilePDF = (
   const margin = 20;
   const maxWidth = pdf.internal.pageSize.width - 2 * margin;
 
-  // Helper function to add text with line wrapping
-  const addWrappedText = (text: string, fontSize: number = 12, isBold: boolean = false) => {
+  // Color palette matching the website
+  const colors = {
+    forestDark: [42, 63, 45],
+    sageGreen: [106, 140, 115],
+    warmGold: [218, 165, 32],
+    earthBrown: [101, 67, 33],
+    cream: [245, 245, 240]
+  };
+
+  // Helper function to add colored rectangle backgrounds
+  const addColoredBackground = (x: number, y: number, width: number, height: number, color: number[], opacity: number = 0.1) => {
+    pdf.setFillColor(color[0], color[1], color[2]);
+    pdf.setGlobalAlpha(opacity);
+    pdf.rect(x, y, width, height, 'F');
+    pdf.setGlobalAlpha(1);
+  };
+
+  // Helper function to add text with styling
+  const addStyledText = (text: string, x: number, y: number, options: {
+    fontSize?: number;
+    isBold?: boolean;
+    color?: number[];
+    align?: 'left' | 'center' | 'right';
+    maxWidth?: number;
+  } = {}) => {
+    const {
+      fontSize = 12,
+      isBold = false,
+      color = colors.forestDark,
+      align = 'left',
+      maxWidth = maxWidth
+    } = options;
+
     pdf.setFontSize(fontSize);
-    if (isBold) {
-      pdf.setFont(undefined, 'bold');
+    pdf.setFont(undefined, isBold ? 'bold' : 'normal');
+    pdf.setTextColor(color[0], color[1], color[2]);
+    
+    if (maxWidth && maxWidth < pdf.internal.pageSize.width - 2 * margin) {
+      const lines = pdf.splitTextToSize(text, maxWidth);
+      pdf.text(lines, x, y, { align });
+      return lines.length * fontSize * 0.35;
     } else {
-      pdf.setFont(undefined, 'normal');
+      pdf.text(text, x, y, { align });
+      return fontSize * 0.35;
     }
-    
-    const lines = pdf.splitTextToSize(text, maxWidth);
-    
-    // Check if we need a new page
-    if (yPosition + (lines.length * fontSize * 0.35) > pageHeight - margin) {
+  };
+
+  // Helper function to add section header with background
+  const addSectionHeader = (title: string, icon: string = '') => {
+    if (yPosition > pageHeight - 60) {
       pdf.addPage();
       yPosition = 20;
     }
+
+    // Add gradient-like background
+    addColoredBackground(margin, yPosition - 5, maxWidth, 25, colors.warmGold, 0.15);
+    addColoredBackground(margin, yPosition - 5, maxWidth, 25, colors.sageGreen, 0.1);
     
-    pdf.text(lines, margin, yPosition);
-    yPosition += lines.length * fontSize * 0.35 + 8;
+    // Add border
+    pdf.setDrawColor(colors.warmGold[0], colors.warmGold[1], colors.warmGold[2]);
+    pdf.setLineWidth(1);
+    pdf.rect(margin, yPosition - 5, maxWidth, 25);
+    
+    const textHeight = addStyledText(`${icon} ${title}`, margin + 10, yPosition + 10, {
+      fontSize: 16,
+      isBold: true,
+      color: colors.forestDark
+    });
+    
+    yPosition += 35;
+    return textHeight;
   };
 
-  const addSpacing = (space: number = 10) => {
+  // Helper function to add bullet points with styling
+  const addBulletPoint = (text: string, level: number = 0) => {
+    if (yPosition > pageHeight - 30) {
+      pdf.addPage();
+      yPosition = 20;
+    }
+
+    const indent = margin + (level * 15);
+    const bulletX = indent;
+    const textX = indent + 15;
+    
+    // Add background for bullet points
+    if (level === 0) {
+      addColoredBackground(margin, yPosition - 3, maxWidth, 15, colors.cream, 0.3);
+    }
+    
+    // Add bullet
+    pdf.setFillColor(colors.warmGold[0], colors.warmGold[1], colors.warmGold[2]);
+    pdf.circle(bulletX + 3, yPosition + 2, 2, 'F');
+    
+    // Add text
+    const lines = pdf.splitTextToSize(text, maxWidth - (textX - margin));
+    addStyledText(lines.join('\n'), textX, yPosition + 5, {
+      fontSize: 11,
+      color: colors.forestDark,
+      maxWidth: maxWidth - (textX - margin)
+    });
+    
+    yPosition += Math.max(lines.length * 12, 18);
+  };
+
+  // Add spacing
+  const addSpacing = (space: number = 15) => {
     yPosition += space;
   };
 
-  const generateExpandedAnalysis = () => {
-    const allProcesses = deepDiveData.map(d => d.process).join(' ').toLowerCase();
-    
-    return {
+  // Title Page with styling
+  addColoredBackground(0, 0, pdf.internal.pageSize.width, 80, colors.sageGreen, 0.1);
+  addColoredBackground(0, 0, pdf.internal.pageSize.width, 80, colors.warmGold, 0.05);
+  
+  addStyledText('🎯 SEED PROFILE ANALYSIS', pdf.internal.pageSize.width / 2, 35, {
+    fontSize: 24,
+    isBold: true,
+    color: colors.forestDark,
+    align: 'center'
+  });
+  
+  addStyledText(isPremium ? '👑 Premium Report' : 'Free Report', pdf.internal.pageSize.width / 2, 55, {
+    fontSize: 16,
+    color: colors.warmGold,
+    align: 'center'
+  });
+  
+  addStyledText(`Generated on: ${new Date().toLocaleDateString()}`, pdf.internal.pageSize.width / 2, 70, {
+    fontSize: 12,
+    color: colors.earthBrown,
+    align: 'center'
+  });
+
+  yPosition = 100;
+
+  if (isPremium) {
+    addStyledText('Comprehensive Motivational Pattern Analysis', pdf.internal.pageSize.width / 2, yPosition, {
+      fontSize: 14,
+      isBold: true,
+      color: colors.sageGreen,
+      align: 'center'
+    });
+    yPosition += 30;
+  }
+
+  // Core SEED sections with enhanced styling
+  addSectionHeader('⚡ WHAT ENERGIZES YOU');
+  analysis.energizers.forEach((item, index) => {
+    addBulletPoint(`${item}`);
+  });
+  addSpacing();
+
+  addSectionHeader('🚫 WHAT TO AVOID');
+  analysis.avoid.forEach((item, index) => {
+    addBulletPoint(`${item}`);
+  });
+  addSpacing();
+
+  addSectionHeader('🏢 IDEAL WORK & CONTRIBUTION ENVIRONMENTS');
+  analysis.environments.forEach((item, index) => {
+    addBulletPoint(`${item}`);
+  });
+  addSpacing();
+
+  addSectionHeader('📈 GROWTH OPPORTUNITIES');
+  analysis.growth.forEach((item, index) => {
+    addBulletPoint(`${item}`);
+  });
+
+  if (isPremium) {
+    const expandedAnalysis = {
       coreMotivationalDNA: {
         primaryDrivers: [
           "Systematic Innovation: You are energized by creating structured approaches to complex challenges while maintaining creative flexibility",
@@ -141,203 +282,203 @@ export const generateSEEDProfilePDF = (
         ]
       }
     };
-  };
-
-  // Title Page
-  addWrappedText('SEED PROFILE ANALYSIS', 24, true);
-  addWrappedText(isPremium ? 'Premium Report' : 'Free Report', 16);
-  addWrappedText(`Generated on: ${new Date().toLocaleDateString()}`, 12);
-  addSpacing(20);
-
-  if (isPremium) {
-    addWrappedText('Comprehensive Motivational Pattern Analysis', 14, true);
-    addSpacing(15);
-  }
-
-  // Core SEED Profile sections
-  addWrappedText('WHAT ENERGIZES YOU', 16, true);
-  analysis.energizers.forEach((item, index) => {
-    addWrappedText(`${index + 1}. ${item}`, 12);
-  });
-  addSpacing();
-
-  addWrappedText('WHAT TO AVOID', 16, true);
-  analysis.avoid.forEach((item, index) => {
-    addWrappedText(`${index + 1}. ${item}`, 12);
-  });
-  addSpacing();
-
-  addWrappedText('IDEAL WORK & CONTRIBUTION ENVIRONMENTS', 16, true);
-  analysis.environments.forEach((item, index) => {
-    addWrappedText(`${index + 1}. ${item}`, 12);
-  });
-  addSpacing();
-
-  addWrappedText('GROWTH OPPORTUNITIES', 16, true);
-  analysis.growth.forEach((item, index) => {
-    addWrappedText(`${index + 1}. ${item}`, 12);
-  });
-
-  if (isPremium) {
-    const expandedAnalysis = generateExpandedAnalysis();
     
     // Add new page for premium content
     pdf.addPage();
     yPosition = 20;
     
-    addWrappedText('PREMIUM ANALYSIS SECTIONS', 18, true);
-    addWrappedText('This premium analysis includes expanded insights based on your detailed process descriptions and SIMA methodology.', 12);
-    addSpacing(15);
+    addSectionHeader('🧠 CORE MOTIVATIONAL DNA');
     
-    // Core Motivational DNA
-    addWrappedText('CORE MOTIVATIONAL DNA', 16, true);
-    
-    addWrappedText('Primary Drivers:', 14, true);
-    expandedAnalysis.coreMotivationalDNA.primaryDrivers.forEach((driver, index) => {
-      addWrappedText(`• ${driver}`, 11);
+    addStyledText('Primary Drivers:', margin, yPosition, { fontSize: 14, isBold: true, color: colors.sageGreen });
+    yPosition += 20;
+    expandedAnalysis.coreMotivationalDNA.primaryDrivers.forEach((driver) => {
+      addBulletPoint(driver);
     });
     addSpacing();
     
-    addWrappedText('Energy Patterns:', 14, true);
-    expandedAnalysis.coreMotivationalDNA.energyPatterns.forEach((pattern, index) => {
-      addWrappedText(`• ${pattern}`, 11);
+    addStyledText('Energy Patterns:', margin, yPosition, { fontSize: 14, isBold: true, color: colors.sageGreen });
+    yPosition += 20;
+    expandedAnalysis.coreMotivationalDNA.energyPatterns.forEach((pattern) => {
+      addBulletPoint(pattern);
     });
     addSpacing();
     
-    addWrappedText('Stress Indicators:', 14, true);
-    expandedAnalysis.coreMotivationalDNA.stressIndicators.forEach((indicator, index) => {
-      addWrappedText(`• ${indicator}`, 11);
+    addStyledText('Stress Indicators:', margin, yPosition, { fontSize: 14, isBold: true, color: colors.earthBrown });
+    yPosition += 20;
+    expandedAnalysis.coreMotivationalDNA.stressIndicators.forEach((indicator) => {
+      addBulletPoint(indicator);
     });
-    addSpacing(15);
+    addSpacing(20);
 
     // Decision-Making Style
-    addWrappedText('DECISION-MAKING STYLE ANALYSIS', 16, true);
-    addWrappedText(`Your Style: ${expandedAnalysis.decisionMaking.style}`, 14, true);
+    addSectionHeader('🎯 DECISION-MAKING STYLE ANALYSIS');
+    addStyledText(`Your Style: ${expandedAnalysis.decisionMaking.style}`, margin, yPosition, { 
+      fontSize: 14, 
+      isBold: true, 
+      color: colors.warmGold 
+    });
+    yPosition += 25;
     
-    addWrappedText('Decision Process:', 13, true);
+    addStyledText('Decision Process:', margin, yPosition, { fontSize: 13, isBold: true, color: colors.sageGreen });
+    yPosition += 20;
     expandedAnalysis.decisionMaking.process.forEach((step, index) => {
-      addWrappedText(`${index + 1}. ${step}`, 11);
+      addBulletPoint(`${step}`);
     });
     addSpacing();
     
-    addWrappedText('Strengths:', 13, true);
-    expandedAnalysis.decisionMaking.strengths.forEach((strength, index) => {
-      addWrappedText(`• ${strength}`, 11);
+    addStyledText('Strengths:', margin, yPosition, { fontSize: 13, isBold: true, color: colors.sageGreen });
+    yPosition += 20;
+    expandedAnalysis.decisionMaking.strengths.forEach((strength) => {
+      addBulletPoint(strength);
     });
     addSpacing();
     
-    addWrappedText('Potential Blind Spots:', 13, true);
-    expandedAnalysis.decisionMaking.blindSpots.forEach((blindSpot, index) => {
-      addWrappedText(`• ${blindSpot}`, 11);
+    addStyledText('Areas for Awareness:', margin, yPosition, { fontSize: 13, isBold: true, color: colors.earthBrown });
+    yPosition += 20;
+    expandedAnalysis.decisionMaking.blindSpots.forEach((blindSpot) => {
+      addBulletPoint(blindSpot);
     });
-    addSpacing(15);
+    addSpacing(20);
 
     // Add new page for relationships
     pdf.addPage();
     yPosition = 20;
     
     // Relationship & Leadership Patterns
-    addWrappedText('RELATIONSHIP & LEADERSHIP PATTERNS', 16, true);
-    addWrappedText(`Leadership Style: ${expandedAnalysis.relationships.leadershipStyle}`, 14, true);
+    addSectionHeader('👥 RELATIONSHIP & LEADERSHIP PATTERNS');
+    addStyledText(`Leadership Style: ${expandedAnalysis.relationships.leadershipStyle}`, margin, yPosition, { 
+      fontSize: 14, 
+      isBold: true, 
+      color: colors.warmGold 
+    });
+    yPosition += 25;
     
-    expandedAnalysis.relationships.teamDynamics.forEach((dynamic, index) => {
-      addWrappedText(`• ${dynamic}`, 11);
+    expandedAnalysis.relationships.teamDynamics.forEach((dynamic) => {
+      addBulletPoint(dynamic);
     });
     addSpacing();
     
-    addWrappedText('Collaboration Preferences:', 13, true);
-    expandedAnalysis.relationships.collaboration.forEach((pref, index) => {
-      addWrappedText(`• ${pref}`, 11);
+    addStyledText('Collaboration Preferences:', margin, yPosition, { fontSize: 13, isBold: true, color: colors.sageGreen });
+    yPosition += 20;
+    expandedAnalysis.relationships.collaboration.forEach((pref) => {
+      addBulletPoint(pref);
     });
     addSpacing();
     
-    addWrappedText('Communication Style:', 13, true);
-    expandedAnalysis.relationships.communication.forEach((style, index) => {
-      addWrappedText(`• ${style}`, 11);
+    addStyledText('Communication Style:', margin, yPosition, { fontSize: 13, isBold: true, color: colors.sageGreen });
+    yPosition += 20;
+    expandedAnalysis.relationships.communication.forEach((style) => {
+      addBulletPoint(style);
     });
-    addSpacing(15);
+    addSpacing(20);
 
     // Career Optimization Guide
-    addWrappedText('CAREER OPTIMIZATION GUIDE', 16, true);
+    addSectionHeader('💼 CAREER OPTIMIZATION GUIDE');
     
-    addWrappedText('Ideal Roles:', 14, true);
-    expandedAnalysis.careerOptimization.idealRoles.forEach((role, index) => {
-      addWrappedText(`• ${role}`, 11);
+    addStyledText('Ideal Roles:', margin, yPosition, { fontSize: 14, isBold: true, color: colors.sageGreen });
+    yPosition += 20;
+    expandedAnalysis.careerOptimization.idealRoles.forEach((role) => {
+      addBulletPoint(role);
     });
     addSpacing();
     
-    addWrappedText('Industry Fit:', 14, true);
-    expandedAnalysis.careerOptimization.industryFit.forEach((industry, index) => {
-      addWrappedText(`• ${industry}`, 11);
+    addStyledText('Industry Sweet Spots:', margin, yPosition, { fontSize: 14, isBold: true, color: colors.sageGreen });
+    yPosition += 20;
+    expandedAnalysis.careerOptimization.industryFit.forEach((industry) => {
+      addBulletPoint(industry);
     });
     addSpacing();
     
-    addWrappedText('Avoidance Zones:', 14, true);
-    expandedAnalysis.careerOptimization.avoidanceZones.forEach((zone, index) => {
-      addWrappedText(`• ${zone}`, 11);
+    addStyledText('Career Pitfalls to Avoid:', margin, yPosition, { fontSize: 14, isBold: true, color: colors.earthBrown });
+    yPosition += 20;
+    expandedAnalysis.careerOptimization.avoidanceZones.forEach((zone) => {
+      addBulletPoint(zone);
     });
-    addSpacing(15);
+    addSpacing(20);
 
     // Add new page for development plan
     pdf.addPage();
     yPosition = 20;
     
     // Personal Development Plan
-    addWrappedText('PERSONAL DEVELOPMENT PLAN', 16, true);
+    addSectionHeader('📚 PERSONAL DEVELOPMENT ROADMAP');
     
-    addWrappedText('Short-Term Focus (3-6 months):', 14, true);
-    expandedAnalysis.developmentPlan.shortTerm.forEach((goal, index) => {
-      addWrappedText(`• ${goal}`, 11);
+    addStyledText('Short-Term Focus (3-6 months):', margin, yPosition, { fontSize: 14, isBold: true, color: colors.warmGold });
+    yPosition += 20;
+    expandedAnalysis.developmentPlan.shortTerm.forEach((goal) => {
+      addBulletPoint(goal);
     });
     addSpacing();
     
-    addWrappedText('Long-Term Vision (1-3 years):', 14, true);
-    expandedAnalysis.developmentPlan.longTerm.forEach((vision, index) => {
-      addWrappedText(`• ${vision}`, 11);
+    addStyledText('Long-Term Vision (1-3 years):', margin, yPosition, { fontSize: 14, isBold: true, color: colors.sageGreen });
+    yPosition += 20;
+    expandedAnalysis.developmentPlan.longTerm.forEach((vision) => {
+      addBulletPoint(vision);
     });
     addSpacing();
     
-    addWrappedText('Skill Building Priorities:', 14, true);
-    expandedAnalysis.developmentPlan.skillBuilding.forEach((skill, index) => {
-      addWrappedText(`• ${skill}`, 11);
+    addStyledText('Skill Building Priorities:', margin, yPosition, { fontSize: 14, isBold: true, color: colors.sageGreen });
+    yPosition += 20;
+    expandedAnalysis.developmentPlan.skillBuilding.forEach((skill) => {
+      addBulletPoint(skill);
     });
-    addSpacing(15);
+    addSpacing(20);
 
     // Action Plan & Next Steps
-    addWrappedText('ACTION PLAN & NEXT STEPS', 16, true);
-    addWrappedText('Your 30-60-90 Day Implementation Plan', 14, true);
+    addSectionHeader('⭐ YOUR ACTION PLAN & NEXT STEPS');
+    addStyledText('Your 30-60-90 Day Implementation Plan', margin, yPosition, { 
+      fontSize: 14, 
+      isBold: true, 
+      color: colors.warmGold 
+    });
+    yPosition += 25;
     
-    addWrappedText('First 30 Days:', 13, true);
-    addWrappedText('• Audit current role against ideal environment criteria', 11);
-    addWrappedText('• Identify 3 systematic improvements you can implement', 11);
-    addWrappedText('• Begin documenting your proven methodologies', 11);
+    addStyledText('First 30 Days:', margin, yPosition, { fontSize: 13, isBold: true, color: colors.sageGreen });
+    yPosition += 20;
+    addBulletPoint('Audit current role against ideal environment criteria');
+    addBulletPoint('Identify 3 systematic improvements you can implement');
+    addBulletPoint('Begin documenting your proven methodologies');
     addSpacing();
     
-    addWrappedText('Next 30 Days:', 13, true);
-    addWrappedText('• Implement one systematic improvement project', 11);
-    addWrappedText('• Start networking with innovation-focused professionals', 11);
-    addWrappedText('• Practice delegation using your systematic frameworks', 11);
+    addStyledText('Next 30 Days:', margin, yPosition, { fontSize: 13, isBold: true, color: colors.sageGreen });
+    yPosition += 20;
+    addBulletPoint('Implement one systematic improvement project');
+    addBulletPoint('Start networking with innovation-focused professionals');
+    addBulletPoint('Practice delegation using your systematic frameworks');
     addSpacing();
     
-    addWrappedText('Following 30 Days:', 13, true);
-    addWrappedText('• Evaluate progress and refine your approach', 11);
-    addWrappedText('• Seek feedback on your systematic innovations', 11);
-    addWrappedText('• Plan next phase of development or career moves', 11);
+    addStyledText('Following 30 Days:', margin, yPosition, { fontSize: 13, isBold: true, color: colors.sageGreen });
+    yPosition += 20;
+    addBulletPoint('Evaluate progress and refine your approach');
+    addBulletPoint('Seek feedback on your systematic innovations');
+    addBulletPoint('Plan next phase of development or career moves');
     addSpacing();
     
-    addWrappedText('Key Success Indicators:', 14, true);
-    addWrappedText('• You feel energized by your daily work and see clear progress', 11);
-    addWrappedText('• Others seek your systematic approach for solving complex problems', 11);
-    addWrappedText('• You\'re building systems and processes that create lasting value', 11);
-    addSpacing(15);
+    addStyledText('Key Success Indicators:', margin, yPosition, { fontSize: 14, isBold: true, color: colors.warmGold });
+    yPosition += 20;
+    addBulletPoint('You feel energized by your daily work and see clear progress');
+    addBulletPoint('Others seek your systematic approach for solving complex problems');
+    addBulletPoint('You\'re building systems and processes that create lasting value');
+    addSpacing(20);
     
-    addWrappedText('Remember: Your SEED Profile is a living document. Revisit and refine it as you grow and gain new experiences.', 12, true);
+    // Final message with background
+    addColoredBackground(margin, yPosition - 5, maxWidth, 30, colors.warmGold, 0.1);
+    addColoredBackground(margin, yPosition - 5, maxWidth, 30, colors.sageGreen, 0.05);
+    
+    addStyledText('⭐ Remember: Your SEED Profile is a living document. Revisit and refine it as you grow and gain new experiences. ⭐', 
+      pdf.internal.pageSize.width / 2, yPosition + 15, { 
+      fontSize: 12, 
+      isBold: true, 
+      color: colors.forestDark,
+      align: 'center'
+    });
   }
 
   // Footer on last page
   pdf.setFontSize(10);
   pdf.setFont(undefined, 'italic');
-  pdf.text('Generated by SEED Profile Analysis Tool', margin, pageHeight - 15);
+  pdf.setTextColor(colors.earthBrown[0], colors.earthBrown[1], colors.earthBrown[2]);
+  pdf.text('Generated by SEED Profile Analysis Tool • lionfarmer.com', margin, pageHeight - 15);
 
   return pdf;
 };
