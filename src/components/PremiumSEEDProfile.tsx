@@ -1,14 +1,11 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { 
   Crown, ChevronLeft, ChevronRight, Brain, Target, Users, 
   TrendingUp, Heart, Briefcase, BookOpen, ArrowLeft, Star,
-  Zap, Shield, Compass, Lightbulb, Activity, Download
+  Zap, Shield, Compass, Lightbulb, Activity
 } from 'lucide-react';
-import { generateSEEDProfilePDF } from '../utils/pdfGenerator';
-import { useToast } from '@/hooks/use-toast';
 
 interface PremiumSEEDProfileProps {
   analysis: {
@@ -31,17 +28,6 @@ const PremiumSEEDProfile: React.FC<PremiumSEEDProfileProps> = ({
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = 6;
-  const { toast } = useToast();
-
-  const handleDownloadPDF = () => {
-    const pdf = generateSEEDProfilePDF(analysis, deepDiveData, true);
-    pdf.save(`SEED-Profile-Premium-${new Date().toISOString().split('T')[0]}.pdf`);
-    
-    toast({
-      title: "PDF Downloaded",
-      description: "Your Premium SEED Profile has been downloaded successfully!"
-    });
-  };
 
   const generateExpandedAnalysis = () => {
     const allProcesses = deepDiveData.map(d => d.process).join(' ').toLowerCase();
@@ -656,14 +642,6 @@ const PremiumSEEDProfile: React.FC<PremiumSEEDProfileProps> = ({
           </Button>
           
           <div className="flex items-center gap-4">
-            <Button 
-              onClick={handleDownloadPDF}
-              className="bg-warm-gold hover:bg-earth-brown text-white shadow-lg transition-all duration-200"
-            >
-              <Download className="h-4 w-4 mr-2" />
-              Download Premium PDF
-            </Button>
-            
             <div className="flex items-center gap-2">
               <span className="text-sm text-forest-dark font-medium">
                 Page {currentPage} of {totalPages}
@@ -699,18 +677,10 @@ const PremiumSEEDProfile: React.FC<PremiumSEEDProfileProps> = ({
             Previous
           </Button>
           
-          <div className="text-center flex items-center gap-4">
+          <div className="text-center">
             <p className="text-sm text-earth-brown">
               Premium Analysis • {totalPages} Pages • Personalized Insights
             </p>
-            <Button 
-              onClick={handleDownloadPDF}
-              size="sm"
-              className="bg-warm-gold hover:bg-earth-brown text-white shadow-lg transition-all duration-200"
-            >
-              <Download className="h-4 w-4 mr-2" />
-              Download PDF
-            </Button>
           </div>
           
           <Button
