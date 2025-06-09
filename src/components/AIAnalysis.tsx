@@ -34,7 +34,7 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showPremium, setShowPremium] = useState(false);
-  const [isPremiumUser, setIsPremiumUser] = useState(true); // Changed to true for testing
+  const [isPremiumUser, setIsPremiumUser] = useState(true); // Set to true to enable premium features
   const { toast } = useToast();
 
   const getSelectedWinNumbers = () => {
@@ -165,7 +165,7 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
   };
 
   const handlePremiumUpgrade = () => {
-    if (isPremiumUser) {
+    if (isPremiumUser && analysis) {
       setShowPremium(true);
     } else {
       toast({
@@ -237,14 +237,13 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
               Download PDF
             </Button>
           )}
-          {!isPremiumUser && (
+          {isPremiumUser && analysis && (
             <Button 
               onClick={handlePremiumUpgrade}
-              variant="outline"
-              className="border-warm-gold text-earth-brown hover:bg-warm-gold hover:text-white"
+              className="bg-warm-gold hover:bg-earth-brown text-white"
             >
               <Crown className="h-4 w-4 mr-2" />
-              Upgrade to Premium
+              View Premium Analysis
             </Button>
           )}
         </div>
@@ -288,24 +287,16 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
             <h2 className="text-2xl font-bold text-forest-dark mb-2">
               🎯 Your SEED Profile {isPremiumUser ? '(Premium Version)' : '(Free Version)'}
             </h2>
-            {!isPremiumUser && (
+            {isPremiumUser && (
               <div className="bg-warm-gold/10 border border-warm-gold rounded-lg p-3 mt-4">
                 <div className="flex items-center gap-2 text-earth-brown mb-2">
                   <Crown className="h-4 w-4" />
-                  <span className="font-semibold">Premium Available!</span>
+                  <span className="font-semibold">Premium Analysis Available!</span>
                 </div>
                 <p className="text-sm text-earth-brown">
-                  Upgrade to get a comprehensive 5+ page analysis with expanded insights, career recommendations, 
-                  relationship patterns, decision-making styles, and personalized action plans.
+                  Click "View Premium Analysis" above to access your comprehensive 6-page analysis with expanded insights, 
+                  career recommendations, relationship patterns, decision-making styles, and personalized action plans.
                 </p>
-                <Button 
-                  onClick={handlePremiumUpgrade} 
-                  className="mt-2 bg-warm-gold hover:bg-earth-brown text-white"
-                  size="sm"
-                >
-                  <Crown className="h-4 w-4 mr-1" />
-                  Unlock Premium Analysis
-                </Button>
               </div>
             )}
           </div>
