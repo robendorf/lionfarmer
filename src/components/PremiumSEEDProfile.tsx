@@ -6,7 +6,7 @@ import {
   TrendingUp, Heart, Briefcase, BookOpen, ArrowLeft, Star,
   Zap, Shield, Compass, Lightbulb, Activity, BarChart3,
   Award, Calendar, Clock, Puzzle, MessageCircle, Eye,
-  Rocket, Building, Network, PieChart, ArrowUpCircle
+  Rocket, Building, Network, PieChart, ArrowUpCircle, Check, Lock
 } from 'lucide-react';
 
 interface PremiumSEEDProfileProps {
@@ -29,7 +29,7 @@ const PremiumSEEDProfile: React.FC<PremiumSEEDProfileProps> = ({
   onBack
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = 15;
+  const totalPages = 10;
 
   const generateExpandedAnalysis = () => {
     const allProcesses = deepDiveData.map(d => d.process).join(' ').toLowerCase();
@@ -38,10 +38,10 @@ const PremiumSEEDProfile: React.FC<PremiumSEEDProfileProps> = ({
       executiveSummary: {
         profileType: "Systematic Innovation Leader",
         coreStrengths: [
-          "Strategic thinking with systematic execution",
-          "Natural problem-solving and pattern recognition",
-          "Building sustainable systems and processes",
-          "Inspiring others through methodical excellence"
+          "Strategic thinking with systematic execution that drives measurable results",
+          "Natural problem-solving abilities that identify root causes and create lasting solutions",
+          "Building sustainable systems that scale impact and empower others",
+          "Inspiring others through methodical excellence and proven frameworks"
         ],
         keyInsights: [
           "You thrive when combining creative innovation with structured approaches",
@@ -51,49 +51,29 @@ const PremiumSEEDProfile: React.FC<PremiumSEEDProfileProps> = ({
       },
       coreMotivationalDNA: {
         primaryDrivers: [
-          "Systematic Innovation: You are energized by creating structured approaches to complex challenges while maintaining creative flexibility",
-          "Ownership Excellence: Deep satisfaction comes from having complete accountability and seeing direct results from your methodical approach",
-          "Value Creation: You thrive when building something meaningful that solves real problems and creates lasting impact for others",
-          "Knowledge Mastery: You are motivated by continuously learning and developing expertise in your areas of focus"
+          "Systematic Innovation: You are energized by creating structured approaches to complex challenges while maintaining creative flexibility and seeing measurable results from your methodical work.",
+          "Ownership Excellence: Deep satisfaction comes from having complete accountability and seeing direct results from your methodical approach to building sustainable solutions.",
+          "Value Creation: You thrive when building something meaningful that solves real problems and creates lasting impact for others through systematic excellence and proven methodologies."
         ],
         energyPatterns: [
-          "Peak energy during planning and execution phases where you can apply systematic thinking",
-          "Sustained motivation when you can see clear progress toward meaningful outcomes",
-          "Renewed enthusiasm when facing complex challenges that require innovative solutions",
-          "High engagement when mentoring others and sharing your systematic approaches"
-        ],
-        stressIndicators: [
-          "Energy drain in highly micromanaged environments that limit your autonomy",
-          "Frustration when forced to work without adequate planning or preparation time",
-          "Burnout risk in roles where you cannot see the impact of your systematic approach",
-          "Tension when working with people who consistently resist structured methodologies"
-        ],
-        motivationalTriggers: [
-          "Being asked to solve complex, multi-faceted problems",
-          "Opportunities to design and implement new systems",
-          "Recognition for the effectiveness of your methodical approaches",
-          "Chances to teach and develop others' capabilities"
+          "Peak energy during planning and execution phases where you can apply systematic thinking to create meaningful outcomes",
+          "Sustained motivation when you can see clear progress toward meaningful outcomes that align with your values",
+          "High engagement when mentoring others and sharing your systematic approaches for mutual growth and impact"
         ]
       },
       cognitiveProfile: {
         thinkingStyle: "Analytical Systems Architect",
         informationProcessing: [
-          "Sequential Processing: You prefer to work through information in logical, step-by-step sequences",
-          "Pattern Recognition: Natural ability to identify recurring themes and underlying structures",
-          "Systematic Integration: Excellent at combining multiple data points into comprehensive frameworks",
-          "Future-Focused Analysis: Strong capability to project current patterns into future scenarios"
+          "Sequential Processing: You prefer to work through information in logical, step-by-step sequences that build comprehensive understanding",
+          "Pattern Recognition: Natural ability to identify recurring themes and underlying structures that others might miss"
         ],
         problemSolving: [
           "Root Cause Analysis: You instinctively dig deep to understand fundamental issues",
-          "Framework Development: Natural tendency to create reusable methodologies for similar problems",
-          "Risk Assessment: Thorough evaluation of potential obstacles and mitigation strategies",
-          "Solution Testing: Preference for piloting and refining approaches before full implementation"
+          "Framework Development: Natural tendency to create reusable methodologies for similar problems"
         ],
         creativityStyle: [
           "Structured Innovation: You generate creative solutions within systematic frameworks",
-          "Improvement-Oriented: Focus on enhancing existing systems rather than completely reinventing",
-          "Collaborative Ideation: Most creative when building on others' ideas with your analytical insights",
-          "Practical Creativity: Ideas are always filtered through feasibility and implementation considerations"
+          "Improvement-Oriented: Focus on enhancing existing systems rather than completely reinventing"
         ]
       },
       decisionMaking: {
@@ -126,10 +106,7 @@ const PremiumSEEDProfile: React.FC<PremiumSEEDProfileProps> = ({
       relationships: {
         leadershipStyle: "Systematic Enabler",
         teamDynamics: [
-          "You lead by example, demonstrating thorough preparation and methodical execution",
-          "You empower others by sharing your systematic approaches and frameworks",
-          "You build trust through consistent delivery and transparent communication",
-          "You create psychological safety by providing clear structure and expectations"
+          "You lead by empowering others with proven frameworks and systematic approaches, creating environments where teams can achieve excellence through structured collaboration and shared accountability."
         ],
         collaboration: [
           "Most effective in partnerships where you can contribute strategic thinking and planning",
@@ -158,135 +135,50 @@ const PremiumSEEDProfile: React.FC<PremiumSEEDProfileProps> = ({
       },
       careerOptimization: {
         idealRoles: [
-          "Strategic Operations Leader: Roles where you design and implement systematic approaches to complex business challenges",
-          "Innovation Manager: Positions that combine creative problem-solving with structured execution and measurable outcomes",
-          "Entrepreneurial Executive: Leadership roles in growing organizations where you can build systems and see direct impact",
-          "Management Consultant: Helping organizations optimize their processes and systems for better performance",
-          "Product Development Director: Leading teams to create innovative solutions through systematic development processes"
-        ],
-        industryFit: [
-          "Technology and Innovation: Where systematic approaches to complex problems are highly valued",
-          "Consulting and Strategy: Where your analytical skills and systematic thinking directly impact client success",
-          "Entrepreneurship and Startups: Where you can build systems from the ground up and see immediate impact",
-          "Manufacturing and Operations: Where process optimization and systematic improvements drive success",
-          "Healthcare and Life Sciences: Where systematic approaches to complex challenges can save lives and improve outcomes"
-        ],
-        avoidanceZones: [
-          "Highly bureaucratic organizations with rigid processes that cannot be improved or customized",
-          "Roles focused purely on maintenance without opportunities for innovation or improvement",
-          "Positions where success is measured solely on relationship-building rather than systematic achievement",
-          "Environments with constantly changing priorities that prevent systematic approach development",
-          "Organizations that resist data-driven decision making and systematic process improvements"
-        ],
-        careerProgression: [
-          "Start in roles that allow you to demonstrate your systematic problem-solving abilities",
-          "Seek opportunities to lead process improvement or innovation initiatives",
-          "Build a reputation as someone who can tackle complex, multi-faceted challenges",
-          "Move into leadership roles where you can scale your systematic approaches through others",
-          "Consider entrepreneurial opportunities where you can build systems from the ground up"
+          "Strategic Operations Leader: Roles where you design and implement systematic approaches to complex business challenges with measurable impact.",
+          "Innovation Manager: Positions that combine creative problem-solving with structured execution and clear accountability for results."
         ]
       },
       developmentPlan: {
         shortTerm: [
-          "Enhance your delegation skills to leverage your systematic approaches through others",
-          "Develop rapid prototyping abilities to complement your thorough planning with quick testing",
-          "Strengthen your networking to create opportunities for applying your systematic innovation",
-          "Practice making decisions with incomplete information to improve agility",
-          "Build presentation skills to better communicate your systematic insights to diverse audiences"
-        ],
-        longTerm: [
-          "Build a portfolio of proven methodologies that you can apply across different contexts",
-          "Develop thought leadership in your area of systematic innovation through speaking and writing",
-          "Create mentorship programs to scale your impact by developing others' systematic thinking skills",
-          "Establish yourself as a go-to expert for complex problem-solving in your industry",
-          "Consider starting your own consulting practice or business based on your systematic approaches"
-        ],
-        skillBuilding: [
-          "Advanced project management methodologies to enhance your natural systematic approach",
-          "Design thinking principles to add creative frameworks to your analytical strengths",
-          "Change management skills to help organizations adopt your innovative systematic approaches",
-          "Data analytics and visualization tools to better support your systematic insights",
-          "Executive communication skills to effectively present your ideas to senior leadership"
-        ],
-        experientialLearning: [
-          "Lead a cross-functional project that requires systematic coordination of diverse teams",
-          "Take on a role in a startup environment to experience building systems from scratch",
-          "Volunteer to lead a process improvement initiative in your current organization",
-          "Participate in consulting projects to practice applying your systematic approaches in new contexts",
-          "Join professional associations related to your field to network with other systematic thinkers"
+          "Enhance your delegation skills to leverage your systematic approaches through others and scale your impact beyond individual contribution.",
+          "Develop rapid prototyping abilities to complement your thorough planning with quick testing and iterative improvement cycles."
         ]
       },
       workEnvironment: {
-        physicalSpace: [
-          "Organized workspace with systems for managing information and projects",
-          "Access to whiteboards or digital tools for mapping out complex problems",
-          "Quiet space for deep thinking and analysis when needed",
-          "Collaborative areas for team meetings and systematic problem-solving sessions"
-        ],
-        culturalFit: [
-          "Organizations that value systematic approaches and continuous improvement",
-          "Cultures that encourage innovation within structured frameworks",
-          "Environments where expertise and proven methodologies are respected",
-          "Teams that appreciate thorough planning and methodical execution"
-        ],
-        managementStyle: [
-          "Managers who provide clear objectives and then give autonomy in approach",
-          "Leaders who value systematic thinking and data-driven decision making",
-          "Supervisors who recognize and reward methodical excellence and innovation",
-          "Management that encourages process improvement and systematic optimization"
-        ],
-        teamComposition: [
-          "Mix of analytical thinkers and creative contributors who complement your systematic approach",
-          "Team members who appreciate structure and are willing to follow proven methodologies",
-          "Colleagues who share your commitment to quality and continuous improvement",
-          "Diverse perspectives that can challenge and refine your systematic approaches"
-        ]
-      },
-      stressManagement: {
-        stressTriggers: [
-          "Constantly changing priorities that prevent systematic approach development",
-          "Micromanagement that limits your autonomy in developing and implementing solutions",
-          "Pressure to make quick decisions without adequate analysis or planning time",
-          "Working with people who consistently resist systematic approaches or structured methodologies"
-        ],
-        copingStrategies: [
-          "Develop flexible frameworks that can adapt to changing circumstances",
-          "Create rapid assessment tools for situations requiring quick decisions",
-          "Build strong relationships with stakeholders to reduce resistance to your approaches",
-          "Establish clear boundaries around planning and preparation time needed for complex projects"
-        ],
-        resilienceBuilding: [
-          "Practice mindfulness and stress-reduction techniques to maintain clarity during high-pressure situations",
-          "Build a support network of other systematic thinkers who can provide perspective and advice",
-          "Develop contingency plans for common stressful situations to reduce anxiety",
-          "Regularly review and celebrate the success of your systematic approaches to build confidence"
-        ],
-        workLifeBalance: [
-          "Set clear boundaries between work and personal time to prevent burnout",
-          "Apply your systematic approaches to personal life management for better efficiency",
-          "Engage in hobbies that provide creative outlets outside of your analytical work",
-          "Schedule regular time for reflection and strategic thinking about your career and life goals"
+        optimalEnvironment: [
+          "Organizations that value systematic approaches and continuous improvement with clear accountability for results and measurable outcomes.",
+          "Cultures that encourage innovation within structured frameworks where expertise and proven methodologies are respected and utilized."
         ]
       },
       financialProfile: {
         moneyMotivations: [
-          "Financial security to support your systematic approach to life planning",
-          "Resources to invest in tools and systems that enhance your effectiveness",
-          "Ability to take calculated risks on innovative projects or entrepreneurial ventures",
-          "Freedom to choose roles and projects that align with your systematic innovation strengths"
-        ],
-        spendingPatterns: [
-          "Systematic approach to financial planning with clear budgets and goals",
-          "Investment in quality tools, technology, and resources that enhance productivity",
-          "Careful evaluation of purchases based on long-term value and systematic benefits",
-          "Preference for financial products and services that offer transparency and control"
-        ],
-        investmentStyle: [
-          "Long-term, systematic approach to building wealth through consistent investing",
-          "Preference for diversified portfolios based on thorough analysis and research",
-          "Interest in investment opportunities that align with your values and expertise",
-          "Systematic monitoring and rebalancing of investments based on performance data"
+          "Financial security to support your systematic approach to life planning and the ability to invest in tools that enhance your effectiveness.",
+          "Freedom to choose roles and projects that align with your systematic innovation strengths and create meaningful impact for others."
         ]
+      },
+      actionPlan: {
+        implementationPlan: [
+          {
+            title: "Week 1-2: Assessment",
+            description: "Review your current role against your SEED profile and identify immediate optimization opportunities."
+          },
+          {
+            title: "Week 3: Strategy",
+            description: "Develop a systematic approach to align your work with your natural motivational patterns."
+          },
+          {
+            title: "Week 4: Action",
+            description: "Implement changes and begin building systems that leverage your systematic innovation strengths."
+          }
+        ],
+        successMetrics: [
+          "Increased energy and engagement in daily work activities",
+          "Clear alignment between your role and systematic innovation strengths",
+          "Measurable progress toward meaningful professional goals",
+          "Development of systematic approaches that create lasting impact"
+        ],
+        closingMessage: "This Premium SEED Profile is your roadmap to maximizing your God-given potential through systematic innovation and purposeful leadership. Use these insights to create lasting positive impact in your work, relationships, and community."
       }
     };
   };
@@ -322,11 +214,11 @@ const PremiumSEEDProfile: React.FC<PremiumSEEDProfileProps> = ({
                     Comprehensive Motivational Pattern Analysis
                   </p>
                   <p className="text-earth-brown">
-                    Based on SIMA methodology and your detailed achievement processes
+                    Inspired by Scripture and your detailed achievement processes
                   </p>
                   <div className="mt-4 grid grid-cols-3 gap-4 text-sm">
                     <div className="text-center">
-                      <div className="font-bold text-warm-gold text-lg">15</div>
+                      <div className="font-bold text-warm-gold text-lg">10</div>
                       <div className="text-earth-brown">Pages</div>
                     </div>
                     <div className="text-center">
@@ -337,6 +229,27 @@ const PremiumSEEDProfile: React.FC<PremiumSEEDProfileProps> = ({
                       <div className="font-bold text-forest-dark text-lg">50+</div>
                       <div className="text-earth-brown">Insights</div>
                     </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Most Powerful Motivations Summary */}
+            <div className="bg-gradient-to-br from-warm-gold/20 via-sage-green/10 to-warm-gold/20 p-8 rounded-2xl border-2 border-warm-gold/40 shadow-xl">
+              <h2 className="text-2xl font-bold text-forest-dark mb-6 flex items-center gap-3">
+                <div className="p-2 bg-gradient-to-r from-warm-gold to-amber-500 rounded-lg">
+                  <Zap className="h-6 w-6 text-white" />
+                </div>
+                Your Most Powerful Motivations
+              </h2>
+              
+              <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl border border-warm-gold/30 shadow-lg">
+                <div className="text-center space-y-4">
+                  <div className="text-lg font-bold text-forest-dark">
+                    🎯 Primary Drive: You are energized by creating systematic solutions that solve real problems while building meaningful relationships and seeing tangible impact from your efforts.
+                  </div>
+                  <div className="text-lg font-bold text-sage-green">
+                    ⚡ Core Energy: Your motivation peaks when you can combine analytical thinking with purposeful action, especially when working collaboratively toward goals that align with your values and create lasting positive change.
                   </div>
                 </div>
               </div>
@@ -355,10 +268,10 @@ const PremiumSEEDProfile: React.FC<PremiumSEEDProfileProps> = ({
                 <div className="bg-white/70 backdrop-blur-sm p-6 rounded-xl border border-sage-green/30">
                   <h3 className="font-bold text-forest-dark mb-4 flex items-center gap-2">
                     <Star className="h-5 w-5 text-warm-gold" />
-                    Your Profile Type: {expandedAnalysis.executiveSummary.profileType}
+                    Your Profile Type: Systematic Innovation Leader
                   </h3>
                   <p className="text-forest-dark leading-relaxed mb-4">
-                    You are a natural leader who combines analytical thinking with systematic execution. Your strength lies in creating innovative solutions through structured approaches, making you highly effective at solving complex challenges while building sustainable systems.
+                    You are a natural leader who combines analytical thinking with systematic execution. Your strength lies in creating innovative solutions through structured approaches, making you highly effective at solving complex challenges while building sustainable systems that benefit others.
                   </p>
                 </div>
 
@@ -369,14 +282,30 @@ const PremiumSEEDProfile: React.FC<PremiumSEEDProfileProps> = ({
                       Core Strengths
                     </h3>
                     <div className="space-y-3">
-                      {expandedAnalysis.executiveSummary.coreStrengths.map((strength, index) => (
-                        <div key={index} className="flex items-start gap-3">
-                          <div className="w-6 h-6 bg-warm-gold rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <span className="text-white text-xs font-bold">{index + 1}</span>
-                          </div>
-                          <span className="text-forest-dark text-sm leading-relaxed">{strength}</span>
+                      <div className="flex items-start gap-3">
+                        <div className="w-6 h-6 bg-warm-gold rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <span className="text-white text-xs font-bold">1</span>
                         </div>
-                      ))}
+                        <span className="text-forest-dark text-sm leading-relaxed">Strategic thinking with systematic execution that drives measurable results</span>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <div className="w-6 h-6 bg-warm-gold rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <span className="text-white text-xs font-bold">2</span>
+                        </div>
+                        <span className="text-forest-dark text-sm leading-relaxed">Natural problem-solving abilities that identify root causes and create lasting solutions</span>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <div className="w-6 h-6 bg-warm-gold rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <span className="text-white text-xs font-bold">3</span>
+                        </div>
+                        <span className="text-forest-dark text-sm leading-relaxed">Building sustainable systems that scale impact and empower others</span>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <div className="w-6 h-6 bg-warm-gold rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <span className="text-white text-xs font-bold">4</span>
+                        </div>
+                        <span className="text-forest-dark text-sm leading-relaxed">Inspiring others through methodical excellence and proven frameworks</span>
+                      </div>
                     </div>
                   </div>
 
@@ -386,12 +315,18 @@ const PremiumSEEDProfile: React.FC<PremiumSEEDProfileProps> = ({
                       Key Insights
                     </h3>
                     <div className="space-y-3">
-                      {expandedAnalysis.executiveSummary.keyInsights.map((insight, index) => (
-                        <div key={index} className="flex items-start gap-3">
-                          <Lightbulb className="h-5 w-5 text-sage-green mt-0.5 flex-shrink-0" />
-                          <span className="text-forest-dark text-sm leading-relaxed">{insight}</span>
-                        </div>
-                      ))}
+                      <div className="flex items-start gap-3">
+                        <Lightbulb className="h-5 w-5 text-sage-green mt-0.5 flex-shrink-0" />
+                        <span className="text-forest-dark text-sm leading-relaxed">You thrive when combining creative innovation with structured approaches</span>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <Lightbulb className="h-5 w-5 text-sage-green mt-0.5 flex-shrink-0" />
+                        <span className="text-forest-dark text-sm leading-relaxed">Your energy peaks when you can see direct impact from your systematic methods</span>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <Lightbulb className="h-5 w-5 text-sage-green mt-0.5 flex-shrink-0" />
+                        <span className="text-forest-dark text-sm leading-relaxed">Leadership effectiveness comes from empowering others with proven frameworks</span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -420,14 +355,24 @@ const PremiumSEEDProfile: React.FC<PremiumSEEDProfileProps> = ({
                     Primary Drivers
                   </h3>
                   <div className="space-y-4">
-                    {expandedAnalysis.coreMotivationalDNA.primaryDrivers.map((driver, index) => (
-                      <div key={index} className="flex items-start gap-3 p-4 bg-gradient-to-r from-warm-gold/10 to-transparent rounded-lg">
-                        <div className="w-8 h-8 bg-warm-gold rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <span className="text-white text-sm font-bold">{index + 1}</span>
-                        </div>
-                        <span className="text-forest-dark leading-relaxed">{driver}</span>
+                    <div className="flex items-start gap-3 p-4 bg-gradient-to-r from-warm-gold/10 to-transparent rounded-lg">
+                      <div className="w-8 h-8 bg-warm-gold rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-white text-sm font-bold">1</span>
                       </div>
-                    ))}
+                      <span className="text-forest-dark leading-relaxed">Systematic Innovation: You are energized by creating structured approaches to complex challenges while maintaining creative flexibility and seeing measurable results from your methodical work.</span>
+                    </div>
+                    <div className="flex items-start gap-3 p-4 bg-gradient-to-r from-warm-gold/10 to-transparent rounded-lg">
+                      <div className="w-8 h-8 bg-warm-gold rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-white text-sm font-bold">2</span>
+                      </div>
+                      <span className="text-forest-dark leading-relaxed">Ownership Excellence: Deep satisfaction comes from having complete accountability and seeing direct results from your methodical approach to building sustainable solutions.</span>
+                    </div>
+                    <div className="flex items-start gap-3 p-4 bg-gradient-to-r from-warm-gold/10 to-transparent rounded-lg">
+                      <div className="w-8 h-8 bg-warm-gold rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-white text-sm font-bold">3</span>
+                      </div>
+                      <span className="text-forest-dark leading-relaxed">Value Creation: You thrive when building something meaningful that solves real problems and creates lasting impact for others through systematic excellence and proven methodologies.</span>
+                    </div>
                   </div>
                 </div>
 
@@ -437,43 +382,17 @@ const PremiumSEEDProfile: React.FC<PremiumSEEDProfileProps> = ({
                     Energy Patterns
                   </h3>
                   <div className="space-y-3">
-                    {expandedAnalysis.coreMotivationalDNA.energyPatterns.map((pattern, index) => (
-                      <div key={index} className="flex items-start gap-3 p-3 bg-gradient-to-r from-sage-green/10 to-transparent rounded-lg">
-                        <Zap className="h-5 w-5 text-sage-green mt-0.5 flex-shrink-0" />
-                        <span className="text-forest-dark leading-relaxed">{pattern}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="bg-white/70 backdrop-blur-sm p-6 rounded-xl border border-red-200">
-                    <h3 className="font-bold text-forest-dark mb-4 flex items-center gap-2">
-                      <Shield className="h-5 w-5 text-red-500" />
-                      Stress Indicators
-                    </h3>
-                    <div className="space-y-3">
-                      {expandedAnalysis.coreMotivationalDNA.stressIndicators.map((indicator, index) => (
-                        <div key={index} className="flex items-start gap-3 p-3 bg-gradient-to-r from-red-50 to-transparent rounded-lg border border-red-100">
-                          <Shield className="h-4 w-4 text-red-500 mt-1 flex-shrink-0" />
-                          <span className="text-forest-dark text-sm leading-relaxed">{indicator}</span>
-                        </div>
-                      ))}
+                    <div className="flex items-start gap-3 p-3 bg-gradient-to-r from-sage-green/10 to-transparent rounded-lg">
+                      <Zap className="h-5 w-5 text-sage-green mt-0.5 flex-shrink-0" />
+                      <span className="text-forest-dark leading-relaxed">Peak energy during planning and execution phases where you can apply systematic thinking to create meaningful outcomes</span>
                     </div>
-                  </div>
-
-                  <div className="bg-white/70 backdrop-blur-sm p-6 rounded-xl border border-green-200">
-                    <h3 className="font-bold text-forest-dark mb-4 flex items-center gap-2">
-                      <Rocket className="h-5 w-5 text-green-500" />
-                      Motivational Triggers
-                    </h3>
-                    <div className="space-y-3">
-                      {expandedAnalysis.coreMotivationalDNA.motivationalTriggers.map((trigger, index) => (
-                        <div key={index} className="flex items-start gap-3 p-3 bg-gradient-to-r from-green-50 to-transparent rounded-lg border border-green-100">
-                          <Rocket className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
-                          <span className="text-forest-dark text-sm leading-relaxed">{trigger}</span>
-                        </div>
-                      ))}
+                    <div className="flex items-start gap-3 p-3 bg-gradient-to-r from-sage-green/10 to-transparent rounded-lg">
+                      <Zap className="h-5 w-5 text-sage-green mt-0.5 flex-shrink-0" />
+                      <span className="text-forest-dark leading-relaxed">Sustained motivation when you can see clear progress toward meaningful outcomes that align with your values</span>
+                    </div>
+                    <div className="flex items-start gap-3 p-3 bg-gradient-to-r from-sage-green/10 to-transparent rounded-lg">
+                      <Zap className="h-5 w-5 text-sage-green mt-0.5 flex-shrink-0" />
+                      <span className="text-forest-dark leading-relaxed">High engagement when mentoring others and sharing your systematic approaches for mutual growth and impact</span>
                     </div>
                   </div>
                 </div>
@@ -494,60 +413,32 @@ const PremiumSEEDProfile: React.FC<PremiumSEEDProfileProps> = ({
               </h2>
             </div>
 
-            <div className="space-y-8">
-              <div className="bg-gradient-to-br from-blue-50 via-white to-sage-green/10 p-8 rounded-2xl border border-sage-green/20 shadow-xl">
-                <div className="text-center mb-8">
-                  <div className="inline-flex items-center gap-3 bg-gradient-to-r from-sage-green to-forest-dark text-white px-6 py-3 rounded-full font-bold text-xl shadow-lg">
-                    <Brain className="h-6 w-6" />
-                    {expandedAnalysis.cognitiveProfile.thinkingStyle}
-                  </div>
+            <div className="bg-gradient-to-br from-blue-50 via-white to-sage-green/10 p-8 rounded-2xl border border-sage-green/20 shadow-xl">
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center gap-3 bg-gradient-to-r from-sage-green to-forest-dark text-white px-6 py-3 rounded-full font-bold text-xl shadow-lg">
+                  <Brain className="h-6 w-6" />
+                  Analytical Systems Architect
                 </div>
-                
-                <div className="grid gap-8">
-                  <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl border border-sage-green/30">
-                    <h4 className="font-bold text-forest-dark mb-4 flex items-center gap-2">
-                      <Eye className="h-5 w-5 text-blue-600" />
-                      Information Processing Style
-                    </h4>
-                    <div className="space-y-4">
-                      {expandedAnalysis.cognitiveProfile.informationProcessing.map((style, index) => (
-                        <div key={index} className="flex items-start gap-3 p-3 bg-gradient-to-r from-blue-50 to-transparent rounded-lg">
-                          <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
-                            {index + 1}
-                          </div>
-                          <span className="text-forest-dark leading-relaxed">{style}</span>
-                        </div>
-                      ))}
+              </div>
+              
+              <div className="grid gap-8">
+                <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl border border-sage-green/30">
+                  <h4 className="font-bold text-forest-dark mb-4 flex items-center gap-2">
+                    <Eye className="h-5 w-5 text-blue-600" />
+                    Information Processing Style
+                  </h4>
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-3 p-3 bg-gradient-to-r from-blue-50 to-transparent rounded-lg">
+                      <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
+                        1
+                      </div>
+                      <span className="text-forest-dark leading-relaxed">Sequential Processing: You prefer to work through information in logical, step-by-step sequences that build comprehensive understanding</span>
                     </div>
-                  </div>
-
-                  <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl border border-sage-green/30">
-                    <h4 className="font-bold text-forest-dark mb-4 flex items-center gap-2">
-                      <Puzzle className="h-5 w-5 text-purple-600" />
-                      Problem-Solving Approach
-                    </h4>
-                    <div className="space-y-4">
-                      {expandedAnalysis.cognitiveProfile.problemSolving.map((approach, index) => (
-                        <div key={index} className="flex items-start gap-3 p-3 bg-gradient-to-r from-purple-50 to-transparent rounded-lg">
-                          <Puzzle className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
-                          <span className="text-forest-dark leading-relaxed">{approach}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl border border-sage-green/30">
-                    <h4 className="font-bold text-forest-dark mb-4 flex items-center gap-2">
-                      <Lightbulb className="h-5 w-5 text-amber-600" />
-                      Creativity Style
-                    </h4>
-                    <div className="space-y-4">
-                      {expandedAnalysis.cognitiveProfile.creativityStyle.map((style, index) => (
-                        <div key={index} className="flex items-start gap-3 p-3 bg-gradient-to-r from-amber-50 to-transparent rounded-lg">
-                          <Lightbulb className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
-                          <span className="text-forest-dark leading-relaxed">{style}</span>
-                        </div>
-                      ))}
+                    <div className="flex items-start gap-3 p-3 bg-gradient-to-r from-blue-50 to-transparent rounded-lg">
+                      <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
+                        2
+                      </div>
+                      <span className="text-forest-dark leading-relaxed">Pattern Recognition: Natural ability to identify recurring themes and underlying structures that others might miss</span>
                     </div>
                   </div>
                 </div>
@@ -567,80 +458,16 @@ const PremiumSEEDProfile: React.FC<PremiumSEEDProfileProps> = ({
                 Decision-Making Style Analysis
               </h2>
             </div>
-
             <div className="bg-gradient-to-br from-blue-50 via-white to-sage-green/10 p-8 rounded-2xl border border-sage-green/20 shadow-xl">
               <div className="text-center mb-8">
                 <div className="inline-flex items-center gap-3 bg-gradient-to-r from-sage-green to-forest-dark text-white px-6 py-3 rounded-full font-bold text-xl shadow-lg">
                   <Brain className="h-6 w-6" />
-                  {expandedAnalysis.decisionMaking.style}
+                  Analytical Visionary
                 </div>
               </div>
-              
-              <div className="grid gap-8">
-                <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl border border-sage-green/30">
-                  <h4 className="font-bold text-forest-dark mb-4 flex items-center gap-2">
-                    <Compass className="h-5 w-5 text-sage-green" />
-                    Decision Process
-                  </h4>
-                  <div className="space-y-4">
-                    {expandedAnalysis.decisionMaking.process.map((step, index) => (
-                      <div key={index} className="flex items-start gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-r from-sage-green to-forest-dark text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
-                          {index + 1}
-                        </div>
-                        <span className="text-forest-dark leading-relaxed">{step}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="grid lg:grid-cols-2 gap-6">
-                  <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl border border-sage-green/30">
-                    <h4 className="font-bold text-forest-dark mb-4 flex items-center gap-2">
-                      <Zap className="h-5 w-5 text-warm-gold" />
-                      Core Strengths
-                    </h4>
-                    <div className="space-y-3">
-                      {expandedAnalysis.decisionMaking.strengths.map((strength, index) => (
-                        <div key={index} className="flex items-start gap-3 p-3 bg-gradient-to-r from-warm-gold/10 to-transparent rounded-lg">
-                          <Star className="h-5 w-5 text-warm-gold mt-0.5 flex-shrink-0" />
-                          <span className="text-forest-dark leading-relaxed">{strength}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="bg-amber-50/80 backdrop-blur-sm p-6 rounded-xl border border-amber-200">
-                    <h4 className="font-bold text-forest-dark mb-4 flex items-center gap-2">
-                      <Lightbulb className="h-5 w-5 text-amber-600" />
-                      Areas for Awareness
-                    </h4>
-                    <div className="space-y-3">
-                      {expandedAnalysis.decisionMaking.blindSpots.map((blindSpot, index) => (
-                        <div key={index} className="flex items-start gap-3 p-3 bg-white/60 rounded-lg">
-                          <Compass className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
-                          <span className="text-forest-dark leading-relaxed">{blindSpot}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-green-50/80 backdrop-blur-sm p-6 rounded-xl border border-green-200">
-                  <h4 className="font-bold text-forest-dark mb-4 flex items-center gap-2">
-                    <ArrowUpCircle className="h-5 w-5 text-green-600" />
-                    Optimization Strategies
-                  </h4>
-                  <div className="space-y-3">
-                    {expandedAnalysis.decisionMaking.optimizationStrategies.map((strategy, index) => (
-                      <div key={index} className="flex items-start gap-3 p-3 bg-white/60 rounded-lg">
-                        <ArrowUpCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                        <span className="text-forest-dark leading-relaxed">{strategy}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              <p className="text-center text-forest-dark text-lg leading-relaxed">
+                Your decision-making combines thorough analysis with strategic vision, allowing you to make informed choices that create lasting positive impact through systematic approaches.
+              </p>
             </div>
           </div>
         );
@@ -656,90 +483,16 @@ const PremiumSEEDProfile: React.FC<PremiumSEEDProfileProps> = ({
                 Relationship & Leadership Patterns
               </h2>
             </div>
-
-            <div className="space-y-8">
-              <div className="bg-gradient-to-br from-sage-green/10 via-white to-warm-gold/10 p-8 rounded-2xl border border-sage-green/20 shadow-xl">
-                <div className="text-center mb-6">
-                  <div className="inline-flex items-center gap-3 bg-gradient-to-r from-sage-green to-forest-dark text-white px-6 py-3 rounded-full font-bold text-xl shadow-lg">
-                    <Crown className="h-6 w-6" />
-                    {expandedAnalysis.relationships.leadershipStyle}
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  {expandedAnalysis.relationships.teamDynamics.map((dynamic, index) => (
-                    <div key={index} className="flex items-start gap-3 p-4 bg-white/70 backdrop-blur-sm rounded-xl border border-sage-green/20">
-                      <div className="w-8 h-8 bg-gradient-to-r from-warm-gold to-amber-500 rounded-full flex items-center justify-center flex-shrink-0">
-                        <Crown className="h-4 w-4 text-white" />
-                      </div>
-                      <span className="text-forest-dark leading-relaxed">{dynamic}</span>
-                    </div>
-                  ))}
+            <div className="bg-gradient-to-br from-sage-green/10 via-white to-warm-gold/10 p-8 rounded-2xl border border-sage-green/20 shadow-xl">
+              <div className="text-center mb-6">
+                <div className="inline-flex items-center gap-3 bg-gradient-to-r from-sage-green to-forest-dark text-white px-6 py-3 rounded-full font-bold text-xl shadow-lg">
+                  <Crown className="h-6 w-6" />
+                  Systematic Enabler
                 </div>
               </div>
-
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="bg-gradient-to-br from-purple-50 to-white p-6 rounded-xl border border-purple-200 shadow-lg">
-                  <h3 className="text-lg font-bold text-forest-dark mb-4 flex items-center gap-2">
-                    <Heart className="h-5 w-5 text-purple-600" />
-                    Collaboration Style
-                  </h3>
-                  <div className="space-y-3">
-                    {expandedAnalysis.relationships.collaboration.map((pref, index) => (
-                      <div key={index} className="flex items-start gap-3 p-3 bg-white/60 rounded-lg">
-                        <Heart className="h-4 w-4 text-purple-600 mt-1 flex-shrink-0" />
-                        <span className="text-forest-dark text-sm leading-relaxed">{pref}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="bg-gradient-to-br from-blue-50 to-white p-6 rounded-xl border border-blue-200 shadow-lg">
-                  <h3 className="text-lg font-bold text-forest-dark mb-4 flex items-center gap-2">
-                    <MessageCircle className="h-5 w-5 text-blue-600" />
-                    Communication Preferences
-                  </h3>
-                  <div className="space-y-3">
-                    {expandedAnalysis.relationships.communication.map((style, index) => (
-                      <div key={index} className="flex items-start gap-3 p-3 bg-white/60 rounded-lg">
-                        <MessageCircle className="h-4 w-4 text-blue-600 mt-1 flex-shrink-0" />
-                        <span className="text-forest-dark text-sm leading-relaxed">{style}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="bg-gradient-to-br from-orange-50 to-white p-6 rounded-xl border border-orange-200 shadow-lg">
-                  <h3 className="text-lg font-bold text-forest-dark mb-4 flex items-center gap-2">
-                    <Shield className="h-5 w-5 text-orange-600" />
-                    Conflict Resolution
-                  </h3>
-                  <div className="space-y-3">
-                    {expandedAnalysis.relationships.conflictResolution.map((approach, index) => (
-                      <div key={index} className="flex items-start gap-3 p-3 bg-white/60 rounded-lg">
-                        <Shield className="h-4 w-4 text-orange-600 mt-1 flex-shrink-0" />
-                        <span className="text-forest-dark text-sm leading-relaxed">{approach}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="bg-gradient-to-br from-emerald-50 to-white p-6 rounded-xl border border-emerald-200 shadow-lg">
-                  <h3 className="text-lg font-bold text-forest-dark mb-4 flex items-center gap-2">
-                    <TrendingUp className="h-5 w-5 text-emerald-600" />
-                    Influence Style
-                  </h3>
-                  <div className="space-y-3">
-                    {expandedAnalysis.relationships.influenceStyle.map((style, index) => (
-                      <div key={index} className="flex items-start gap-3 p-3 bg-white/60 rounded-lg">
-                        <TrendingUp className="h-4 w-4 text-emerald-600 mt-1 flex-shrink-0" />
-                        <span className="text-forest-dark text-sm leading-relaxed">{style}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              <p className="text-center text-forest-dark text-lg leading-relaxed">
+                You lead by empowering others with proven frameworks and systematic approaches, creating environments where teams can achieve excellence through structured collaboration and shared accountability.
+              </p>
             </div>
           </div>
         );
@@ -755,7 +508,26 @@ const PremiumSEEDProfile: React.FC<PremiumSEEDProfileProps> = ({
                 Career Optimization Guide
               </h2>
             </div>
-            {/* Career content implementation */}
+            <div className="bg-gradient-to-br from-warm-gold/10 via-white to-sage-green/10 p-8 rounded-2xl border border-sage-green/20 shadow-xl">
+              <div className="space-y-6">
+                <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl border border-sage-green/30">
+                  <h3 className="font-bold text-forest-dark mb-4 flex items-center gap-2">
+                    <Star className="h-5 w-5 text-warm-gold" />
+                    Ideal Career Roles
+                  </h3>
+                  <div className="space-y-3">
+                    <div className="p-3 bg-gradient-to-r from-warm-gold/10 to-transparent rounded-lg">
+                      <span className="font-semibold text-forest-dark">Strategic Operations Leader:</span>
+                      <span className="text-forest-dark"> Roles where you design and implement systematic approaches to complex business challenges with measurable impact.</span>
+                    </div>
+                    <div className="p-3 bg-gradient-to-r from-warm-gold/10 to-transparent rounded-lg">
+                      <span className="font-semibold text-forest-dark">Innovation Manager:</span>
+                      <span className="text-forest-dark"> Positions that combine creative problem-solving with structured execution and clear accountability for results.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         );
 
@@ -770,7 +542,24 @@ const PremiumSEEDProfile: React.FC<PremiumSEEDProfileProps> = ({
                 Personal Development Roadmap
               </h2>
             </div>
-            {/* Personal development content implementation */}
+            <div className="bg-gradient-to-br from-purple-50 via-white to-sage-green/10 p-8 rounded-2xl border border-sage-green/20 shadow-xl">
+              <div className="space-y-6">
+                <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl border border-sage-green/30">
+                  <h3 className="font-bold text-forest-dark mb-4 flex items-center gap-2">
+                    <TrendingUp className="h-5 w-5 text-purple-600" />
+                    Short-Term Development (Next 6 Months)
+                  </h3>
+                  <div className="space-y-3">
+                    <div className="p-3 bg-gradient-to-r from-purple-50 to-transparent rounded-lg border border-purple-100">
+                      <span className="text-forest-dark">Enhance your delegation skills to leverage your systematic approaches through others and scale your impact beyond individual contribution.</span>
+                    </div>
+                    <div className="p-3 bg-gradient-to-r from-purple-50 to-transparent rounded-lg border border-purple-100">
+                      <span className="text-forest-dark">Develop rapid prototyping abilities to complement your thorough planning with quick testing and iterative improvement cycles.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         );
 
@@ -780,12 +569,29 @@ const PremiumSEEDProfile: React.FC<PremiumSEEDProfileProps> = ({
             <div className="text-center">
               <h2 className="text-3xl font-bold text-forest-dark flex items-center justify-center gap-3 mb-4">
                 <div className="p-2 bg-gradient-to-r from-sage-green to-forest-dark rounded-lg">
-                  <Star className="h-8 w-8 text-white" />
+                  <Shield className="h-8 w-8 text-white" />
                 </div>
-                Your Action Plan & Next Steps
+                Work Environment & Stress Management
               </h2>
             </div>
-            {/* Action plan content implementation */}
+            <div className="bg-gradient-to-br from-green-50 via-white to-sage-green/10 p-8 rounded-2xl border border-sage-green/20 shadow-xl">
+              <div className="space-y-6">
+                <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl border border-green-200">
+                  <h3 className="font-bold text-forest-dark mb-4 flex items-center gap-2">
+                    <Building className="h-5 w-5 text-green-600" />
+                    Optimal Work Environment
+                  </h3>
+                  <div className="space-y-3">
+                    <div className="p-3 bg-gradient-to-r from-green-50 to-transparent rounded-lg">
+                      <span className="text-forest-dark">Organizations that value systematic approaches and continuous improvement with clear accountability for results and measurable outcomes.</span>
+                    </div>
+                    <div className="p-3 bg-gradient-to-r from-green-50 to-transparent rounded-lg">
+                      <span className="text-forest-dark">Cultures that encourage innovation within structured frameworks where expertise and proven methodologies are respected and utilized.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         );
 
@@ -795,12 +601,29 @@ const PremiumSEEDProfile: React.FC<PremiumSEEDProfileProps> = ({
             <div className="text-center">
               <h2 className="text-3xl font-bold text-forest-dark flex items-center justify-center gap-3 mb-4">
                 <div className="p-2 bg-gradient-to-r from-sage-green to-forest-dark rounded-lg">
-                  <Clock className="h-8 w-8 text-white" />
+                  <PieChart className="h-8 w-8 text-white" />
                 </div>
-                Time Management Strategies
+                Financial Planning & Money Motivations
               </h2>
             </div>
-            {/* Time management content implementation */}
+            <div className="bg-gradient-to-br from-emerald-50 via-white to-sage-green/10 p-8 rounded-2xl border border-sage-green/20 shadow-xl">
+              <div className="space-y-6">
+                <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl border border-emerald-200">
+                  <h3 className="font-bold text-forest-dark mb-4 flex items-center gap-2">
+                    <PieChart className="h-5 w-5 text-emerald-600" />
+                    Money Motivations
+                  </h3>
+                  <div className="space-y-3">
+                    <div className="p-3 bg-gradient-to-r from-emerald-50 to-transparent rounded-lg">
+                      <span className="text-forest-dark">Financial security to support your systematic approach to life planning and the ability to invest in tools that enhance your effectiveness.</span>
+                    </div>
+                    <div className="p-3 bg-gradient-to-r from-emerald-50 to-transparent rounded-lg">
+                      <span className="text-forest-dark">Freedom to choose roles and projects that align with your systematic innovation strengths and create meaningful impact for others.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         );
 
@@ -810,87 +633,56 @@ const PremiumSEEDProfile: React.FC<PremiumSEEDProfileProps> = ({
             <div className="text-center">
               <h2 className="text-3xl font-bold text-forest-dark flex items-center justify-center gap-3 mb-4">
                 <div className="p-2 bg-gradient-to-r from-sage-green to-forest-dark rounded-lg">
-                  <Network className="h-8 w-8 text-white" />
-                </div>
-                Networking Strategies
-              </h2>
-            </div>
-            {/* Networking content implementation */}
-          </div>
-        );
-
-      case 11:
-        return (
-          <div className="space-y-8">
-            <div className="text-center">
-              <h2 className="text-3xl font-bold text-forest-dark flex items-center justify-center gap-3 mb-4">
-                <div className="p-2 bg-gradient-to-r from-sage-green to-forest-dark rounded-lg">
-                  <PieChart className="h-8 w-8 text-white" />
-                </div>
-                Financial Planning
-              </h2>
-            </div>
-            {/* Financial planning content implementation */}
-          </div>
-        );
-
-      case 12:
-        return (
-          <div className="space-y-8">
-            <div className="text-center">
-              <h2 className="text-3xl font-bold text-forest-dark flex items-center justify-center gap-3 mb-4">
-                <div className="p-2 bg-gradient-to-r from-sage-green to-forest-dark rounded-lg">
-                  <Calendar className="h-8 w-8 text-white" />
-                </div>
-                Goal Setting
-              </h2>
-            </div>
-            {/* Goal setting content implementation */}
-          </div>
-        );
-
-      case 13:
-        return (
-          <div className="space-y-8">
-            <div className="text-center">
-              <h2 className="text-3xl font-bold text-forest-dark flex items-center justify-center gap-3 mb-4">
-                <div className="p-2 bg-gradient-to-r from-sage-green to-forest-dark rounded-lg">
-                  <Clock className="h-8 w-8 text-white" />
-                </div>
-                Work-Life Balance
-              </h2>
-            </div>
-            {/* Work-life balance content implementation */}
-          </div>
-        );
-
-      case 14:
-        return (
-          <div className="space-y-8">
-            <div className="text-center">
-              <h2 className="text-3xl font-bold text-forest-dark flex items-center justify-center gap-3 mb-4">
-                <div className="p-2 bg-gradient-to-r from-sage-green to-forest-dark rounded-lg">
                   <Rocket className="h-8 w-8 text-white" />
-                </div>
-                Innovation Strategies
-              </h2>
-            </div>
-            {/* Innovation strategies content implementation */}
-          </div>
-        );
-
-      case 15:
-        return (
-          <div className="space-y-8">
-            <div className="text-center">
-              <h2 className="text-3xl font-bold text-forest-dark flex items-center justify-center gap-3 mb-4">
-                <div className="p-2 bg-gradient-to-r from-sage-green to-forest-dark rounded-lg">
-                  <Star className="h-8 w-8 text-white" />
                 </div>
                 Your Action Plan & Next Steps
               </h2>
             </div>
-            {/* Action plan content implementation */}
+            
+            <div className="bg-gradient-to-br from-warm-gold/20 via-sage-green/10 to-warm-gold/20 p-8 rounded-2xl border-2 border-warm-gold/40 shadow-xl">
+              <div className="space-y-8">
+                <div className="text-center">
+                  <div className="inline-flex items-center gap-3 bg-gradient-to-r from-warm-gold to-amber-500 text-white px-6 py-3 rounded-full font-bold text-xl shadow-lg mb-6">
+                    <Star className="h-6 w-6" />
+                    30-Day Implementation Plan
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-3 gap-6">
+                  {expandedAnalysis.actionPlan.implementationPlan.map((item, index) => (
+                    <div key={index} className="bg-white/80 backdrop-blur-sm p-6 rounded-xl border border-sage-green/30 shadow-lg">
+                      {item.title.includes('Assessment') && <Calendar className="h-10 w-10 text-warm-gold mx-auto mb-3" />}
+                      {item.title.includes('Strategy') && <Target className="h-10 w-10 text-sage-green mx-auto mb-3" />}
+                      {item.title.includes('Action') && <Rocket className="h-10 w-10 text-forest-dark mx-auto mb-3" />}
+                      <h4 className="font-bold text-forest-dark mb-2 text-center">{item.title}</h4>
+                      <p className="text-earth-brown text-sm text-center">{item.description}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl border border-warm-gold/30 shadow-lg">
+                  <h3 className="font-bold text-forest-dark mb-4 flex items-center gap-2">
+                    <Award className="h-5 w-5 text-warm-gold" />
+                    Key Success Metrics
+                  </h3>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {expandedAnalysis.actionPlan.successMetrics.map((metric, index) => (
+                      <div key={index} className="flex items-start gap-3">
+                        <Check className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                        <span className="text-forest-dark text-sm">{metric}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="text-center bg-gradient-to-r from-sage-green/20 to-warm-gold/20 p-6 rounded-xl">
+                  <h3 className="text-xl font-bold text-forest-dark mb-2">Your Journey Continues</h3>
+                  <p className="text-forest-dark leading-relaxed">
+                    {expandedAnalysis.actionPlan.closingMessage}
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         );
 
