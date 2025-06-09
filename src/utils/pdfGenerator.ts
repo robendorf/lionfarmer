@@ -1,552 +1,327 @@
+
 import jsPDF from 'jspdf';
 
-interface AnalysisResult {
-  energizers: string[];
-  avoid: string[];
-  environments: string[];
-  growth: string[];
+interface ProfileData {
+  motivatedAbilities: string[];
+  subjectMatter: string[];
+  circumstances: string[];
+  operatingRelationship: string[];
+  centralMotivation: string;
+  personalityTraits: string[];
+  strengthsAndGifts: string[];
+  idealWorkEnvironment: string[];
+  careerRecommendations: string[];
+  personalDevelopment: string[];
 }
 
-interface DeepDiveData {
-  winNumber: number;
-  process: string;
-}
-
-export const generateSEEDProfilePDF = (
-  analysis: AnalysisResult,
-  deepDiveData: DeepDiveData[],
-  isPremium: boolean = false
+// Helper function to add gradient effect using multiple rectangles
+const addGradientBackground = (
+  doc: jsPDF, 
+  x: number, 
+  y: number, 
+  width: number, 
+  height: number, 
+  startColor: [number, number, number], 
+  endColor: [number, number, number]
 ) => {
-  const pdf = new jsPDF();
-  let yPosition = 20;
-  const pageHeight = pdf.internal.pageSize.height;
+  const steps = 20;
+  const stepHeight = height / steps;
+  
+  for (let i = 0; i < steps; i++) {
+    const ratio = i / (steps - 1);
+    const r = Math.round(startColor[0] + (endColor[0] - startColor[0]) * ratio);
+    const g = Math.round(startColor[1] + (endColor[1] - startColor[1]) * ratio);
+    const b = Math.round(startColor[2] + (endColor[2] - startColor[2]) * ratio);
+    
+    doc.setFillColor(r, g, b);
+    doc.rect(x, y + i * stepHeight, width, stepHeight, 'F');
+  }
+};
+
+// Helper function to add rounded rectangle
+const addRoundedRect = (
+  doc: jsPDF,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  radius: number,
+  style: 'S' | 'F' | 'DF' = 'S'
+) => {
+  // Simple rounded rectangle using lines and arcs
+  doc.roundedRect(x, y, width, height, radius, radius, style);
+};
+
+// Helper function to add shadow effect
+const addShadow = (
+  doc: jsPDF,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  offset: number = 2
+) => {
+  doc.setFillColor(200, 200, 200);
+  addRoundedRect(doc, x + offset, y + offset, width, height, 3, 'F');
+};
+
+// Helper function to add bullet point
+const addBulletPoint = (
+  doc: jsPDF,
+  x: number,
+  y: number,
+  text: string,
+  maxWidth: number
+) => {
+  doc.setFillColor(94, 127, 85); // sage-green
+  doc.circle(x + 3, y - 1, 1.5, 'F');
+  
+  const lines = doc.splitTextToSize(text, maxWidth - 15);
+  doc.text(lines, x + 10, y);
+  
+  return lines.length * 5;
+};
+
+// Helper function to add spacing
+const addSpacing = (height: number) => {
+  return height;
+};
+
+// Helper function to add section header
+const addSectionHeader = (
+  doc: jsPDF,
+  x: number,
+  y: number,
+  title: string,
+  pageWidth: number
+) => {
+  // Add colored background for header
+  doc.setFillColor(94, 127, 85); // sage-green
+  addRoundedRect(doc, x, y - 8, pageWidth - 40, 20, 5, 'F');
+  
+  // Add header text
+  doc.setTextColor(255, 255, 255);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(14);
+  doc.text(title, x + 10, y + 5);
+  
+  // Reset text color
+  doc.setTextColor(60, 50, 40);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(10);
+  
+  return 25;
+};
+
+// Helper function to add colored background
+const addColoredBackground = (
+  doc: jsPDF,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  color: [number, number, number],
+  opacity: number = 0.1
+) => {
+  // Simulate opacity by lightening the color
+  const lightColor = color.map(c => Math.min(255, c + (255 - c) * (1 - opacity))) as [number, number, number];
+  doc.setFillColor(...lightColor);
+  addRoundedRect(doc, x, y, width, height, 3, 'F');
+};
+
+export const generatePDF = (profileData: ProfileData): jsPDF => {
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
   const margin = 20;
-  const pageWidth = pdf.internal.pageSize.width;
-  const maxWidth = pageWidth - 2 * margin;
+  const contentWidth = pageWidth - 2 * margin;
+  let currentY = margin;
 
-  // Enhanced color palette matching the website exactly
-  const colors = {
-    forestDark: [42, 63, 45],
-    sageGreen: [106, 140, 115],
-    warmGold: [218, 165, 32],
-    earthBrown: [101, 67, 33],
-    cream: [250, 248, 245],
-    lightSage: [200, 220, 205],
-    lightGold: [255, 245, 200],
-    white: [255, 255, 255],
-    lightGray: [245, 245, 245]
-  };
+  // Page background gradient
+  addGradientBackground(doc, 0, 0, pageWidth, pageHeight, [252, 249, 245], [240, 245, 235]);
 
-  // Helper function to create gradient-like effect with overlapping rectangles
-  const addGradientBackground = (x: number, y: number, width: number, height: number, startColor: number[], endColor: number[], steps: number = 5) => {
-    for (let i = 0; i < steps; i++) {
-      const ratio = i / (steps - 1);
-      const r = Math.round(startColor[0] * (1 - ratio) + endColor[0] * ratio);
-      const g = Math.round(startColor[1] * (1 - ratio) + endColor[1] * ratio);
-      const b = Math.round(startColor[2] * (1 - ratio) + endColor[2] * ratio);
-      
-      pdf.setFillColor(r, g, b);
-      pdf.rect(x, y + (i * height / steps), width, height / steps, 'F');
-    }
-  };
-
-  // Helper function to add rounded rectangle effect
-  const addRoundedCard = (x: number, y: number, width: number, height: number, backgroundColor: number[], borderColor?: number[]) => {
-    // Main background
-    pdf.setFillColor(backgroundColor[0], backgroundColor[1], backgroundColor[2]);
-    pdf.rect(x, y, width, height, 'F');
-    
-    // Add border if specified
-    if (borderColor) {
-      pdf.setDrawColor(borderColor[0], borderColor[1], borderColor[2]);
-      pdf.setLineWidth(0.5);
-      pdf.rect(x, y, width, height);
-    }
-    
-    // Simulate rounded corners with small rectangles
-    pdf.setFillColor(255, 255, 255);
-    const cornerSize = 2;
-    // Top-left
-    pdf.rect(x, y, cornerSize, cornerSize, 'F');
-    // Top-right
-    pdf.rect(x + width - cornerSize, y, cornerSize, cornerSize, 'F');
-    // Bottom-left
-    pdf.rect(x, y + height - cornerSize, cornerSize, cornerSize, 'F');
-    // Bottom-right
-    pdf.rect(x + width - cornerSize, y + height - cornerSize, cornerSize, cornerSize, 'F');
-  };
-
-  // Helper function to add decorative elements
-  const addDecorativeIcon = (x: number, y: number, icon: string, color: number[]) => {
-    pdf.setFontSize(16);
-    pdf.setTextColor(color[0], color[1], color[2]);
-    pdf.text(icon, x, y);
-  };
-
-  // Helper function to add text with enhanced styling
-  const addStyledText = (text: string, x: number, y: number, options: {
-    fontSize?: number;
-    isBold?: boolean;
-    color?: number[];
-    align?: 'left' | 'center' | 'right';
-    maxWidth?: number;
-    isTitle?: boolean;
-  } = {}) => {
-    const {
-      fontSize = 12,
-      isBold = false,
-      color = colors.forestDark,
-      align = 'left',
-      maxWidth: textMaxWidth = maxWidth,
-      isTitle = false
-    } = options;
-
-    pdf.setFontSize(fontSize);
-    pdf.setFont(undefined, isBold ? 'bold' : 'normal');
-    pdf.setTextColor(color[0], color[1], color[2]);
-    
-    if (textMaxWidth && textMaxWidth < pageWidth - 2 * margin) {
-      const lines = pdf.splitTextToSize(text, textMaxWidth);
-      pdf.text(lines, x, y, { align });
-      return lines.length * fontSize * 0.35;
-    } else {
-      pdf.text(text, x, y, { align });
-      return fontSize * 0.35;
-    }
-  };
-
-  // Enhanced section header with premium styling
-  const addPremiumSectionHeader = (title: string, icon: string = '', bgColor: number[] = colors.lightSage) => {
-    if (yPosition > pageHeight - 80) {
-      pdf.addPage();
-      yPosition = 20;
-    }
-
-    // Add gradient-like background
-    addGradientBackground(margin, yPosition - 8, maxWidth, 35, bgColor, colors.white, 8);
-    
-    // Add decorative border
-    pdf.setDrawColor(colors.warmGold[0], colors.warmGold[1], colors.warmGold[2]);
-    pdf.setLineWidth(2);
-    pdf.rect(margin, yPosition - 8, maxWidth, 35);
-    
-    // Add icon if provided
-    if (icon) {
-      addDecorativeIcon(margin + 15, yPosition + 15, icon, colors.warmGold);
-    }
-    
-    // Add title text
-    addStyledText(title, margin + (icon ? 45 : 15), yPosition + 15, {
-      fontSize: 18,
-      isBold: true,
-      color: colors.forestDark,
-      isTitle: true
-    });
-    
-    yPosition += 50;
-  };
-
-  // Enhanced bullet point with card-like styling
-  const addPremiumBulletPoint = (text: string, level: number = 0, bulletColor: number[] = colors.warmGold) => {
-    if (yPosition > pageHeight - 35) {
-      pdf.addPage();
-      yPosition = 20;
-    }
-
-    const indent = margin + (level * 20);
-    const cardWidth = maxWidth - (level * 20);
-    const cardHeight = 25;
-    
-    // Add card background
-    addRoundedCard(indent, yPosition - 5, cardWidth, cardHeight, colors.white, colors.lightSage);
-    
-    // Add bullet icon
-    const bulletX = indent + 12;
-    const textX = indent + 35;
-    
-    pdf.setFillColor(bulletColor[0], bulletColor[1], bulletColor[2]);
-    pdf.circle(bulletX, yPosition + 7, 4, 'F');
-    
-    // Add number for premium bullets
-    pdf.setFontSize(8);
-    pdf.setTextColor(255, 255, 255);
-    pdf.text('•', bulletX - 1, yPosition + 9);
-    
-    // Add text with proper spacing
-    const lines = pdf.splitTextToSize(text, cardWidth - 50);
-    addStyledText(lines.join('\n'), textX, yPosition + 8, {
-      fontSize: 11,
-      color: colors.forestDark,
-      maxWidth: cardWidth - 50
-    });
-    
-    yPosition += Math.max(lines.length * 14, 30);
-  };
-
-  // Add premium spacing with decorative elements
-  const addPremiumSpacing = (space: number = 20) => {
-    yPosition += space;
-  };
-
-  // Enhanced Title Page with premium styling
-  addGradientBackground(0, 0, pageWidth, 100, colors.sageGreen, colors.warmGold, 10);
+  // Header section with premium styling
+  doc.setFillColor(255, 255, 255);
+  addShadow(doc, margin - 5, currentY - 5, contentWidth + 10, 70);
+  addRoundedRect(doc, margin, currentY, contentWidth, 65, 8, 'F');
   
-  // Add decorative crown for premium
-  if (isPremium) {
-    addDecorativeIcon(pageWidth / 2 - 20, 25, '👑', colors.warmGold);
-  }
-  
-  addStyledText('🎯 SEED PROFILE ANALYSIS', pageWidth / 2, 45, {
-    fontSize: 28,
-    isBold: true,
-    color: colors.forestDark,
-    align: 'center',
-    isTitle: true
-  });
-  
-  addStyledText(isPremium ? '👑 Premium Report' : 'Free Report', pageWidth / 2, 65, {
-    fontSize: 18,
-    isBold: true,
-    color: colors.earthBrown,
-    align: 'center'
-  });
-  
-  addStyledText(`Generated on: ${new Date().toLocaleDateString()}`, pageWidth / 2, 80, {
-    fontSize: 12,
-    color: colors.forestDark,
-    align: 'center'
-  });
+  // Add decorative border
+  doc.setDrawColor(94, 127, 85);
+  doc.setLineWidth(2);
+  addRoundedRect(doc, margin, currentY, contentWidth, 65, 8, 'S');
 
-  yPosition = 120;
+  // Title with icon
+  doc.setTextColor(94, 127, 85);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(24);
+  doc.text('🎯', margin + 15, currentY + 25);
+  doc.text('Personal SEED Profile', margin + 35, currentY + 25);
 
-  if (isPremium) {
-    addRoundedCard(margin, yPosition - 10, maxWidth, 30, colors.lightGold, colors.warmGold);
-    addStyledText('Comprehensive Motivational Pattern Analysis', pageWidth / 2, yPosition + 10, {
-      fontSize: 16,
-      isBold: true,
-      color: colors.forestDark,
-      align: 'center'
-    });
-    yPosition += 50;
+  // Subtitle
+  doc.setTextColor(121, 85, 72);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(12);
+  doc.text('Discover the Design You Were Born With', margin + 35, currentY + 35);
+
+  // Date and methodology info
+  doc.setFontSize(9);
+  doc.setTextColor(100, 100, 100);
+  doc.text(`Generated: ${new Date().toLocaleDateString()}`, margin + 35, currentY + 45);
+  doc.text('Based on SIMA Methodology', margin + 35, currentY + 55);
+
+  currentY += 85;
+
+  // Central Motivation Section
+  if (profileData.centralMotivation) {
+    addColoredBackground(doc, margin, currentY, contentWidth, 40, [94, 127, 85], 0.1);
+    
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(16);
+    doc.setTextColor(94, 72, 30);
+    doc.text('🌟 Your Central Motivation', margin + 10, currentY + 15);
+    
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(11);
+    doc.setTextColor(60, 50, 40);
+    const maxWidth = contentWidth - 20;
+    const motivationLines = doc.splitTextToSize(profileData.centralMotivation, maxWidth);
+    doc.text(motivationLines, margin + 10, currentY + 28);
+    
+    currentY += Math.max(45, motivationLines.length * 5 + 20);
   }
 
-  // Enhanced SEED sections with premium styling
-  addPremiumSectionHeader('⚡ WHAT ENERGIZES YOU', '⚡', colors.lightGold);
-  analysis.energizers.forEach((item) => {
-    addPremiumBulletPoint(item, 0, colors.warmGold);
-  });
-  addPremiumSpacing();
-
-  addPremiumSectionHeader('🚫 WHAT TO AVOID', '🚫', [255, 230, 230]);
-  analysis.avoid.forEach((item) => {
-    addPremiumBulletPoint(item, 0, [220, 38, 38]);
-  });
-  addPremiumSpacing();
-
-  addPremiumSectionHeader('🏢 IDEAL WORK & CONTRIBUTION ENVIRONMENTS', '🏢', colors.lightSage);
-  analysis.environments.forEach((item) => {
-    addPremiumBulletPoint(item, 0, colors.sageGreen);
-  });
-  addPremiumSpacing();
-
-  addPremiumSectionHeader('📈 GROWTH OPPORTUNITIES', '📈', [230, 230, 255]);
-  analysis.growth.forEach((item) => {
-    addPremiumBulletPoint(item, 0, [99, 102, 241]);
-  });
-
-  if (isPremium) {
-    const expandedAnalysis = {
-      coreMotivationalDNA: {
-        primaryDrivers: [
-          "Systematic Innovation: You are energized by creating structured approaches to complex challenges while maintaining creative flexibility",
-          "Ownership Excellence: Deep satisfaction comes from having complete accountability and seeing direct results from your methodical approach",
-          "Value Creation: You thrive when building something meaningful that solves real problems and creates lasting impact for others"
-        ],
-        energyPatterns: [
-          "Peak energy during planning and execution phases where you can apply systematic thinking",
-          "Sustained motivation when you can see clear progress toward meaningful outcomes",
-          "Renewed enthusiasm when facing complex challenges that require innovative solutions"
-        ],
-        stressIndicators: [
-          "Energy drain in highly micromanaged environments that limit your autonomy",
-          "Frustration when forced to work without adequate planning or preparation time",
-          "Burnout risk in roles where you cannot see the impact of your systematic approach"
-        ]
-      },
-      decisionMaking: {
-        style: "Analytical Visionary",
-        process: [
-          "Comprehensive Research: You gather extensive information before making important decisions",
-          "Systematic Evaluation: You create structured frameworks to assess options and outcomes",
-          "Strategic Implementation: You develop detailed plans with clear milestones and success metrics"
-        ],
-        strengths: [
-          "Excellent at identifying potential problems and developing contingency plans",
-          "Natural ability to see long-term implications of short-term decisions",
-          "Strong pattern recognition that helps predict successful approaches"
-        ],
-        blindSpots: [
-          "May over-analyze situations where quick decisions are needed",
-          "Could miss opportunities while waiting for perfect information",
-          "Might undervalue intuitive or emotional factors in decision-making"
-        ]
-      },
-      relationships: {
-        leadershipStyle: "Systematic Enabler",
-        teamDynamics: [
-          "You lead by example, demonstrating thorough preparation and methodical execution",
-          "You empower others by sharing your systematic approaches and frameworks",
-          "You build trust through consistent delivery and transparent communication"
-        ],
-        collaboration: [
-          "Most effective in partnerships where you can contribute strategic thinking and planning",
-          "Value team members who share your commitment to quality and systematic approaches",
-          "Excel at mentoring others in developing structured problem-solving skills"
-        ],
-        communication: [
-          "Prefer detailed, fact-based discussions with clear objectives",
-          "Effective at translating complex concepts into actionable steps",
-          "Value regular check-ins and progress updates to maintain alignment"
-        ]
-      },
-      careerOptimization: {
-        idealRoles: [
-          "Strategic Operations Leader: Roles where you design and implement systematic approaches to complex business challenges",
-          "Innovation Manager: Positions that combine creative problem-solving with structured execution and measurable outcomes",
-          "Entrepreneurial Executive: Leadership roles in growing organizations where you can build systems and see direct impact"
-        ],
-        industryFit: [
-          "Technology and Innovation: Where systematic approaches to complex problems are highly valued",
-          "Consulting and Strategy: Where your analytical skills and systematic thinking directly impact client success",
-          "Entrepreneurship and Startups: Where you can build systems from the ground up and see immediate impact"
-        ],
-        avoidanceZones: [
-          "Highly bureaucratic organizations with rigid processes that cannot be improved or customized",
-          "Roles focused purely on maintenance without opportunities for innovation or improvement",
-          "Positions where success is measured solely on relationship-building rather than systematic achievement"
-        ]
-      },
-      developmentPlan: {
-        shortTerm: [
-          "Enhance your delegation skills to leverage your systematic approaches through others",
-          "Develop rapid prototyping abilities to complement your thorough planning with quick testing",
-          "Strengthen your networking to create opportunities for applying your systematic innovation"
-        ],
-        longTerm: [
-          "Build a portfolio of proven methodologies that you can apply across different contexts",
-          "Develop thought leadership in your area of systematic innovation through speaking and writing",
-          "Create mentorship programs to scale your impact by developing others' systematic thinking skills"
-        ],
-        skillBuilding: [
-          "Advanced project management methodologies to enhance your natural systematic approach",
-          "Design thinking principles to add creative frameworks to your analytical strengths",
-          "Change management skills to help organizations adopt your innovative systematic approaches"
-        ]
+  // Motivated Abilities Section
+  if (profileData.motivatedAbilities?.length > 0) {
+    currentY += addSectionHeader(doc, margin, currentY, '💪 Your Motivated Abilities', pageWidth);
+    
+    profileData.motivatedAbilities.forEach((ability) => {
+      if (currentY > pageHeight - 40) {
+        doc.addPage();
+        addGradientBackground(doc, 0, 0, pageWidth, pageHeight, [252, 249, 245], [240, 245, 235]);
+        currentY = margin;
       }
-    };
-    
-    // Add new page for premium content with enhanced styling
-    pdf.addPage();
-    yPosition = 20;
-    
-    addPremiumSectionHeader('🧠 CORE MOTIVATIONAL DNA', '🧠', [240, 248, 255]);
-    
-    addRoundedCard(margin, yPosition - 5, maxWidth, 25, colors.lightSage, colors.sageGreen);
-    addStyledText('Primary Drivers:', margin + 15, yPosition + 10, { 
-      fontSize: 16, 
-      isBold: true, 
-      color: colors.forestDark 
+      currentY += addBulletPoint(doc, margin + 10, currentY, ability, contentWidth);
     });
-    yPosition += 35;
-    
-    expandedAnalysis.coreMotivationalDNA.primaryDrivers.forEach((driver) => {
-      addPremiumBulletPoint(driver, 0, colors.sageGreen);
-    });
-    addPremiumSpacing();
-    
-    addStyledText('Energy Patterns:', margin, yPosition, { fontSize: 14, isBold: true, color: colors.sageGreen });
-    yPosition += 20;
-    expandedAnalysis.coreMotivationalDNA.energyPatterns.forEach((pattern) => {
-      addBulletPoint(pattern);
-    });
-    addSpacing();
-    
-    addStyledText('Stress Indicators:', margin, yPosition, { fontSize: 14, isBold: true, color: colors.earthBrown });
-    yPosition += 20;
-    expandedAnalysis.coreMotivationalDNA.stressIndicators.forEach((indicator) => {
-      addBulletPoint(indicator);
-    });
-    addSpacing(20);
-
-    // Decision-Making Style
-    addSectionHeader('🎯 DECISION-MAKING STYLE ANALYSIS');
-    addStyledText(`Your Style: ${expandedAnalysis.decisionMaking.style}`, margin, yPosition, { 
-      fontSize: 14, 
-      isBold: true, 
-      color: colors.warmGold 
-    });
-    yPosition += 25;
-    
-    addStyledText('Decision Process:', margin, yPosition, { fontSize: 13, isBold: true, color: colors.sageGreen });
-    yPosition += 20;
-    expandedAnalysis.decisionMaking.process.forEach((step, index) => {
-      addBulletPoint(`${step}`);
-    });
-    addSpacing();
-    
-    addStyledText('Strengths:', margin, yPosition, { fontSize: 13, isBold: true, color: colors.sageGreen });
-    yPosition += 20;
-    expandedAnalysis.decisionMaking.strengths.forEach((strength) => {
-      addBulletPoint(strength);
-    });
-    addSpacing();
-    
-    addStyledText('Areas for Awareness:', margin, yPosition, { fontSize: 13, isBold: true, color: colors.earthBrown });
-    yPosition += 20;
-    expandedAnalysis.decisionMaking.blindSpots.forEach((blindSpot) => {
-      addBulletPoint(blindSpot);
-    });
-    addSpacing(20);
-
-    // Add new page for relationships
-    pdf.addPage();
-    yPosition = 20;
-    
-    // Relationship & Leadership Patterns
-    addSectionHeader('👥 RELATIONSHIP & LEADERSHIP PATTERNS');
-    addStyledText(`Leadership Style: ${expandedAnalysis.relationships.leadershipStyle}`, margin, yPosition, { 
-      fontSize: 14, 
-      isBold: true, 
-      color: colors.warmGold 
-    });
-    yPosition += 25;
-    
-    expandedAnalysis.relationships.teamDynamics.forEach((dynamic) => {
-      addBulletPoint(dynamic);
-    });
-    addSpacing();
-    
-    addStyledText('Collaboration Preferences:', margin, yPosition, { fontSize: 13, isBold: true, color: colors.sageGreen });
-    yPosition += 20;
-    expandedAnalysis.relationships.collaboration.forEach((pref) => {
-      addBulletPoint(pref);
-    });
-    addSpacing();
-    
-    addStyledText('Communication Style:', margin, yPosition, { fontSize: 13, isBold: true, color: colors.sageGreen });
-    yPosition += 20;
-    expandedAnalysis.relationships.communication.forEach((style) => {
-      addBulletPoint(style);
-    });
-    addSpacing(20);
-
-    // Career Optimization Guide
-    addSectionHeader('💼 CAREER OPTIMIZATION GUIDE');
-    
-    addStyledText('Ideal Roles:', margin, yPosition, { fontSize: 14, isBold: true, color: colors.sageGreen });
-    yPosition += 20;
-    expandedAnalysis.careerOptimization.idealRoles.forEach((role) => {
-      addBulletPoint(role);
-    });
-    addSpacing();
-    
-    addStyledText('Industry Sweet Spots:', margin, yPosition, { fontSize: 14, isBold: true, color: colors.sageGreen });
-    yPosition += 20;
-    expandedAnalysis.careerOptimization.industryFit.forEach((industry) => {
-      addBulletPoint(industry);
-    });
-    addSpacing();
-    
-    addStyledText('Career Pitfalls to Avoid:', margin, yPosition, { fontSize: 14, isBold: true, color: colors.earthBrown });
-    yPosition += 20;
-    expandedAnalysis.careerOptimization.avoidanceZones.forEach((zone) => {
-      addBulletPoint(zone);
-    });
-    addSpacing(20);
-
-    // Add new page for development plan
-    pdf.addPage();
-    yPosition = 20;
-    
-    // Personal Development Plan
-    addSectionHeader('📚 PERSONAL DEVELOPMENT ROADMAP');
-    
-    addStyledText('Short-Term Focus (3-6 months):', margin, yPosition, { fontSize: 14, isBold: true, color: colors.warmGold });
-    yPosition += 20;
-    expandedAnalysis.developmentPlan.shortTerm.forEach((goal) => {
-      addBulletPoint(goal);
-    });
-    addSpacing();
-    
-    addStyledText('Long-Term Vision (1-3 years):', margin, yPosition, { fontSize: 14, isBold: true, color: colors.sageGreen });
-    yPosition += 20;
-    expandedAnalysis.developmentPlan.longTerm.forEach((vision) => {
-      addBulletPoint(vision);
-    });
-    addSpacing();
-    
-    addStyledText('Skill Building Priorities:', margin, yPosition, { fontSize: 14, isBold: true, color: colors.sageGreen });
-    yPosition += 20;
-    expandedAnalysis.developmentPlan.skillBuilding.forEach((skill) => {
-      addBulletPoint(skill);
-    });
-    addSpacing(20);
-
-    // Action Plan & Next Steps
-    addSectionHeader('⭐ YOUR ACTION PLAN & NEXT STEPS');
-    addStyledText('Your 30-60-90 Day Implementation Plan', margin, yPosition, { 
-      fontSize: 14, 
-      isBold: true, 
-      color: colors.warmGold 
-    });
-    yPosition += 25;
-    
-    addStyledText('First 30 Days:', margin, yPosition, { fontSize: 13, isBold: true, color: colors.sageGreen });
-    yPosition += 20;
-    addBulletPoint('Audit current role against ideal environment criteria');
-    addBulletPoint('Identify 3 systematic improvements you can implement');
-    addBulletPoint('Begin documenting your proven methodologies');
-    addSpacing();
-    
-    addStyledText('Next 30 Days:', margin, yPosition, { fontSize: 13, isBold: true, color: colors.sageGreen });
-    yPosition += 20;
-    addBulletPoint('Implement one systematic improvement project');
-    addBulletPoint('Start networking with innovation-focused professionals');
-    addBulletPoint('Practice delegation using your systematic frameworks');
-    addSpacing();
-    
-    addStyledText('Following 30 Days:', margin, yPosition, { fontSize: 13, isBold: true, color: colors.sageGreen });
-    yPosition += 20;
-    addBulletPoint('Evaluate progress and refine your approach');
-    addBulletPoint('Seek feedback on your systematic innovations');
-    addBulletPoint('Plan next phase of development or career moves');
-    addSpacing();
-    
-    addStyledText('Key Success Indicators:', margin, yPosition, { fontSize: 14, isBold: true, color: colors.warmGold });
-    yPosition += 20;
-    addBulletPoint('You feel energized by your daily work and see clear progress');
-    addBulletPoint('Others seek your systematic approach for solving complex problems');
-    addBulletPoint('You\'re building systems and processes that create lasting value');
-    addSpacing(20);
-    
-    // Final message with background
-    addColoredBackground(margin, yPosition - 5, maxWidth, 30, colors.cream);
-    
-    addStyledText('⭐ Remember: Your SEED Profile is a living document. Revisit and refine it as you grow and gain new experiences. ⭐', 
-      pageWidth / 2, yPosition + 15, { 
-      fontSize: 12, 
-      isBold: true, 
-      color: colors.forestDark,
-      align: 'center'
-    });
+    currentY += addSpacing(10);
   }
 
-  // Enhanced footer
-  addGradientBackground(0, pageHeight - 25, pageWidth, 25, colors.lightSage, colors.white, 5);
-  pdf.setFontSize(10);
-  pdf.setFont(undefined, 'italic');
-  pdf.setTextColor(colors.earthBrown[0], colors.earthBrown[1], colors.earthBrown[2]);
-  pdf.text('Generated by SEED Profile Analysis Tool • lionfarmer.com', margin, pageHeight - 10);
+  // Subject Matter Section
+  if (profileData.subjectMatter?.length > 0) {
+    if (currentY > pageHeight - 60) {
+      doc.addPage();
+      addGradientBackground(doc, 0, 0, pageWidth, pageHeight, [252, 249, 245], [240, 245, 235]);
+      currentY = margin;
+    }
+    
+    currentY += addSectionHeader(doc, margin, currentY, '📚 Your Subject Matter Interests', pageWidth);
+    
+    profileData.subjectMatter.forEach((subject) => {
+      if (currentY > pageHeight - 40) {
+        doc.addPage();
+        addGradientBackground(doc, 0, 0, pageWidth, pageHeight, [252, 249, 245], [240, 245, 235]);
+        currentY = margin;
+      }
+      currentY += addBulletPoint(doc, margin + 10, currentY, subject, contentWidth);
+    });
+    currentY += addSpacing(10);
+  }
 
-  return pdf;
+  // Circumstances Section
+  if (profileData.circumstances?.length > 0) {
+    if (currentY > pageHeight - 60) {
+      doc.addPage();
+      addGradientBackground(doc, 0, 0, pageWidth, pageHeight, [252, 249, 245], [240, 245, 235]);
+      currentY = margin;
+    }
+    
+    currentY += addSectionHeader(doc, margin, currentY, '🎯 Your Preferred Circumstances', pageWidth);
+    
+    profileData.circumstances.forEach((circumstance) => {
+      if (currentY > pageHeight - 40) {
+        doc.addPage();
+        addGradientBackground(doc, 0, 0, pageWidth, pageHeight, [252, 249, 245], [240, 245, 235]);
+        currentY = margin;
+      }
+      currentY += addBulletPoint(doc, margin + 10, currentY, circumstance, contentWidth);
+    });
+    currentY += addSpacing(10);
+  }
+
+  // Operating Relationship Section
+  if (profileData.operatingRelationship?.length > 0) {
+    if (currentY > pageHeight - 60) {
+      doc.addPage();
+      addGradientBackground(doc, 0, 0, pageWidth, pageHeight, [252, 249, 245], [240, 245, 235]);
+      currentY = margin;
+    }
+    
+    currentY += addSectionHeader(doc, margin, currentY, '🤝 Your Operating Relationships', pageWidth);
+    
+    profileData.operatingRelationship.forEach((relationship) => {
+      if (currentY > pageHeight - 40) {
+        doc.addPage();
+        addGradientBackground(doc, 0, 0, pageWidth, pageHeight, [252, 249, 245], [240, 245, 235]);
+        currentY = margin;
+      }
+      currentY += addBulletPoint(doc, margin + 10, currentY, relationship, contentWidth);
+    });
+    currentY += addSpacing(10);
+  }
+
+  // Career Recommendations Section
+  if (profileData.careerRecommendations?.length > 0) {
+    if (currentY > pageHeight - 60) {
+      doc.addPage();
+      addGradientBackground(doc, 0, 0, pageWidth, pageHeight, [252, 249, 245], [240, 245, 235]);
+      currentY = margin;
+    }
+    
+    currentY += addSectionHeader(doc, margin, currentY, '🚀 Career Recommendations', pageWidth);
+    
+    // Group recommendations by category
+    const categories = {
+      'Leadership Roles': profileData.careerRecommendations.filter(rec => rec.includes('leadership') || rec.includes('management') || rec.includes('director')),
+      'Creative Positions': profileData.careerRecommendations.filter(rec => rec.includes('creative') || rec.includes('design') || rec.includes('innovation')),
+      'Analytical Roles': profileData.careerRecommendations.filter(rec => rec.includes('analysis') || rec.includes('research') || rec.includes('strategy'))
+    };
+
+    Object.entries(categories).forEach(([category, recs]) => {
+      if (recs.length > 0) {
+        currentY += addBulletPoint(doc, margin + 10, currentY, `${category}:`, contentWidth);
+        recs.forEach(rec => {
+          currentY += addBulletPoint(doc, margin + 20, currentY, rec, contentWidth - 10);
+        });
+        currentY += addSpacing(5);
+      }
+    });
+
+    // Add any remaining recommendations
+    const remaining = profileData.careerRecommendations.filter(rec => 
+      !Object.values(categories).flat().includes(rec)
+    );
+    remaining.forEach(rec => {
+      currentY += addBulletPoint(doc, margin + 10, currentY, rec, contentWidth);
+    });
+    currentY += addSpacing(10);
+  }
+
+  // Footer
+  if (currentY > pageHeight - 60) {
+    doc.addPage();
+    addGradientBackground(doc, 0, 0, pageWidth, pageHeight, [252, 249, 245], [240, 245, 235]);
+    currentY = margin;
+  }
+
+  addColoredBackground(doc, margin, pageHeight - 50, contentWidth, 30, [191, 155, 88]);
+  
+  doc.setTextColor(255, 255, 255);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(12);
+  doc.text('Your journey of self-discovery continues...', pageWidth / 2, pageHeight - 35, { align: 'center' });
+  
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.text('This profile represents your unique motivational pattern based on your accomplishments.', pageWidth / 2, pageHeight - 25, { align: 'center' });
+
+  return doc;
 };
