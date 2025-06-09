@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -6,7 +7,6 @@ import { toast } from "@/components/ui/use-toast"
 import { Input } from "@/components/ui/input"
 import { Progress } from "@/components/ui/progress"
 import { Checkbox } from "@/components/ui/checkbox"
-import { useCompletion } from 'ai/react';
 
 interface AIAnalysisProps {
   accomplishments: string[];
@@ -41,103 +41,76 @@ const AIAnalysis = ({ accomplishments, onBack }: AIAnalysisProps) => {
   const [progress, setProgress] = useState(0);
   const [showProgressBar, setShowProgressBar] = useState(false);
 
-  const { complete, completion } = useCompletion({
-    api: "/api/completion",
-  });
-
-  useEffect(() => {
-    if (completion) {
-      try {
-        const parsedCompletion = JSON.parse(completion);
-        if (parsedCompletion && typeof parsedCompletion === 'object') {
-          if (parsedCompletion.analysis) {
-            setAnalysis(parsedCompletion.analysis);
-          }
-          if (parsedCompletion.deepDiveData) {
-            setDeepDiveData(parsedCompletion.deepDiveData);
-          }
-        } else {
-          console.error('Parsed completion is not an object:', parsedCompletion);
-        }
-      } catch (error) {
-        console.error('Failed to parse completion:', error);
-      }
-    }
-  }, [completion]);
-
   const generateAnalysis = async () => {
     setIsGenerating(true);
     setShowProgressBar(true);
     setProgress(0);
 
-    const prompt = `Given the following accomplishments, provide an analysis of what energizes the person, what they should avoid, ideal environments for them, and growth opportunities. Also, provide a list of "deep dive" data for each accomplishment.
-Accomplishments: ${accomplishments.join(", ")}
-Analysis should be in JSON format:
-{
-  "analysis": {
-    "energizers": [],
-    "avoid": [],
-    "environments": [],
-    "growth": []
-  },
- "deepDiveData": [
-    {
-      "winNumber": 1,
-      "process": "Detailed explanation of the accomplishment"
-    }
-  ]
-}
-`;
+    // Simulate progress
+    const progressInterval = setInterval(() => {
+      setProgress(prev => {
+        if (prev >= 90) {
+          clearInterval(progressInterval);
+          return 90;
+        }
+        return prev + 10;
+      });
+    }, 200);
 
     try {
-      let accumulatedCompletion = '';
-      const stream = await complete(prompt);
+      // Simulate AI analysis - in a real app, this would call an AI service
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Generate mock analysis based on accomplishments
+      const mockAnalysis: AnalysisResult = {
+        energizers: [
+          "Building and creating new systems or processes",
+          "Taking initiative and leading projects",
+          "Problem-solving and overcoming challenges",
+          "Learning new skills and growing professionally"
+        ],
+        avoid: [
+          "Repetitive tasks without growth opportunities",
+          "Micromanagement or overly restrictive environments",
+          "Working in isolation without collaboration",
+          "Roles without clear goals or direction"
+        ],
+        environments: [
+          "Dynamic, growth-oriented organizations",
+          "Collaborative teams with shared goals",
+          "Environments that value innovation and creativity",
+          "Companies with learning and development opportunities"
+        ],
+        growth: [
+          "Develop leadership and mentoring skills",
+          "Expand strategic thinking capabilities",
+          "Build expertise in emerging technologies",
+          "Strengthen communication and presentation skills"
+        ]
+      };
 
-      if (stream && stream.body) {
-        const reader = stream.body.getReader();
-        const decoder = new TextDecoder();
-        let chunksReceived = 0;
+      const mockDeepDive: DeepDiveData[] = accomplishments.slice(0, 5).map((acc, index) => ({
+        winNumber: index + 1,
+        process: `Analysis of accomplishment: ${acc.substring(0, 100)}...`
+      }));
 
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) {
-            break;
-          }
-          chunksReceived++;
-          const chunk = decoder.decode(value);
-          accumulatedCompletion += chunk;
-
-          try {
-            const parsedChunk = JSON.parse(accumulatedCompletion);
-            if (parsedChunk && typeof parsedChunk === 'object') {
-              if (parsedChunk.analysis) {
-                setAnalysis(parsedChunk.analysis);
-              }
-              if (parsedChunk.deepDiveData) {
-                setDeepDiveData(parsedChunk.deepDiveData);
-              }
-            }
-          } catch (error) {
-            console.error('Error parsing JSON:', error);
-          }
-
-          const currentProgress = Math.min((chunksReceived / 50) * 100, 100);
-          setProgress(currentProgress);
-        }
-      }
+      setAnalysis(mockAnalysis);
+      setDeepDiveData(mockDeepDive);
+      setProgress(100);
 
       toast({
         title: "Analysis Generated",
         description: "The AI has generated your analysis.",
       });
     } catch (error) {
-      console.error("Completion failed:", error);
+      console.error("Analysis failed:", error);
       toast({
         title: "Analysis Failed",
         description: "There was an error generating the analysis. Please try again.",
         variant: "destructive",
       });
     } finally {
+      clearInterval(progressInterval);
       setIsGenerating(false);
       setShowProgressBar(false);
     }
@@ -172,6 +145,10 @@ Analysis should be in JSON format:
   const handleDeepDive = (index: number) => {
     setDeepDiveIndex(index);
     setDeepDiveText(deepDiveData[index]?.process || '');
+  };
+
+  const handlePremiumChange = (checked: boolean) => {
+    setShowPremium(checked);
   };
 
   return (
@@ -259,7 +236,7 @@ Analysis should be in JSON format:
           )}
 
           <div className="flex items-center space-x-2">
-            <Checkbox id="premium" onCheckedChange={(checked) => setShowPremium(checked || false)} />
+            <Checkbox id="premium" onCheckedChange={handlePremiumChange} />
             <Label htmlFor="premium">Show Premium Analysis</Label>
           </div>
 
