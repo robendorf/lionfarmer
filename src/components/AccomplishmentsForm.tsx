@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -222,7 +223,7 @@ const AccomplishmentsForm = () => {
               These will be used for deeper analysis in the "How I Did It" section.
             </p>
             <ul className="text-muted-foreground text-sm mt-4 space-y-1">
-              <li>• Keep each entry to 1-2 lines</li>
+              <li>• Keep each entry to 1-2 lines (quick one-liners)</li>
               <li>• Include accomplishments from different life stages</li>
               <li>• Focus on what YOU specifically contributed</li>
               <li>• Include both big and small wins that mattered to you</li>
@@ -287,7 +288,7 @@ const AccomplishmentsForm = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Lightbulb className="h-5 w-5 text-blue-600" />
-              How I Did It - Deep Dive Analysis
+              How I Did It - Action Analysis
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -295,7 +296,7 @@ const AccomplishmentsForm = () => {
               <div className="prose prose-sm max-w-none">
                 <p className="text-blue-700 mb-4">
                   For each of your selected favorite accomplishments, describe in detail HOW you made it happen. 
-                  Focus on your specific actions and thought processes.
+                  Focus on your specific actions and steps taken.
                 </p>
                 <ul className="text-blue-600 text-sm space-y-1">
                   <li>• What specific steps did you take?</li>

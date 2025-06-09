@@ -1,6 +1,6 @@
 
 import React from 'react';
-import EnhancedAccomplishmentsForm from '../components/EnhancedAccomplishmentsForm';
+import AccomplishmentsForm from '../components/AccomplishmentsForm';
 
 const Index = () => {
   return (
@@ -36,7 +36,7 @@ const Index = () => {
                 <div className="flex items-center justify-center gap-4 mt-6">
                   <div className="flex items-center gap-2 text-sage-green">
                     <div className="w-3 h-3 bg-sage-green rounded-full animate-pulse"></div>
-                    <span className="text-sm font-medium">SIMA Methodology</span>
+                    <span className="text-sm font-medium">SEED Methodology</span>
                   </div>
                   <div className="w-1 h-1 bg-earth-brown/30 rounded-full"></div>
                   <div className="flex items-center gap-2 text-warm-gold">
@@ -58,7 +58,7 @@ const Index = () => {
             <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-sage-green/5 to-warm-gold/10 rounded-3xl blur-sm"></div>
             <div className="relative z-10 bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-sage-green/20 overflow-hidden">
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-sage-green via-warm-gold to-sage-green"></div>
-              <EnhancedAccomplishmentsForm />
+              <AccomplishmentsForm />
             </div>
           </div>
         </div>

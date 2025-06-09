@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -34,7 +35,7 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showPremium, setShowPremium] = useState(false);
-  const [isPremiumUser, setIsPremiumUser] = useState(true); // Set to true to enable premium features
+  const [isPremiumUser, setIsPremiumUser] = useState(false); // Set to false for free profile default
   const { toast } = useToast();
 
   const getSelectedWinNumbers = () => {
@@ -44,7 +45,7 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
   const analyzePatterns = async () => {
     setIsAnalyzing(true);
     try {
-      console.log('Starting AI analysis...');
+      console.log('Starting SEED analysis...');
 
       const selectedWinNumbers = getSelectedWinNumbers();
       console.log('Selected win numbers:', selectedWinNumbers);
@@ -52,18 +53,18 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
       const analysisData = selectedWinNumbers.map(winNumber => {
         const howKey = `how_${winNumber}`;
         const process = howIDidIt[howKey] || '';
-        console.log(`Win ${winNumber} - How I Did It:`, process.slice(0, 100));
+        console.log(`Win ${winNumber} - How actions taken:`, process.slice(0, 100));
         return {
           winNumber,
           process
         };
       }).filter(item => item.process.trim().length > 0);
 
-      console.log('Analysis data after filtering (How I Did It only):', analysisData.length, 'items');
+      console.log('Analysis data after filtering (How actions only):', analysisData.length, 'items');
       
       if (analysisData.length < 3) {
         toast({
-          title: "Insufficient Deep Dive Data",
+          title: "Insufficient Action Data",
           description: `Please provide at least 3 detailed "How I Did It" responses. Currently have ${analysisData.length} valid entries.`,
           variant: "destructive"
         });
@@ -72,12 +73,12 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
 
       await new Promise(resolve => setTimeout(resolve, 3000));
 
-      const simaAnalysis = generateSIMAAnalysis(analysisData);
-      setAnalysis(simaAnalysis);
+      const seedAnalysis = generateSEEDAnalysis(analysisData);
+      setAnalysis(seedAnalysis);
       
       toast({
         title: "SEED Profile Generated",
-        description: "Your motivational pattern has been analyzed using SIMA methodology from your detailed processes!"
+        description: "Your motivational pattern has been analyzed using SEED methodology from your action patterns!"
       });
     } catch (error) {
       console.error('Analysis error:', error);
@@ -91,11 +92,11 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
     }
   };
 
-  const generateSIMAAnalysis = (data: Array<{ winNumber: number; process: string; }>): AnalysisResult => {
-    console.log('Generating SIMA analysis for', data.length, 'How I Did It responses');
+  const generateSEEDAnalysis = (data: Array<{ winNumber: number; process: string; }>): AnalysisResult => {
+    console.log('Generating SEED analysis for', data.length, 'How action responses');
 
     const allProcesses = data.map(d => d.process).join(' ').toLowerCase();
-    console.log('Analysis text length (How I Did It only):', allProcesses.length);
+    console.log('Analysis text length (How actions only):', allProcesses.length);
     
     const energizers = [];
     const avoid = [];
@@ -160,12 +161,12 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
       growth: growth.slice(0, 2)
     };
     
-    console.log('Generated SIMA analysis from How I Did It data:', result);
+    console.log('Generated SEED analysis from action data:', result);
     return result;
   };
 
   const handlePremiumUpgrade = () => {
-    if (isPremiumUser && analysis) {
+    if (analysis) {
       setShowPremium(true);
     } else {
       toast({
@@ -223,7 +224,7 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
         <div className="flex items-center gap-2">
           <Star className="h-5 w-5 text-warm-gold" />
           <CardTitle className="text-forest-dark">
-            {isPremiumUser ? 'Premium SEED Profile' : 'Free SEED Profile'}
+            Free SEED Profile
           </CardTitle>
         </div>
         <div className="flex gap-2">
@@ -237,7 +238,7 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
               Download PDF
             </Button>
           )}
-          {isPremiumUser && analysis && (
+          {analysis && (
             <Button 
               onClick={handlePremiumUpgrade}
               className="bg-warm-gold hover:bg-earth-brown text-white"
@@ -253,8 +254,8 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
       {!analysis ? (
         <div className="space-y-4">
           <p className="text-forest-dark">
-            Ready to discover your unique motivational pattern! Using SIMA (System for Identifying Motivated Abilities) methodology, 
-            our analysis will examine your detailed "How I Did It" processes to identify your core motivational themes.
+            Ready to discover your unique motivational pattern! Using SEED methodology, 
+            our analysis will examine your detailed "How I Did It" actions to identify your core motivational themes.
           </p>
           <div className="text-sm text-earth-brown">
             <p>Your SEED Profile will include:</p>
@@ -268,9 +269,9 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
           <div className="text-xs text-earth-brown bg-cream p-3 rounded border border-sage-green">
             <p><strong>Analysis Status:</strong></p>
             <p>• Selected wins: {selectedCount}/8</p>
-            <p>• Deep dive responses completed: {deepDiveCount}</p>
+            <p>• Action responses completed: {deepDiveCount}</p>
             <p className="mt-2 italic">
-              {deepDiveCount >= 3 ? '✅ Ready for analysis with your detailed process data!' : `⏳ Need ${3 - deepDiveCount} more detailed "How I Did It" responses for analysis`}
+              {deepDiveCount >= 3 ? '✅ Ready for analysis with your detailed action data!' : `⏳ Need ${3 - deepDiveCount} more detailed "How I Did It" responses for analysis`}
             </p>
           </div>
           <Button 
@@ -285,20 +286,18 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
         <div className="space-y-6">
           <div className="text-center mb-6">
             <h2 className="text-2xl font-bold text-forest-dark mb-2">
-              🎯 Your SEED Profile {isPremiumUser ? '(Premium Version)' : '(Free Version)'}
+              🎯 Your SEED Profile (Free Version)
             </h2>
-            {isPremiumUser && (
-              <div className="bg-warm-gold/10 border border-warm-gold rounded-lg p-3 mt-4">
-                <div className="flex items-center gap-2 text-earth-brown mb-2">
-                  <Crown className="h-4 w-4" />
-                  <span className="font-semibold">Premium Analysis Available!</span>
-                </div>
-                <p className="text-sm text-earth-brown">
-                  Click "View Premium Analysis" above to access your comprehensive 6-page analysis with expanded insights, 
-                  career recommendations, relationship patterns, decision-making styles, and personalized action plans.
-                </p>
+            <div className="bg-warm-gold/10 border border-warm-gold rounded-lg p-3 mt-4">
+              <div className="flex items-center gap-2 text-earth-brown mb-2">
+                <Crown className="h-4 w-4" />
+                <span className="font-semibold">Premium Analysis Available!</span>
               </div>
-            )}
+              <p className="text-sm text-earth-brown">
+                Click "View Premium Analysis" above to access your comprehensive 6-page analysis with expanded insights, 
+                career recommendations, relationship patterns, decision-making styles, and personalized action plans.
+              </p>
+            </div>
           </div>
 
           <div className="space-y-6">
@@ -369,7 +368,7 @@ const AIAnalysis: React.FC<AIAnalysisProps> = ({
 
             <div className="mt-6 p-4 bg-sage-green/10 rounded-lg border border-sage-green">
               <p className="text-sm text-earth-brown italic text-center">
-                These insights were generated based on your detailed "How I Did It" processes. 
+                These insights were generated based on your detailed "How I Did It" actions. 
                 Your SEED Profile reflects your natural approach to achieving results and what sustains your energy over time.
               </p>
             </div>
