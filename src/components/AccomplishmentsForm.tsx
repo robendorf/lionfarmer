@@ -434,6 +434,7 @@ const AccomplishmentsForm = () => {
       {/* AI Analysis Section */}
       <AIAnalysis 
         accomplishments={accomplishmentsArray}
+        onBack={() => {}} // Add empty onBack function since this is embedded in the form
         selectedWins={selectedWins}
         howIDidIt={howIDidIt}
       />
