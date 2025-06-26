@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -10,10 +9,12 @@ const Index = () => {
       {/* Header */}
       <header className="container mx-auto px-4 py-6">
         <nav className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <Target className="w-5 h-5 text-white" />
-            </div>
+          <div className="flex items-center space-x-3">
+            <img 
+              src="/lovable-uploads/47c096f3-cf33-4c1d-800b-053837385909.png" 
+              alt="SEED Acorn Logo" 
+              className="w-10 h-10 object-contain"
+            />
             <span className="text-xl font-bold text-forest-dark">SEED Profile</span>
           </div>
           <div className="flex items-center space-x-4">
@@ -32,6 +33,13 @@ const Index = () => {
 
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-16 text-center">
+        <div className="flex justify-center mb-6">
+          <img 
+            src="/lovable-uploads/47c096f3-cf33-4c1d-800b-053837385909.png" 
+            alt="SEED Acorn" 
+            className="w-24 h-24 object-contain"
+          />
+        </div>
         <Badge className="mb-4 bg-warm-gold/20 text-forest-dark border-warm-gold/40">
           ✨ AI-Powered Career Analysis
         </Badge>
@@ -137,6 +145,13 @@ const Index = () => {
       <section className="container mx-auto px-4 py-16">
         <Card className="bg-gradient-to-r from-primary to-sage-green text-white">
           <CardHeader className="text-center py-12">
+            <div className="flex justify-center mb-4">
+              <img 
+                src="/lovable-uploads/47c096f3-cf33-4c1d-800b-053837385909.png" 
+                alt="SEED Acorn" 
+                className="w-16 h-16 object-contain opacity-90"
+              />
+            </div>
             <CardTitle className="text-3xl md:text-4xl mb-4">
               Ready to Discover Your SEED Profile?
             </CardTitle>
@@ -154,10 +169,12 @@ const Index = () => {
       {/* Footer */}
       <footer className="container mx-auto px-4 py-8 border-t border-sage-green/20">
         <div className="flex flex-col md:flex-row justify-between items-center">
-          <div className="flex items-center space-x-2 mb-4 md:mb-0">
-            <div className="w-6 h-6 bg-primary rounded flex items-center justify-center">
-              <Target className="w-4 h-4 text-white" />
-            </div>
+          <div className="flex items-center space-x-3 mb-4 md:mb-0">
+            <img 
+              src="/lovable-uploads/47c096f3-cf33-4c1d-800b-053837385909.png" 
+              alt="SEED Acorn Logo" 
+              className="w-6 h-6 object-contain"
+            />
             <span className="font-semibold text-forest-dark">SEED Profile</span>
           </div>
           <div className="text-sm text-forest-dark/60">
