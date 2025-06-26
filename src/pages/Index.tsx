@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +12,7 @@ const Index = () => {
         <nav className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <img 
-              src="/lovable-uploads/47c096f3-cf33-4c1d-800b-053837385909.png" 
+              src="/lovable-uploads/0a4a09e8-5305-46df-a349-2b8c31e1814f.png" 
               alt="SEED Acorn Logo" 
               className="w-10 h-10 object-contain"
             />
@@ -35,7 +36,7 @@ const Index = () => {
       <section className="container mx-auto px-4 py-16 text-center">
         <div className="flex justify-center mb-6">
           <img 
-            src="/lovable-uploads/47c096f3-cf33-4c1d-800b-053837385909.png" 
+            src="/lovable-uploads/0a4a09e8-5305-46df-a349-2b8c31e1814f.png" 
             alt="SEED Acorn" 
             className="w-24 h-24 object-contain"
           />
@@ -147,7 +148,7 @@ const Index = () => {
           <CardHeader className="text-center py-12">
             <div className="flex justify-center mb-4">
               <img 
-                src="/lovable-uploads/47c096f3-cf33-4c1d-800b-053837385909.png" 
+                src="/lovable-uploads/0a4a09e8-5305-46df-a349-2b8c31e1814f.png" 
                 alt="SEED Acorn" 
                 className="w-16 h-16 object-contain opacity-90"
               />
@@ -171,7 +172,7 @@ const Index = () => {
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="flex items-center space-x-3 mb-4 md:mb-0">
             <img 
-              src="/lovable-uploads/47c096f3-cf33-4c1d-800b-053837385909.png" 
+              src="/lovable-uploads/0a4a09e8-5305-46df-a349-2b8c31e1814f.png" 
               alt="SEED Acorn Logo" 
               className="w-6 h-6 object-contain"
             />
