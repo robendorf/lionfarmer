@@ -1,71 +1,170 @@
 
-import React from 'react';
-import AccomplishmentsForm from '../components/AccomplishmentsForm';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { CheckCircle, Users, Target, TrendingUp, ArrowRight, Star } from "lucide-react";
 
 const Index = () => {
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Enhanced gradient background with multiple layers */}
-      <div className="absolute inset-0 bg-gradient-to-br from-cream via-sage-green/20 to-warm-gold/30"></div>
-      <div className="absolute inset-0 bg-gradient-to-tr from-warm-gold/10 via-transparent to-sage-green/20"></div>
-      
-      {/* Decorative elements */}
-      <div className="absolute top-20 left-10 w-32 h-32 bg-sage-green/10 rounded-full blur-xl"></div>
-      <div className="absolute bottom-20 right-10 w-40 h-40 bg-warm-gold/10 rounded-full blur-xl"></div>
-      <div className="absolute top-1/2 left-1/3 w-24 h-24 bg-earth-brown/5 rounded-full blur-lg"></div>
-      
-      <div className="relative z-10 container mx-auto px-4 py-12">
-        <div className="max-w-5xl mx-auto">
-          {/* Enhanced header with premium styling */}
-          <div className="text-center mb-16 relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-sage-green/5 to-transparent rounded-3xl"></div>
-            <div className="relative z-10 py-12 px-8">
-              <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-warm-gold via-amber-400 to-warm-gold rounded-full shadow-xl mb-8 animate-pulse">
-                <span className="text-3xl">🎯</span>
-              </div>
-              
-              <h1 className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-forest-dark via-sage-green to-earth-brown bg-clip-text text-transparent mb-8 leading-tight drop-shadow-sm">
-                Discover the Design You Were Born With
-              </h1>
-              
-              <div className="max-w-3xl mx-auto bg-white/70 backdrop-blur-sm rounded-2xl p-8 shadow-2xl border border-sage-green/20">
-                <p className="text-2xl text-earth-brown leading-relaxed font-medium">
-                  Let's identify your natural motivational patterns by reflecting on your meaningful accomplishments from childhood to now.
-                </p>
-                
-                <div className="flex items-center justify-center gap-4 mt-6">
-                  <div className="flex items-center gap-2 text-sage-green">
-                    <div className="w-3 h-3 bg-sage-green rounded-full animate-pulse"></div>
-                    <span className="text-sm font-medium">SEED Methodology</span>
-                  </div>
-                  <div className="w-1 h-1 bg-earth-brown/30 rounded-full"></div>
-                  <div className="flex items-center gap-2 text-warm-gold">
-                    <div className="w-3 h-3 bg-warm-gold rounded-full animate-pulse"></div>
-                    <span className="text-sm font-medium">Personalized Analysis</span>
-                  </div>
-                  <div className="w-1 h-1 bg-earth-brown/30 rounded-full"></div>
-                  <div className="flex items-center gap-2 text-earth-brown">
-                    <div className="w-3 h-3 bg-earth-brown rounded-full animate-pulse"></div>
-                    <span className="text-sm font-medium">Actionable Insights</span>
-                  </div>
-                </div>
-              </div>
+    <div className="min-h-screen bg-gradient-to-br from-cream via-warm-gold/20 to-sage-green/30">
+      {/* Header */}
+      <header className="container mx-auto px-4 py-6">
+        <nav className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+              <Target className="w-5 h-5 text-white" />
             </div>
+            <span className="text-xl font-bold text-forest-dark">SEED Profile</span>
           </div>
-          
-          {/* Enhanced form container */}
-          <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-sage-green/5 to-warm-gold/10 rounded-3xl blur-sm"></div>
-            <div className="relative z-10 bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-sage-green/20 overflow-hidden">
-              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-sage-green via-warm-gold to-sage-green"></div>
-              <AccomplishmentsForm />
-            </div>
+          <div className="flex items-center space-x-4">
+            <Button variant="ghost" className="text-forest-dark hover:text-primary">
+              Features
+            </Button>
+            <Button variant="ghost" className="text-forest-dark hover:text-primary">
+              Pricing
+            </Button>
+            <Button className="bg-primary hover:bg-primary/90">
+              Try Now
+            </Button>
+          </div>
+        </nav>
+      </header>
+
+      {/* Hero Section */}
+      <section className="container mx-auto px-4 py-16 text-center">
+        <Badge className="mb-4 bg-warm-gold/20 text-forest-dark border-warm-gold/40">
+          ✨ AI-Powered Career Analysis
+        </Badge>
+        <h1 className="text-5xl md:text-6xl font-bold text-forest-dark mb-6 leading-tight">
+          Unlock Your Career
+          <span className="text-primary block">Potential with SEED</span>
+        </h1>
+        <p className="text-xl text-forest-dark/80 mb-8 max-w-2xl mx-auto leading-relaxed">
+          Transform your accomplishments into actionable career insights. Our AI analyzes your Skills, Experience, Education, and Drive to create your personalized career profile.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <Button size="lg" className="bg-primary hover:bg-primary/90 px-8 py-4 text-lg">
+            Start Your SEED Analysis
+            <ArrowRight className="ml-2 w-5 h-5" />
+          </Button>
+          <Button size="lg" variant="outline" className="px-8 py-4 text-lg border-forest-dark/20">
+            Watch Demo
+          </Button>
+        </div>
+        <div className="flex items-center justify-center gap-6 mt-8 text-sm text-forest-dark/60">
+          <div className="flex items-center gap-1">
+            <Star className="w-4 h-4 text-warm-gold fill-warm-gold" />
+            <span>4.9/5 rating</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <Users className="w-4 h-4" />
+            <span>10,000+ profiles created</span>
           </div>
         </div>
-      </div>
-      
-      {/* Bottom decorative gradient */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-sage-green/10 to-transparent pointer-events-none"></div>
+      </section>
+
+      {/* Features Section */}
+      <section className="container mx-auto px-4 py-16">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-forest-dark mb-4">
+            The SEED Methodology
+          </h2>
+          <p className="text-lg text-forest-dark/70 max-w-2xl mx-auto">
+            Our comprehensive framework evaluates four key dimensions of your professional profile
+          </p>
+        </div>
+        
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <Card className="bg-white/80 border-sage-green/20 hover:shadow-lg transition-shadow">
+            <CardHeader className="text-center">
+              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <Target className="w-6 h-6 text-primary" />
+              </div>
+              <CardTitle className="text-primary">Skills</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription className="text-center">
+                Technical and soft skills that set you apart in your field
+              </CardDescription>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white/80 border-sage-green/20 hover:shadow-lg transition-shadow">
+            <CardHeader className="text-center">
+              <div className="w-12 h-12 bg-warm-gold/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <TrendingUp className="w-6 h-6 text-warm-gold" />
+              </div>
+              <CardTitle className="text-warm-gold">Experience</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription className="text-center">
+                Professional achievements and career progression
+              </CardDescription>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white/80 border-sage-green/20 hover:shadow-lg transition-shadow">
+            <CardHeader className="text-center">
+              <div className="w-12 h-12 bg-sage-green/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <CheckCircle className="w-6 h-6 text-sage-green" />
+              </div>
+              <CardTitle className="text-sage-green">Education</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription className="text-center">
+                Academic background and continuous learning initiatives
+              </CardDescription>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white/80 border-sage-green/20 hover:shadow-lg transition-shadow">
+            <CardHeader className="text-center">
+              <div className="w-12 h-12 bg-earth-brown/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <Users className="w-6 h-6 text-earth-brown" />
+              </div>
+              <CardTitle className="text-earth-brown">Drive</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription className="text-center">
+                Motivation, goals, and career aspirations that fuel your growth
+              </CardDescription>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="container mx-auto px-4 py-16">
+        <Card className="bg-gradient-to-r from-primary to-sage-green text-white">
+          <CardHeader className="text-center py-12">
+            <CardTitle className="text-3xl md:text-4xl mb-4">
+              Ready to Discover Your SEED Profile?
+            </CardTitle>
+            <CardDescription className="text-white/90 text-lg mb-8 max-w-2xl mx-auto">
+              Join thousands of professionals who have transformed their careers with personalized AI insights
+            </CardDescription>
+            <Button size="lg" className="bg-white text-primary hover:bg-white/90 px-8 py-4 text-lg">
+              Get Started Free
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
+          </CardHeader>
+        </Card>
+      </section>
+
+      {/* Footer */}
+      <footer className="container mx-auto px-4 py-8 border-t border-sage-green/20">
+        <div className="flex flex-col md:flex-row justify-between items-center">
+          <div className="flex items-center space-x-2 mb-4 md:mb-0">
+            <div className="w-6 h-6 bg-primary rounded flex items-center justify-center">
+              <Target className="w-4 h-4 text-white" />
+            </div>
+            <span className="font-semibold text-forest-dark">SEED Profile</span>
+          </div>
+          <div className="text-sm text-forest-dark/60">
+            © 2024 SEED Profile. Transforming careers with AI.
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
