@@ -21,7 +21,7 @@ const HeroSection = () => {
           SEED helps you unlock them through biblical wisdom—and design a life where you truly belong.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link to="/seed-app">
+          <a href="https://seed-community-lionfarmer.replit.app/" target="_blank" rel="noopener noreferrer">
             <Button 
               size="lg" 
               className="text-lg px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
@@ -29,7 +29,7 @@ const HeroSection = () => {
               <Sparkles className="mr-2 h-5 w-5" />
               Start My SEED Journey
             </Button>
-          </Link>
+          </a>
           <Link to="/about-seed">
             <Button 
               size="lg" 

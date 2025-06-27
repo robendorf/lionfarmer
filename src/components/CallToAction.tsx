@@ -1,7 +1,6 @@
 
 import { Button } from "@/components/ui/button";
 import { Sparkles, Heart } from "lucide-react";
-import { Link } from "react-router-dom";
 
 const CallToAction = () => {
   return (
@@ -17,7 +16,7 @@ const CallToAction = () => {
         <p className="text-xl mb-8 opacity-90">
           Join thousands who have discovered their God-given design through the SEED Profile.
         </p>
-        <Link to="/seed-app">
+        <a href="https://seed-community-lionfarmer.replit.app/" target="_blank" rel="noopener noreferrer">
           <Button 
             size="lg" 
             variant="secondary" 
@@ -26,7 +25,7 @@ const CallToAction = () => {
             <Heart className="mr-2 h-5 w-5" />
             Take the Assessment Now
           </Button>
-        </Link>
+        </a>
       </div>
     </section>
   );

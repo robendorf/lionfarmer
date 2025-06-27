@@ -2,7 +2,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { BookOpen, Target, Heart } from "lucide-react";
-import { Link } from "react-router-dom";
 
 const AppPromotion = () => {
   return (
@@ -53,14 +52,14 @@ const AppPromotion = () => {
               </div>
             </div>
             
-            <Link to="/seed-app">
+            <a href="https://seed-community-lionfarmer.replit.app/" target="_blank" rel="noopener noreferrer">
               <Button 
                 size="lg" 
                 className="text-xl px-12 py-6 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
               >
                 Launch SEED Profile App
               </Button>
-            </Link>
+            </a>
             <p className="text-sm text-gray-500 mt-4">
               Complete assessment • Personalized results • Faith-based insights
             </p>
