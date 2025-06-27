@@ -6,8 +6,13 @@ const Navigation = () => {
     <nav className="bg-white/90 backdrop-blur-sm shadow-lg border-b border-green-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <div className="text-2xl font-bold bg-gradient-to-r from-green-700 to-emerald-600 bg-clip-text text-transparent">
-            🌱 SEED Profile
+          <div className="flex items-center text-2xl font-bold bg-gradient-to-r from-green-700 to-emerald-600 bg-clip-text text-transparent">
+            <img 
+              src="/lovable-uploads/5d5ec52a-6f6c-479c-9fae-ecf0c65b34e5.png" 
+              alt="SEED Profile" 
+              className="h-8 w-8 mr-2"
+            />
+            SEED Profile
           </div>
           <div className="hidden md:flex space-x-8">
             <Link to="/" className="text-green-700 font-semibold hover:text-yellow-600 transition-colors">Home</Link>
