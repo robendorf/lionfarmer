@@ -12,10 +12,13 @@ const HeroSection = () => {
           <Sparkles className="h-16 w-16 text-green-600 animate-pulse" />
         </div>
         <h1 className="text-6xl font-bold bg-gradient-to-r from-green-700 via-yellow-600 to-emerald-600 bg-clip-text text-transparent mb-6">
-          Discover Your God-Given Strengths
+          Discover the Blueprint of What Makes You Thrive
         </h1>
+        <p className="text-xl text-gray-700 mb-4 leading-relaxed font-medium">
+          Your story holds clues to your deepest motivations and God-given strengths. 
+        </p>
         <p className="text-xl text-gray-700 mb-8 leading-relaxed font-medium">
-          🌟 Take the SEED Profile assessment and unlock your potential for Kingdom impact through biblical wisdom.
+          SEED helps you unlock them through biblical wisdom—and design a life where you truly belong.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button 
@@ -24,7 +27,7 @@ const HeroSection = () => {
             onClick={() => window.open('https://replit.com/@your-username/seed-profile', '_blank')}
           >
             <Sparkles className="mr-2 h-5 w-5" />
-            Take SEED Profile Now
+            Start My SEED Journey
           </Button>
           <Link to="/about-seed">
             <Button 

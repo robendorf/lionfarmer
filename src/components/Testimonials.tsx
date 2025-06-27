@@ -3,30 +3,54 @@ import { Card, CardContent } from "@/components/ui/card";
 
 const Testimonials = () => {
   return (
-    <section className="py-16 px-4 bg-white/50 backdrop-blur-sm">
-      <div className="max-w-4xl mx-auto">
-        <h2 className="text-5xl font-bold text-center bg-gradient-to-r from-green-700 to-yellow-600 bg-clip-text text-transparent mb-12">
-          💬 What People Are Saying
+    <section className="py-16 px-4 bg-gradient-to-br from-cream to-yellow-50">
+      <div className="max-w-6xl mx-auto">
+        <h2 className="text-5xl font-bold text-center text-green-700 mb-12">
+          What People Are Saying
         </h2>
 
-        <div className="grid md:grid-cols-2 gap-8">
-          <Card className="p-6 border-2 border-green-200 bg-gradient-to-br from-green-50 to-emerald-50 hover:shadow-xl transition-all duration-300">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <Card className="p-6 border-2 border-green-200 bg-white hover:shadow-xl transition-all duration-300">
             <CardContent>
-              <p className="text-lg text-gray-700 mb-4 leading-relaxed">
-                "The SEED Profile helped me understand my unique gifts and how to use them for God's glory. It's been a game-changer in my ministry! 🙌"
+              <p className="text-lg text-gray-700 mb-4 leading-relaxed italic">
+                "SEED helped me connect the dots between the times I felt unstoppable and the times I burned out. 
+                Now I know how to choose projects—and even relationships—that fit how God designed me."
               </p>
-              <div className="text-right font-bold text-green-700">- Sarah M., Pastor</div>
-              <div className="text-right text-yellow-500">⭐⭐⭐⭐⭐</div>
+              <div className="text-right font-bold text-green-700">— Anna K., Nonprofit Director</div>
+              <div className="text-right text-yellow-500 mt-1">⭐⭐⭐⭐⭐</div>
             </CardContent>
           </Card>
 
-          <Card className="p-6 border-2 border-yellow-200 bg-gradient-to-br from-yellow-50 to-amber-50 hover:shadow-xl transition-all duration-300">
+          <Card className="p-6 border-2 border-yellow-200 bg-white hover:shadow-xl transition-all duration-300">
             <CardContent>
-              <p className="text-lg text-gray-700 mb-4 leading-relaxed">
-                "Finally, an assessment that considers my faith journey! The insights were spot-on and helped me find my place in ministry. ✨"
+              <p className="text-lg text-gray-700 mb-4 leading-relaxed italic">
+                "I've taken all kinds of assessments. SEED was the first one that actually explained why certain 
+                environments drain me and others make me thrive, all through a biblical lens."
               </p>
-              <div className="text-right font-bold text-yellow-700">- Michael R., Youth Leader</div>
-              <div className="text-right text-yellow-500">⭐⭐⭐⭐⭐</div>
+              <div className="text-right font-bold text-yellow-700">— Carlos M., IT Manager</div>
+              <div className="text-right text-yellow-500 mt-1">⭐⭐⭐⭐⭐</div>
+            </CardContent>
+          </Card>
+
+          <Card className="p-6 border-2 border-blue-200 bg-white hover:shadow-xl transition-all duration-300">
+            <CardContent>
+              <p className="text-lg text-gray-700 mb-4 leading-relaxed italic">
+                "SEED gave me language to describe what I'm good at and why I love certain challenges. 
+                It's changed how I talk about myself in interviews and how I see my calling."
+              </p>
+              <div className="text-right font-bold text-blue-700">— Rachel S., University Student</div>
+              <div className="text-right text-yellow-500 mt-1">⭐⭐⭐⭐⭐</div>
+            </CardContent>
+          </Card>
+
+          <Card className="p-6 border-2 border-purple-200 bg-white hover:shadow-xl transition-all duration-300 md:col-span-2 lg:col-span-1">
+            <CardContent>
+              <p className="text-lg text-gray-700 mb-4 leading-relaxed italic">
+                "As a pastor, I've seen how SEED helps people discover their God-given design. 
+                It's become an essential tool in our discipleship and leadership development."
+              </p>
+              <div className="text-right font-bold text-purple-700">— Pastor David L., Church Leader</div>
+              <div className="text-right text-yellow-500 mt-1">⭐⭐⭐⭐⭐</div>
             </CardContent>
           </Card>
         </div>
