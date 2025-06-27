@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Sparkles, Heart } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const CallToAction = () => {
   return (
@@ -16,15 +17,16 @@ const CallToAction = () => {
         <p className="text-xl mb-8 opacity-90">
           Join thousands who have discovered their God-given design through the SEED Profile.
         </p>
-        <Button 
-          size="lg" 
-          variant="secondary" 
-          className="text-lg px-8 py-4 bg-white text-green-700 hover:bg-yellow-100 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
-          onClick={() => window.open('https://replit.com/@your-username/seed-profile', '_blank')}
-        >
-          <Heart className="mr-2 h-5 w-5" />
-          Take the Assessment Now
-        </Button>
+        <Link to="/seed-app">
+          <Button 
+            size="lg" 
+            variant="secondary" 
+            className="text-lg px-8 py-4 bg-white text-green-700 hover:bg-yellow-100 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+          >
+            <Heart className="mr-2 h-5 w-5" />
+            Take the Assessment Now
+          </Button>
+        </Link>
       </div>
     </section>
   );

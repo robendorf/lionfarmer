@@ -1,7 +1,8 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookOpen, Target, Heart, ExternalLink } from "lucide-react";
+import { BookOpen, Target, Heart } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const AppPromotion = () => {
   return (
@@ -52,16 +53,16 @@ const AppPromotion = () => {
               </div>
             </div>
             
-            <Button 
-              size="lg" 
-              className="text-xl px-12 py-6 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
-              onClick={() => window.open('https://replit.com/@your-username/seed-profile', '_blank')}
-            >
-              <ExternalLink className="mr-3 h-6 w-6" />
-              Launch SEED Profile App
-            </Button>
+            <Link to="/seed-app">
+              <Button 
+                size="lg" 
+                className="text-xl px-12 py-6 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+              >
+                Launch SEED Profile App
+              </Button>
+            </Link>
             <p className="text-sm text-gray-500 mt-4">
-              Opens in a new tab • Hosted on Replit • Free to use
+              Complete assessment • Personalized results • Faith-based insights
             </p>
           </CardContent>
         </Card>
