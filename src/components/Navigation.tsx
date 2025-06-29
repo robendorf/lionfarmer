@@ -8,7 +8,7 @@ const Navigation = () => {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center text-2xl font-bold bg-gradient-to-r from-green-700 to-emerald-600 bg-clip-text text-transparent">
             <img 
-              src="/lovable-uploads/SEEDLogov1.png" 
+              src="/lovable-uploads/0ec9aaf3-ff60-4349-84b0-5cb5ab6f62a0.png" 
               alt="SEED Profile Logo" 
               className="h-10 w-10 mr-3"
             />
