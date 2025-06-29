@@ -9,8 +9,8 @@ const Navigation = () => {
           <div className="flex items-center text-2xl font-bold bg-gradient-to-r from-green-700 to-emerald-600 bg-clip-text text-transparent">
             <img 
               src="/lovable-uploads/SEEDLogov1.png" 
-              alt="SEED Profile" 
-              className="h-8 w-8 mr-2"
+              alt="SEED Profile Logo" 
+              className="h-10 w-10 mr-3"
             />
             SEED Profile
           </div>
