@@ -17,6 +17,7 @@ const Navigation = () => {
           <div className="hidden md:flex space-x-8">
             <Link to="/" className="text-green-700 font-semibold hover:text-yellow-600 transition-colors">Home</Link>
             <Link to="/about-seed" className="text-gray-700 hover:text-green-700 transition-colors">About SEED</Link>
+            <Link to="/admin-portal" className="text-gray-700 hover:text-green-700 transition-colors">Admin</Link>
           </div>
         </div>
       </div>

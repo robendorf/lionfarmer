@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import Index from "./pages/Index";
 import AboutSeed from "./pages/AboutSeed";
 import SeedApp from "./pages/SeedApp";
+import AdminPortal from "./pages/AdminPortal";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ const App = () => {
             <Route path="/" element={<Index />} />
             <Route path="/about-seed" element={<AboutSeed />} />
             <Route path="/seed-app" element={<SeedApp />} />
+            <Route path="/admin-portal" element={<AdminPortal />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
